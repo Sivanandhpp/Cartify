@@ -10,7 +10,7 @@ class HomeController extends GetxController {
 
     String? validatePhone(String? value) {
       if (value == null || value.isEmpty) {
-        return AppStrings.loginHelperTitle;
+        return AppStrings.loginErrEmpty;
       }
       final phoneRegExp = RegExp(r'^[6-9]\d{9}$');
       if (!phoneRegExp.hasMatch(value)) {

@@ -1,3 +1,4 @@
+import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,15 +14,14 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    
-
+  
     return Theme(
       data: AppTheme.lightTheme,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Liquor Flow'),
-          centerTitle: true,
-        ),
+        // appBar: AppBar(
+        //   title: const Text(AppStrings.loginTitle),
+        //   centerTitle: true,
+        // ),
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
@@ -32,13 +32,13 @@ class HomeView extends GetView<HomeController> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Welcome!',
+                     AppStrings.loginWelcome,
                       style: AppTextStyles.title,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Enter your phone number to continue',
+                      AppStrings.loginHelperTitle,
                       style: AppTextStyles.body.copyWith(
                         color: Colors.black87,
                         fontSize: 16,
@@ -54,9 +54,9 @@ class HomeView extends GetView<HomeController> {
                       style: AppTextStyles.body,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.phone, color: AppColors.primary),
-                        prefixText: '+91 ',
+                        prefixText: AppStrings.loginCountryCode,
                         prefixStyle: AppTextStyles.body,
-                        hintText: 'Enter mobile number',
+                        hintText: AppStrings.enterMobileNumber,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -68,7 +68,7 @@ class HomeView extends GetView<HomeController> {
                     SizedBox(
                       width: double.infinity,
                       child: CustomButtons.primary(
-                        text: 'Send OTP',
+                        text: AppStrings.sendOtp,
                         onPressed: controller.sendOtp,
                         icon: Icons.arrow_forward,
                       ),
@@ -76,7 +76,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'By continuing, you agree to our Terms of Service and Privacy Policy.',
+                      AppStrings.loginTermsPolicy,
                       style: AppTextStyles.caption,
                       textAlign: TextAlign.center,
                     ),
