@@ -7,8 +7,8 @@ class CustomButtons {
   static Widget primary({
     required String text,
     required VoidCallback onPressed,
-    double borderRadius = 8.0,
-    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+    double borderRadius = 20.0,
+    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
     Color? backgroundColor,
     Color? textColor,
     TextStyle? textStyle,

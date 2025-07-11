@@ -1,3 +1,5 @@
+import 'package:bevco/app/core/constants/app_constants.dart';
+import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
@@ -14,74 +16,92 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-  
     return Theme(
       data: AppTheme.lightTheme,
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text(AppStrings.loginTitle),
-        //   centerTitle: true,
-        // ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-               padding: const EdgeInsets.all(32),
-              child: Form(
-                key: controller.formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                     AppStrings.loginWelcome,
-                      style: AppTextStyles.title,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      AppStrings.loginHelperTitle,
-                      style: AppTextStyles.body.copyWith(
-                        color: Colors.black87,
-                        fontSize: 16,
+        backgroundColor: AppColors.primary,
+        body: SingleChildScrollView(
+          child: Form(
+            key: controller.formKey,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Image.asset(AppImages.loginBg, fit: BoxFit.cover),
+                  SizedBox(height:20),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 32),
-                    TextFormField(
-                      controller: controller.phoneController,
-                      keyboardType: TextInputType.phone,
-                      maxLength: 10,
-                      validator: controller.validatePhone,
-                      style: AppTextStyles.body,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.phone, color: AppColors.primary),
-                        prefixText: AppStrings.loginCountryCode,
-                        prefixStyle: AppTextStyles.body,
-                        hintText: AppStrings.enterMobileNumber,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 40,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          AppStrings.loginWelcome,
+                          style: AppTextStyles.title,
+                          textAlign: TextAlign.center,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-                        counterText: '',
-                      ),
+                        const SizedBox(height: 12),
+                        Text(
+                          AppStrings.loginHelperTitle,
+                          style: AppTextStyles.body,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 32),
+                        TextFormField(
+                          controller: controller.phoneController,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          validator: controller.validatePhone,
+                          onFieldSubmitted: (_) => controller.sendOtp(),
+                          style: AppTextStyles.body,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              
+                              Icons.phone,
+                              color: AppColors.textPrimary,
+                            ),
+                            prefixText: AppStrings.loginCountryCode,
+                            prefixStyle: AppTextStyles.body,
+                            hintText: AppStrings.enterMobileNumber,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(AppConstants.cornerRadius),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 20,
+                            ),
+                            counterText: '',
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomButtons.primary(
+                            text: AppStrings.sendOtp,
+                            onPressed: controller.sendOtp,
+                            icon: Icons.arrow_forward,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          AppStrings.loginTermsPolicy,
+                          style: AppTextStyles.caption,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: CustomButtons.primary(
-                        text: AppStrings.sendOtp,
-                        onPressed: controller.sendOtp,
-                        icon: Icons.arrow_forward,
-                      ),
-                     
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      AppStrings.loginTermsPolicy,
-                      style: AppTextStyles.caption,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
