@@ -1,5 +1,5 @@
 import 'package:bevco/app/core/constants/app_strings.dart';
-import 'package:bevco/app/widgets/custom_buttons.dart';
+import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

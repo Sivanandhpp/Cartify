@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../core/themes/app_colors.dart';
-import '../core/themes/app_text_styles.dart';
+import '../themes/app_colors.dart';
+import '../themes/app_text_styles.dart';
 
 class CustomButtons {
   // Primary Elevated Button
