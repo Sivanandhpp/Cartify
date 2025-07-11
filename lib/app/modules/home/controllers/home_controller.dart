@@ -1,4 +1,5 @@
 import 'package:bevco/app/core/constants/app_strings.dart';
+import 'package:bevco/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,6 +7,10 @@ class HomeController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
+
+  void goToOTPCheck(String mobileNo) { //int id
+    Get.toNamed(Routes.OTP_CHECK,arguments: {'mobile': mobileNo});// 
+  }
 
   String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
@@ -25,6 +30,14 @@ class HomeController extends GetxController {
         '${AppStrings.otpSentMessage} ${phoneController.text}',
         snackPosition: SnackPosition.BOTTOM,
       );
+     goToOTPCheck(phoneController.text);
+    }else {
+      Get.snackbar(
+        AppStrings.error,
+        AppStrings.otpsendError,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      
     }
   }
 

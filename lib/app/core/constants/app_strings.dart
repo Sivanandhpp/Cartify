@@ -8,6 +8,7 @@ class AppStrings {
   static const String settingsTitle = 'Settings';
   static const String aboutTitle = 'About Us';
   static const String contactTitle = 'Contact Us';
+  static const String error = 'Error';
 
   // App Login View Strings
     static const String loginTitle = 'Liquor Flow';
@@ -21,11 +22,12 @@ class AppStrings {
   static const String loginTermsPolicy =
       'By continuing, you agree to our Terms of Service and Privacy Policy.';
   static const String sendOtp = 'Send OTP';
+  static const String otpsendError = 'Error resending OTP, please try again';
   static const String otpSent = 'OTP Sent';
   static const String otpSentMessage = 'OTP sent to +91 ';
 
   // App OTP Check View Strings
-  static const String enterOtp = 'Enter OTP';
+  static const String enterOtp = 'Enter your Verification Code';
   static const String resendOtp = 'Resend OTP';
   static const String otpErrEmpty = 'OTP cannot be empty';
   static const String otpErrInvalid = 'Invalid OTP';

@@ -4,11 +4,9 @@ import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../core/themes/app_theme.dart';
 import '../../../core/themes/app_colors.dart';
 import '../../../core/themes/app_text_styles.dart';
-
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
