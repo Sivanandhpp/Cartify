@@ -1,6 +1,7 @@
 import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/themes/app_text_styles.dart';
+import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/themes/app_colors.dart';
@@ -11,14 +12,17 @@ class OtpCheckView extends GetView<OtpCheckController> {
 
   @override
   Widget build(BuildContext context) {
-    // Get mobile number from arguments
     final String mobile = Get.arguments?['mobile'] ?? '';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verify Account'),
+        title: const Text(
+          'Verify Account',
+          style: TextStyle(color: AppColors.primary),
+        ),
         centerTitle: true,
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        iconTheme: IconThemeData(color: AppColors.primary),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -28,14 +32,11 @@ class OtpCheckView extends GetView<OtpCheckController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
-             
-              Image.asset(
-                AppImages.otpBg,
-                fit: BoxFit.cover,
-              ),
+
+              Image.asset(AppImages.otpBg, fit: BoxFit.cover),
               const SizedBox(height: 32),
               Text(
-               AppStrings.enterOtp,
+                AppStrings.enterOtp,
                 style: AppTextStyles.title.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -56,70 +57,62 @@ class OtpCheckView extends GetView<OtpCheckController> {
               // OTP Input
               Form(
                 key: controller.formKey,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(4, (index) {
-                    return Container(
-                      width: 56,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TextFormField(
-                        controller: controller.otpControllers[index],
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        maxLength: 1,
-                        style: AppTextStyles.title.copyWith(
-                          fontSize: 24,
-                          color: AppColors.primary,
-                        ),
-                        decoration: InputDecoration(
-                          counterText: '',
-                          filled: true,
-                          fillColor: index == 0
-                              ? AppColors.primary.withOpacity(0.15)
-                              : AppColors.background,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: AppColors.primary,
-                              width: 1.5,
+                child: Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(4, (index) {
+                      return Container(
+                        width: 56,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        child: TextFormField(
+                          controller: controller.otpControllers[index],
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          showCursor: false,
+
+                          maxLength: 1,
+                          style: AppTextStyles.title.copyWith(
+                            color: AppColors.background,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: InputDecoration(
+                            counterText: '',
+                            filled: true,
+                            fillColor: controller.filled[index]
+                                ? AppColors.primary
+                                : Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: BorderSide(
+                                color: AppColors.primary,
+                                width: 0.1,
+                              ),
                             ),
                           ),
+                          onChanged: (value) {
+                            controller.filled[index] = value.isNotEmpty;
+                            if (value.isNotEmpty && index < 3) {
+                              FocusScope.of(context).nextFocus();
+                            }
+                            if (value.isEmpty && index > 0) {
+                              FocusScope.of(context).previousFocus();
+                            }
+                          },
+                          validator: (value) =>
+                              value == null || value.isEmpty ? '' : null,
                         ),
-                        onChanged: (value) {
-                          if (value.isNotEmpty && index < 3) {
-                            FocusScope.of(context).nextFocus();
-                          }
-                          if (value.isEmpty && index > 0) {
-                            FocusScope.of(context).previousFocus();
-                          }
-                        },
-                        validator: (value) =>
-                            value == null || value.isEmpty ? '' : null,
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
                 ),
               ),
+
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                child: CustomButtons.primary(
                   onPressed: () => controller.verifyOtp(),
-                  child: Text(
-                    'Verify OTP',
-                    style: AppTextStyles.button.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  text: 'Verify OTP',
                 ),
               ),
               const SizedBox(height: 24),

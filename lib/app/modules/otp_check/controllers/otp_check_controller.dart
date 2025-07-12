@@ -22,6 +22,7 @@ void resendOtp(String mobile) {
   Get.snackbar('OTP', 'Resent OTP to +91 $mobile');
 }
 
+final filled = List.generate(4, (_) => false).obs;
 
 
   @override
@@ -36,6 +37,7 @@ void resendOtp(String mobile) {
 
   @override
 void onClose() {
+ 
   for (var c in otpControllers) {
     c.dispose();
   }
