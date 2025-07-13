@@ -60,9 +60,10 @@ class OtpCheckView extends GetView<OtpCheckController> {
                 child: Obx(
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(4, (index) {
+                    children: List.generate(4, (index) { 
                       return Container(
-                        width: 56,
+                        width: 65,
+                        height: 65,
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TextFormField(
                           controller: controller.otpControllers[index],
@@ -76,6 +77,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
+                           
                             counterText: '',
                             filled: true,
                             fillColor: controller.filled[index]
@@ -84,13 +86,30 @@ class OtpCheckView extends GetView<OtpCheckController> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(18),
                               borderSide: BorderSide(
-                                color: AppColors.primary,
-                                width: 0.1,
+                                color: controller.filled[index]
+                                    ? AppColors.primary
+                                    : const Color(0xFFFFFFFF)
                               ),
+                              // borderSide: BorderSide(
+                              //   color: AppColors.background,
+                              
+                              // ),
+                              
                             ),
+                            
                           ),
+                          // onTap: () {
+                          //   controller.filled[index] = true;
+                          //   if (index < 3) {
+                          //     FocusScope.of(context).nextFocus();
+                          //   }
+                          // },
                           onChanged: (value) {
                             controller.filled[index] = value.isNotEmpty;
+                            if (value.isNotEmpty && index == 3) {
+                              FocusScope.of(context).unfocus();
+                            
+                            }
                             if (value.isNotEmpty && index < 3) {
                               FocusScope.of(context).nextFocus();
                             }

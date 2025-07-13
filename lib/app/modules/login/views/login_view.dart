@@ -4,14 +4,13 @@ import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/themes/app_theme.dart';
-import '../../../core/themes/app_colors.dart';
-import '../../../core/themes/app_text_styles.dart';
-import '../controllers/home_controller.dart';
+import 'package:bevco/app/core/themes/app_theme.dart';
+import 'package:bevco/app/core/themes/app_colors.dart';
+import 'package:bevco/app/core/themes/app_text_styles.dart';
+import '../controllers/login_controller.dart';
 
-class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
-
+class LoginView extends GetView<LoginController> {
+  const LoginView({super.key});
   @override
   Widget build(BuildContext context) {
     return Theme(

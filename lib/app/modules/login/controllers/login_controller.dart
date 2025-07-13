@@ -3,8 +3,8 @@ import 'package:bevco/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HomeController extends GetxController {
-
+class LoginController extends GetxController {
+ 
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
 
@@ -28,14 +28,14 @@ class HomeController extends GetxController {
       Get.snackbar(
         AppStrings.otpSent,
         '${AppStrings.otpSentMessage} ${phoneController.text}',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
      goToOTPCheck(phoneController.text);
     }else {
       Get.snackbar(
         AppStrings.error,
         AppStrings.otpsendError,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
       
     }
