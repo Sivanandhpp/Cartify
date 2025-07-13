@@ -8,8 +8,8 @@ class LoginController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
 
-  void goToOTPCheck(String mobileNo) { //int id
-    Get.toNamed(Routes.OTP_CHECK,arguments: {'mobile': mobileNo});// 
+  void goToOTPCheck(String mobileNo) {
+    Get.toNamed(Routes.OTP_CHECK,arguments: {'mobile': mobileNo});
   }
 
   String? validatePhone(String? value) {

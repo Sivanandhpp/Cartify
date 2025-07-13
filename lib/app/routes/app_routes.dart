@@ -7,6 +7,8 @@ abstract class Routes {
   static const OTP_CHECK = _Paths.OTP_CHECK;
   static const LOGIN = _Paths.LOGIN;
   static const USER_DASHBOARD = _Paths.USER_DASHBOARD;
+  static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
+  static const SPLASH = _Paths.SPLASH;
 }
 
 abstract class _Paths {
@@ -15,4 +17,6 @@ abstract class _Paths {
   static const OTP_CHECK = '/otp-check';
   static const LOGIN = '/login';
   static const USER_DASHBOARD = '/user-dashboard';
+  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const SPLASH = '/splash';
 }

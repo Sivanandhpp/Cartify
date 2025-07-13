@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
 
+import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
+import '../modules/admin_dashboard/views/admin_dashboard_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/otp_check/bindings/otp_check_binding.dart';
 import '../modules/otp_check/views/otp_check_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 import '../modules/user_dashboard/bindings/user_dashboard_binding.dart';
 import '../modules/user_dashboard/views/user_dashboard_view.dart';
 
@@ -12,7 +16,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -29,6 +33,16 @@ class AppPages {
       name: _Paths.USER_DASHBOARD,
       page: () => const UserDashboardView(),
       binding: UserDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_DASHBOARD,
+      page: () => const AdminDashboardView(),
+      binding: AdminDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
     ),
   ];
 }
