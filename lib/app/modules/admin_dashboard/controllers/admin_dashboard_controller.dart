@@ -1,9 +1,16 @@
+import 'package:bevco/app/routes/app_pages.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class AdminDashboardController extends GetxController {
-  //TODO: Implement AdminDashboardController
+  
+  final storage = GetStorage();
 
-  final count = 0.obs;
+  void logOut() {
+    storage.erase(); // or storage.remove('isLoggedIn');
+    Get.offAllNamed(Routes.LOGIN);
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -19,5 +26,5 @@ class AdminDashboardController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
+ 
 }

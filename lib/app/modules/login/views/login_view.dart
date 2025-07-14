@@ -36,8 +36,8 @@ class LoginView extends GetView<LoginController> {
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 40,
+                      horizontal: 24,
+                      vertical: 32,
                     ),
                     child: Column(
                       children: [

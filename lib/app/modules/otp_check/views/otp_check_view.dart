@@ -26,6 +26,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
         elevation: 0,
       ),
       body: SingleChildScrollView(
+        controller: controller.scrollController,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
@@ -46,7 +47,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
               ),
               const SizedBox(height: 12),
               Text(
-                'We sent a verification code to +91 $mobile',
+                '${AppStrings.otpHelperTitle} $mobile',
                 style: AppTextStyles.body.copyWith(
                   color: AppColors.textSecondary,
                   fontSize: 15,
@@ -60,7 +61,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
                 child: Obx(
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(4, (index) { 
+                    children: List.generate(4, (index) {
                       return Container(
                         width: 65,
                         height: 65,
@@ -70,14 +71,16 @@ class OtpCheckView extends GetView<OtpCheckController> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           showCursor: false,
+                          autofocus: index == 0,
+                          // focusNode: controller.focusNodes[index],
 
+                       enableInteractiveSelection: false,
                           maxLength: 1,
                           style: AppTextStyles.title.copyWith(
                             color: AppColors.background,
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
-                           
                             counterText: '',
                             filled: true,
                             fillColor: controller.filled[index]
@@ -88,27 +91,30 @@ class OtpCheckView extends GetView<OtpCheckController> {
                               borderSide: BorderSide(
                                 color: controller.filled[index]
                                     ? AppColors.primary
-                                    : const Color(0xFFFFFFFF)
+                                    : const Color(0xFFFFFFFF),
                               ),
-                              // borderSide: BorderSide(
-                              //   color: AppColors.background,
-                              
-                              // ),
-                              
                             ),
-                            
                           ),
-                          // onTap: () {
-                          //   controller.filled[index] = true;
-                          //   if (index < 3) {
-                          //     FocusScope.of(context).nextFocus();
-                          //   }
-                          // },
+                          onTap: () {
+                            Future.delayed(
+                              const Duration(milliseconds: 200),
+                              () {
+                                controller.scrollController.animateTo(
+                                  controller
+                                      .scrollController
+                                      .position
+                                      .maxScrollExtent,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                            );
+                          },
                           onChanged: (value) {
                             controller.filled[index] = value.isNotEmpty;
                             if (value.isNotEmpty && index == 3) {
                               FocusScope.of(context).unfocus();
-                            
+                              controller.verifyOtp();
                             }
                             if (value.isNotEmpty && index < 3) {
                               FocusScope.of(context).nextFocus();
@@ -117,6 +123,9 @@ class OtpCheckView extends GetView<OtpCheckController> {
                               FocusScope.of(context).previousFocus();
                             }
                           },
+                          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                          
+ 
                           validator: (value) =>
                               value == null || value.isEmpty ? '' : null,
                         ),

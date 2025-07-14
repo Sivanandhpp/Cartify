@@ -8,7 +8,7 @@ class SplashView extends GetView<SplashController> {
   const SplashView({super.key});
   @override
   Widget build(BuildContext context) {
-     final controller = Get.put(SplashController());
+    //  final controller = Get.put(SplashController());
      print('SplashView build called');
     return Scaffold(
       appBar: AppBar(

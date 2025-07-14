@@ -7,6 +7,9 @@ class OtpCheckController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final otpControllers = List.generate(4, (_) => TextEditingController());
   final storage = GetStorage();
+  final scrollController = ScrollController();
+  final otpFocusNodes = List.generate(4, (_) => FocusNode());
+  final filled = List.generate(4, (_) => false).obs;
 
   void goToUserDashboard() {
     storage.write('isLoggedIn', true);
@@ -37,7 +40,7 @@ class OtpCheckController extends GetxController {
     Get.snackbar('OTP', 'Resent OTP to +91 $mobile');
   }
 
-  final filled = List.generate(4, (_) => false).obs;
+  
 
   @override
   void onInit() {
@@ -51,6 +54,10 @@ class OtpCheckController extends GetxController {
 
   @override
   void onClose() {
+    scrollController.dispose();
+    for (var node in otpFocusNodes) {
+      node.dispose();
+    }
     for (var c in otpControllers) {
       c.dispose();
     }

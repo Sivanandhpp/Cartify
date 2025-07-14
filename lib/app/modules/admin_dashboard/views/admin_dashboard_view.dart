@@ -13,10 +13,22 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
         title: const Text('AdminDashboardView'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text(
-          'AdminDashboardView is working',
-          style: TextStyle(fontSize: 20),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Example action
+                controller.logOut();
+              },
+              child: const Text('LOGOUT'),
+            ),
+            Text(
+              'AdminDashboardView is working',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
         ),
       ),
     );
