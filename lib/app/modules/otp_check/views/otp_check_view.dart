@@ -3,6 +3,7 @@ import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/themes/app_text_styles.dart';
 import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../core/themes/app_colors.dart';
 import '../controllers/otp_check_controller.dart';
@@ -21,7 +22,8 @@ class OtpCheckView extends GetView<OtpCheckController> {
           style: TextStyle(color: AppColors.primary),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+       
+        forceMaterialTransparency: true,
         iconTheme: IconThemeData(color: AppColors.primary),
         elevation: 0,
       ),
@@ -30,6 +32,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
+
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
@@ -55,79 +58,77 @@ class OtpCheckView extends GetView<OtpCheckController> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              // OTP Input
+
               Form(
                 key: controller.formKey,
                 child: Obx(
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(4, (index) {
-                      return Container(
-                        width: 65,
-                        height: 65,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextFormField(
-                          controller: controller.otpControllers[index],
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          showCursor: false,
-                          autofocus: index == 0,
-                          // focusNode: controller.focusNodes[index],
-
-                       enableInteractiveSelection: false,
-                          maxLength: 1,
-                          style: AppTextStyles.title.copyWith(
-                            color: AppColors.background,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          decoration: InputDecoration(
-                            counterText: '',
-                            filled: true,
-                            fillColor: controller.filled[index]
-                                ? AppColors.primary
-                                : Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: controller.filled[index]
-                                    ? AppColors.primary
-                                    : const Color(0xFFFFFFFF),
+                      return KeyboardListener(
+                        focusNode: controller.rawKeyboardNodes[index],
+                        onKeyEvent: (KeyEvent event) {
+                          if (event is KeyDownEvent &&
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.backspace &&
+                              controller.otpControllers[index].text.isEmpty &&
+                              index > 0) {
+                            controller.otpControllers[index - 1].clear();
+                            controller.filled[index - 1] = false;
+                            FocusScope.of(
+                              context,
+                            ).requestFocus(controller.otpFocusNodes[index - 1]);
+                          }
+                        },
+                        child: Container(
+                          width: 65,
+                          height: 65,
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          child: TextFormField(
+                            controller: controller.otpControllers[index],
+                            focusNode: controller.otpFocusNodes[index],
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            showCursor: false,
+                            autofocus: index == 0,
+                            enableInteractiveSelection: false,
+                            maxLength: 1,
+                            style: AppTextStyles.title.copyWith(
+                              color: AppColors.background,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              counterText: '',
+                              filled: true,
+                              fillColor: controller.filled[index]
+                                  ? AppColors.primary
+                                  : Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: controller.filled[index]
+                                      ? AppColors.primary
+                                      : const Color(0xFFFFFFFF),
+                                ),
                               ),
                             ),
-                          ),
-                          onTap: () {
-                            Future.delayed(
-                              const Duration(milliseconds: 200),
-                              () {
-                                controller.scrollController.animateTo(
-                                  controller
-                                      .scrollController
-                                      .position
-                                      .maxScrollExtent,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
+                            onChanged: (value) {
+                              controller.filled[index] = value.isNotEmpty;
+
+                              if (value.isNotEmpty && index < 3) {
+                                FocusScope.of(context).requestFocus(
+                                  controller.otpFocusNodes[index + 1],
                                 );
-                              },
-                            );
-                          },
-                          onChanged: (value) {
-                            controller.filled[index] = value.isNotEmpty;
-                            if (value.isNotEmpty && index == 3) {
-                              FocusScope.of(context).unfocus();
-                              controller.verifyOtp();
-                            }
-                            if (value.isNotEmpty && index < 3) {
-                              FocusScope.of(context).nextFocus();
-                            }
-                            if (value.isEmpty && index > 0) {
-                              FocusScope.of(context).previousFocus();
-                            }
-                          },
-                          onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                          
- 
-                          validator: (value) =>
-                              value == null || value.isEmpty ? '' : null,
+                              } else if (value.isNotEmpty && index == 3) {
+                                FocusScope.of(context).unfocus();
+                                controller.verifyOtp();
+                              }
+                            },
+                            validator: (value) =>
+                                value == null || value.isEmpty ? '' : null,
+                            onTapOutside: (_) =>
+                                FocusScope.of(context).unfocus(),
+                          ),
                         ),
                       );
                     }),

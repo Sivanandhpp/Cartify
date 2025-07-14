@@ -70,7 +70,7 @@ class LoginView extends GetView<LoginController> {
                             prefixStyle: AppTextStyles.body,
                             hintText: AppStrings.enterMobileNumber,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(AppConstants.cornerRadius),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 20,

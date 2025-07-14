@@ -1,15 +1,18 @@
 import 'package:bevco/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class OtpCheckController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final otpControllers = List.generate(4, (_) => TextEditingController());
-  final storage = GetStorage();
-  final scrollController = ScrollController();
   final otpFocusNodes = List.generate(4, (_) => FocusNode());
+  final rawKeyboardNodes = List.generate(4, (_) => FocusNode());
+
   final filled = List.generate(4, (_) => false).obs;
+  final scrollController = ScrollController();
+  final storage = GetStorage();
 
   void goToUserDashboard() {
     storage.write('isLoggedIn', true);
@@ -40,22 +43,13 @@ class OtpCheckController extends GetxController {
     Get.snackbar('OTP', 'Resent OTP to +91 $mobile');
   }
 
-  
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
   @override
   void onClose() {
     scrollController.dispose();
     for (var node in otpFocusNodes) {
+      node.dispose();
+    }
+    for (var node in rawKeyboardNodes) {
       node.dispose();
     }
     for (var c in otpControllers) {

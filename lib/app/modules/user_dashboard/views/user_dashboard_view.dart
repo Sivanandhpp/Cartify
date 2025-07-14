@@ -9,16 +9,21 @@ class UserDashboardView extends GetView<UserDashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('UserDashboardView'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('UserDashboardView'),
+        centerTitle: true,
+
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-
+         
           children: [
             ElevatedButton(
               onPressed: () {
                 // Example action
                 controller.logOut();
+                
               },
               child: const Text('LOGOUT'),
             ),
