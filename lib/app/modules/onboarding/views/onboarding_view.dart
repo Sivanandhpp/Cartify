@@ -1,3 +1,5 @@
+import 'package:bevco/app/core/constants/app_padding.dart';
+import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/themes/app_colors.dart';
 import 'package:bevco/app/core/widgets/custom_buttons.dart';
 import 'package:bevco/app/modules/onboarding/views/widgets/indicator_widget.dart';
@@ -16,25 +18,21 @@ class OnboardingView extends GetView<OnboardingController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
+                    padding: AppPaddings.small,
                     child: TextButton(
-                      onPressed: () {
-                        controller.isBoarded();
-                      },
+                      onPressed: () => controller.isBoarded(),
                       child: const Text(
-                        "Skip",
+                        AppStrings.onBoardingSkip,
                         style: TextStyle(color: AppColors.primary),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
               Expanded(
                 child: PageView.builder(
                   controller: controller.pageController,
@@ -49,24 +47,14 @@ class OnboardingView extends GetView<OnboardingController> {
                   count: controller.pages.length,
                 ),
               ),
-              // const SizedBox(height: 16),
+
               Obx(
                 () => Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(20),
+                  padding: AppPaddings.screenPadding,
                   child: CustomButtons.primary(
-                    text:
-                        controller.pageIndex.value < controller.pages.length - 1
-                        ? "Next"
-                        : "Get Started",
-                    onPressed: () {
-                      if (controller.pageIndex.value <
-                          controller.pages.length - 1) {
-                        controller.nextPage();
-                      } else {
-                        controller.isBoarded();
-                      }
-                    },
+                    text: controller.primaryButtonLabel,
+                    onPressed: () => controller.handlePrimaryButtonTap(),
                   ),
                 ),
               ),

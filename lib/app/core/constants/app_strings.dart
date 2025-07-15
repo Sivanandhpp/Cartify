@@ -5,10 +5,15 @@ class AppStrings {
   // App Common Strings
   static const String error = 'Error!';
 
+  // App On Boarding Strings
+  static const String onBoardingSkip = 'Skip';
+  static const String onBoardingButtonInitial = 'Next';
+  static const String onBoardingButtonFinal = 'Get Started!';
+
   // App Login View Strings
   static const String loginWelcome = 'Welcome to $appName';
   static const String loginHelperTitle = 'Enter your phone number to continue';
-  static const String enterMobileNumber = 'Enter your mobile number';
+  static const String loginEnterMobileNumber = 'Enter your mobile number';
   static const String loginCountryCode = '+91 ';
   static const String sendOtp = 'Send OTP';
   static const String loginTermsPolicy =
@@ -25,7 +30,8 @@ class AppStrings {
 
   // App OTP Check View Strings
   static const String enterOtp = 'Enter your Verification Code';
-  static const String otpHelperTitle = 'We have sent a verification code to $loginCountryCode';
+  static const String otpHelperTitle =
+      'We have sent a verification code to $loginCountryCode';
   // static const String resendOtp = 'Resend OTP';
   // static const String otpErrEmpty = 'OTP cannot be empty';
   // static const String otpErrInvalid = 'Invalid OTP';

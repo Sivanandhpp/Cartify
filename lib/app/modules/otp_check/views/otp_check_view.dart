@@ -22,7 +22,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
           style: TextStyle(color: AppColors.primary),
         ),
         centerTitle: true,
-       
+
         forceMaterialTransparency: true,
         iconTheme: IconThemeData(color: AppColors.primary),
         elevation: 0,
@@ -32,7 +32,6 @@ class OtpCheckView extends GetView<OtpCheckController> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
-
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
@@ -93,6 +92,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
                             autofocus: index == 0,
                             enableInteractiveSelection: false,
                             maxLength: 1,
+                            onFieldSubmitted: (value) => controller.verifyOtp(),
                             style: AppTextStyles.title.copyWith(
                               color: AppColors.background,
                               fontWeight: FontWeight.bold,

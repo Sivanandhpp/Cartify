@@ -1,3 +1,4 @@
+import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/modules/onboarding/views/widgets/onboarding_widget.dart';
 import 'package:bevco/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,9 @@ class OnboardingController extends GetxController {
   var pageIndex = 0.obs;
   late final pageController = PageController();
   final storage = GetStorage();
+  String get primaryButtonLabel => pageIndex.value < pages.length - 1
+      ? AppStrings.onBoardingButtonInitial
+      : AppStrings.onBoardingButtonFinal;
 
   final pages = [
     OnboardingPage(
@@ -29,6 +33,13 @@ class OnboardingController extends GetxController {
           'Track orders live, get doorstep delivery,\nand return items hassle-free.',
     ),
   ];
+  void handlePrimaryButtonTap() {
+    if (pageIndex.value < pages.length - 1) {
+      nextPage();
+    } else {
+      isBoarded();
+    }
+  }
 
   void nextPage() {
     if (pageIndex.value < 2) {

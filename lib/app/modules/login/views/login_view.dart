@@ -66,7 +66,7 @@ class LoginView extends GetView<LoginController> {
                             ),
                             prefixText: AppStrings.loginCountryCode,
                             prefixStyle: AppTextStyles.body,
-                            hintText: AppStrings.enterMobileNumber,
+                            hintText: AppStrings.loginEnterMobileNumber,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
