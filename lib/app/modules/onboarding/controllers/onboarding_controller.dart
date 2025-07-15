@@ -1,70 +1,53 @@
-import 'package:bevco/app/core/constants/app_strings.dart';
-import 'package:bevco/app/modules/onboarding/views/widgets/onboarding_widget.dart';
 import 'package:bevco/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import '../data/onboarding_page_data.dart';
+import '../data/onboarding_storage_service.dart';
+import '../../../core/constants/app_strings.dart';
 
 class OnboardingController extends GetxController {
-  var pageIndex = 0.obs;
-  late final pageController = PageController();
-  final storage = GetStorage();
+  OnboardingController(this._storageService);
+
+  final OnboardingStorageService _storageService;
+
+  late final PageController pageController;
+  final RxInt pageIndex = 0.obs;
+
+  // Expose pages as an unmodifiable list for the view.
+  final List<OnboardingPageData> pages = kOnboardingPages;
+
   String get primaryButtonLabel => pageIndex.value < pages.length - 1
       ? AppStrings.onBoardingButtonInitial
       : AppStrings.onBoardingButtonFinal;
 
-  final pages = [
-    OnboardingPage(
-      image: 'assets/images/onboarding1.jpg',
-      title: 'Shop Your Favorites',
-      subtitle:
-          'Discover trending products, curated collections,\nand best deals—all in one place.',
-    ),
-    OnboardingPage(
-      image: 'assets/images/onboarding1.jpg',
-      title: 'Safe & Easy Checkout',
-      subtitle:
-          'Enjoy secure payments with cards, UPI, or COD.\nYour data stays safe with us.',
-    ),
-    OnboardingPage(
-      image: 'assets/images/onboarding1.jpg',
-      title: 'Fast Delivery, Easy Returns',
-      subtitle:
-          'Track orders live, get doorstep delivery,\nand return items hassle-free.',
-    ),
-  ];
+  /* ---------- lifecycle ---------- */
+  @override
+  void onInit() {
+    pageController = PageController();
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
+
+  /* ---------- public API ---------- */
+  void onPageChanged(int index) => pageIndex.value = index;
+
   void handlePrimaryButtonTap() {
-    if (pageIndex.value < pages.length - 1) {
-      nextPage();
-    } else {
-      isBoarded();
-    }
+    pageIndex.value < pages.length - 1 ? nextPage() : finishOnboarding();
   }
 
-  void nextPage() {
-    if (pageIndex.value < 2) {
-      pageController.nextPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.ease,
-      );
-    }
-  }
+  /* ---------- private helpers ---------- */
+  void nextPage() => pageController.nextPage(
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.ease,
+  );
 
-  void prevPage() {
-    if (pageIndex.value > 0) {
-      pageController.previousPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.ease,
-      );
-    }
-  }
-
-  void onPageChanged(int index) {
-    pageIndex.value = index;
-  }
-
-  void isBoarded() {
-    storage.write('isBoarded', true);
-    Get.toNamed(Routes.LOGIN);
+  Future<void> finishOnboarding() async {
+    await _storageService.markBoarded();
+    Get.offAllNamed(Routes.LOGIN);
   }
 }

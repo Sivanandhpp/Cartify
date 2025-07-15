@@ -1,4 +1,13 @@
+// core/constants/app_durations.dart
+class AppDurations {
+  static const otpSnackbar = Duration(seconds: 3);
+  static const animation = Duration(milliseconds: 300);
+}
 
+// core/constants/app_regex.dart
+class AppRegex {
+  static final phone = RegExp(r'^[6-9]\d{9}$');
+}
 // class AppConstants {
 //   static const double padding = 16.0;
 //   static const double cornerRadius = 20.0;

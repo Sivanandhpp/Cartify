@@ -5,7 +5,7 @@ class AppPaddings {
     horizontal: 16.0,
     vertical: 12.0,
   );
-  static const EdgeInsets small = EdgeInsets.all(8.0);
-  static const EdgeInsets medium = EdgeInsets.all(16.0);
-  static const EdgeInsets large = EdgeInsets.all(24.0);
+  static const EdgeInsets small = EdgeInsets.all(10.0);
+  static const EdgeInsets medium = EdgeInsets.all(20.0);
+  static const EdgeInsets large = EdgeInsets.all(30.0);
 }

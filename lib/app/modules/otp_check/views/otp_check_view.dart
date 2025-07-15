@@ -1,7 +1,7 @@
 import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/themes/app_text_styles.dart';
-import 'package:bevco/app/core/widgets/custom_buttons.dart';
+import 'package:bevco/app/core/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -139,7 +139,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                child: CustomButtons.primary(
+                child: AppButtons.primary(
                   onPressed: () => controller.verifyOtp(),
                   text: 'Verify OTP',
                 ),

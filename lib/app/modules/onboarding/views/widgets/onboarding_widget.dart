@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bevco/app/core/themes/app_colors.dart';
+import '../../../../core/themes/app_colors.dart';
 
 class OnboardingPage extends StatelessWidget {
   final String image, title, subtitle;

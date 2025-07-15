@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import '../themes/app_colors.dart';
 import '../themes/app_text_styles.dart';
 
-class CustomButtons {
+class AppButtons {
   // Primary Elevated Button
   static Widget primary({
     required String text,
     required VoidCallback onPressed,
     double borderRadius = 20.0,
-    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+    EdgeInsets padding = const EdgeInsets.symmetric(
+      horizontal: 20,
+      vertical: 20,
+    ),
     Color? backgroundColor,
     Color? textColor,
     TextStyle? textStyle,
@@ -26,6 +29,7 @@ class CustomButtons {
         textStyle: textStyle ?? AppTextStyles.button,
         elevation: 0,
       ),
+
       onPressed: enabled ? onPressed : null,
       child: icon == null
           ? Text(text)
