@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HeaderWidget extends StatelessWidget {
+  HeaderWidget({super.key});
   final UserDashboardController controller =
       Get.find<UserDashboardController>();
 

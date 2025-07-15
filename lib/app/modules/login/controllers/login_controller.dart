@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
- 
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
 
   void goToOTPCheck(String mobileNo) {
-    Get.toNamed(Routes.OTP_CHECK,arguments: {'mobile': mobileNo});
+    Get.toNamed(Routes.OTP_CHECK, arguments: {'mobile': mobileNo});
   }
 
   String? validatePhone(String? value) {
@@ -30,29 +29,13 @@ class LoginController extends GetxController {
         '${AppStrings.otpSentMessage} ${phoneController.text}',
         snackPosition: SnackPosition.TOP,
       );
-     goToOTPCheck(phoneController.text);
-    }else {
+      goToOTPCheck(phoneController.text);
+    } else {
       Get.snackbar(
         AppStrings.error,
         AppStrings.otpsendError,
         snackPosition: SnackPosition.TOP,
       );
-      
     }
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

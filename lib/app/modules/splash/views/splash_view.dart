@@ -9,15 +9,10 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     //  final controller = Get.put(SplashController());
-     print('SplashView build called');
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SplashView'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: CircularProgressIndicator()
-      ),
+      appBar: AppBar(title: const Text('SplashView'), centerTitle: true),
+      body: const Center(child: CircularProgressIndicator()),
     );
   }
 }

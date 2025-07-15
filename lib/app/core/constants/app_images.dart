@@ -1,6 +1,7 @@
 class AppImages {
   static const String loginBg = 'assets/images/loginbg.jpg';
   static const String otpBg = 'assets/images/otpbg.jpg';
+  static const String onboarding1 = 'assets/images/onboarding1.jpg';
 
   // static const String logo = 'assets/images/logo.png';
   

@@ -6,22 +6,10 @@ class UserDashboardController extends GetxController {
   final storage = GetStorage();
 
   void logOut() {
-    storage.erase(); // or storage.remove('isLoggedIn');
+    storage.erase();
+    // TODO:
+    // storage.remove('isLoggedIn');
+    // storage.remove('userRole');
     Get.offAllNamed(Routes.LOGIN);
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

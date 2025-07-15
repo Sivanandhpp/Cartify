@@ -1,4 +1,3 @@
-import 'package:bevco/app/core/constants/app_constants.dart';
 import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/constants/app_strings.dart';
 import 'package:bevco/app/core/widgets/custom_buttons.dart';
@@ -26,7 +25,7 @@ class LoginView extends GetView<LoginController> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Image.asset(AppImages.loginBg, fit: BoxFit.cover),
-                  SizedBox(height:20),
+                  SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.background,
@@ -62,7 +61,6 @@ class LoginView extends GetView<LoginController> {
                           style: AppTextStyles.body,
                           decoration: InputDecoration(
                             prefixIcon: Icon(
-                              
                               Icons.phone,
                               color: AppColors.textPrimary,
                             ),

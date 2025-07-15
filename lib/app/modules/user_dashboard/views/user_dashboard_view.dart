@@ -13,27 +13,23 @@ class UserDashboardView extends GetView<UserDashboardController> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-          
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HeaderWidget(),
-                SizedBox(height: 10),
-                CategoryWidget(),
-                SizedBox(height: 20),
-                OfferWidget(),
-                SizedBox(height: 20),
-                HotDealsWidget(),
-                SizedBox(height: 20),
-               
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HeaderWidget(),
+              SizedBox(height: 10),
+              CategoryWidget(),
+              SizedBox(height: 20),
+              OfferWidget(),
+              SizedBox(height: 20),
+              HotDealsWidget(),
+              SizedBox(height: 20),
+            ],
           ),
         ),
       ),
+
       // bottomNavigationBar:  NavigationWidget(),
-    
     );
   }
 }

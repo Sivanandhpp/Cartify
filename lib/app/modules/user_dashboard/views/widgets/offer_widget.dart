@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OfferWidget extends StatelessWidget {
+  const OfferWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -13,18 +15,30 @@ class OfferWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text('LOWEST PRICES EVER!', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+            Text(
+              'LOWEST PRICES EVER!',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Column(
                   children: [
-                    Text('UP TO 80% OFF', style: TextStyle(color: Colors.white)),
+                    Text(
+                      'UP TO 80% OFF',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     ElevatedButton(
                       onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
                       child: Text('WOW DEALS'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     ),
                   ],
                 ),
