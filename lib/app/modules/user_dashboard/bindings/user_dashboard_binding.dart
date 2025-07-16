@@ -7,6 +7,7 @@ class UserDashboardBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<UserDashboardController>(
       () => UserDashboardController(),
+      fenix: true,
     );
   }
 }

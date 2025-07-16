@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/widgets/app_spacers.dart';
 import '../../controllers/login_controller.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -22,14 +23,14 @@ class LoginForm extends GetView<LoginController> {
             maxLength: 10,
             validator: controller.validatePhone,
             onFieldSubmitted: (_) => controller.sendOtp(),
-            style: AppTextStyles.body,
+            style: AppTextStyles.bodyLarge,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.phone, color: AppColors.textPrimary),
               prefixText: AppStrings.loginCountryCode,
-              prefixStyle: AppTextStyles.body,
+              prefixStyle: AppTextStyles.bodyLarge,
               hintText: AppStrings.loginEnterMobileNumber,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppBorderRadius.secondaryBorder,
               ),
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 20,

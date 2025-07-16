@@ -1,3 +1,4 @@
+import 'package:bevco/app/core/constants/app_constants.dart';
 import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/constants/app_padding.dart';
 import 'package:bevco/app/core/constants/app_strings.dart';
@@ -26,9 +27,9 @@ class LoginView extends GetView<LoginController> {
               AppSpacers.mediumHeight,
               Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.background,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+                  borderRadius: AppBorderRadius.verticalPrimaryBorder,
                 ),
                 padding: AppPaddings.large,
                 child: Column(
@@ -36,13 +37,13 @@ class LoginView extends GetView<LoginController> {
                     AppSpacers.smallHeight,
                     Text(
                       AppStrings.loginWelcome,
-                      style: AppTextStyles.title,
+                      style: AppTextStyless.title,
                       textAlign: TextAlign.center,
                     ),
                     AppSpacers.smallHeight,
                     Text(
                       AppStrings.loginHelperTitle,
-                      style: AppTextStyles.body,
+                      style: AppTextStyless.body,
                       textAlign: TextAlign.center,
                     ),
                     AppSpacers.largeHeight,
@@ -50,7 +51,7 @@ class LoginView extends GetView<LoginController> {
                     AppSpacers.smallHeight,
                     const Text(
                       AppStrings.loginTermsPolicy,
-                      style: AppTextStyles.caption,
+                      style: AppTextStyless.caption,
                       textAlign: TextAlign.center,
                     ),
                     AppSpacers.largeHeight,

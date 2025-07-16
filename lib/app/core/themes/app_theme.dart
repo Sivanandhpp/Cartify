@@ -6,11 +6,11 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: Colors.white,
-    textTheme: AppTextStyles.textTheme,
+    textTheme: AppTextStyless.textTheme,
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primary,
       elevation: 0,
-      titleTextStyle: AppTextStyles.title,
+      titleTextStyle: AppTextStyless.title,
     ),
   );
 }

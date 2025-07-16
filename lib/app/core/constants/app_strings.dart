@@ -29,25 +29,13 @@ class AppStrings {
   static const String otpsendError = 'Error resending OTP, please try again';
 
   // App OTP Check View Strings
-  static const String enterOtp = 'Enter your Verification Code';
-  static const String otpHelperTitle =
-      'We have sent a verification code to $loginCountryCode';
-  // static const String resendOtp = 'Resend OTP';
-  // static const String otpErrEmpty = 'OTP cannot be empty';
-  // static const String otpErrInvalid = 'Invalid OTP';
-  // static const String otpErrMismatch = 'OTP does not match';
-  // static const String otpErrExpired =
-  //     'OTP has expired, please request a new one';
-  // static const String otpErrInvalidFormat = 'OTP must be a 6-digit number';
-  // static const String otpErrMaxAttempts =
-  //     'Maximum OTP attempts exceeded, please try again later';
-  // static const String otpErrNetwork = 'Network error, please try again';
-  // static const String otpErrTimeout = 'OTP request timed out, please try again';
-  // static const String otpErrUnknown =
-  //     'An unknown error occurred, please try again';
-  // static const String otpSuccess = 'OTP verified successfully';
-  // static const String otpResendSuccess = 'OTP resent successfully';
-  // static const String otpResendError = 'Error resending OTP, please try again';
-  // static const String otpResendLimitReached =
-  //     'You have reached the limit for resending OTPs, please try again later';
+  static const String otpCheckViewTitle = 'Verify Account';
+  static const String otpCheckEnterOtp = 'Enter your Verification Code';
+  static const String otpCheckHelperTitle =
+      'We have sent a verification code to';
+  static const String otpCheckEditMobile = 'Edit?';
+  static const String otpCheckResend = 'Resend again';
+  static const String otpCheckVerifyButton = 'Verify OTP';
+  static const String otpCheckResendText = "Didn't receive code? ";
+  static const String otpCheckResendButton = 'Resend again!';
 }

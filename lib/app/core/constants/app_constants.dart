@@ -1,12 +1,22 @@
 // core/constants/app_durations.dart
+import 'package:flutter/material.dart';
+
 class AppDurations {
   static const otpSnackbar = Duration(seconds: 3);
   static const animation = Duration(milliseconds: 300);
 }
 
-// core/constants/app_regex.dart
+// Login View Validation
 class AppRegex {
   static final phone = RegExp(r'^[6-9]\d{9}$');
+}
+
+class AppBorderRadius {
+  static final BorderRadius primaryBorder = BorderRadius.circular(40.0);
+  static final BorderRadius secondaryBorder = BorderRadius.circular(20.0);
+  static const BorderRadius verticalPrimaryBorder = BorderRadius.vertical(
+    top: Radius.circular(40),
+  );
 }
 // class AppConstants {
 //   static const double padding = 16.0;
