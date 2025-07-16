@@ -1,6 +1,5 @@
 import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/widgets/app_spacers.dart';
-import 'package:bevco/app/modules/user_dashboard/views/widgets/video_banner_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/themes/app_colors.dart';
@@ -26,10 +25,12 @@ class UserDashboardView extends GetView<UserDashboardController> {
           SliverToBoxAdapter(
             child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
           ),
-          // VideoBannerView(),
+
           DealCardsSection(deals: controller.deals),
           const SliverToBoxAdapter(child: AppSpacers.mediumHeight),
           const ExpiryBannerSection(),
+          const HotDealsSection(),
+          const HotDealsSection(),
           const HotDealsSection(),
         ],
       ),

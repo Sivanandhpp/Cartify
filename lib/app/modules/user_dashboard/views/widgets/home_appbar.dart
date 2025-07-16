@@ -35,7 +35,7 @@ class HomeAppBar extends StatelessWidget {
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(60.0),
+        preferredSize: const Size.fromHeight(64.0),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: TextField(

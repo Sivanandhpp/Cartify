@@ -53,7 +53,7 @@ class HotDealsSection extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           // Placeholder for product image
-                          child: Image.asset(AppImages.onboarding1),
+                          child: Image.asset(AppImages.product1),
                         ),
                       ),
                       Padding(

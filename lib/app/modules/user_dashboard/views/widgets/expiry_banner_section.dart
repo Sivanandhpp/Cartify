@@ -45,11 +45,11 @@ class ExpiryBannerSection extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               width: 50,
               height: 50,
               child: Image.asset(
-                AppImages.onboarding1,
+                AppImages.offer80,
               ), // Placeholder for gift icon
             ),
           ],
