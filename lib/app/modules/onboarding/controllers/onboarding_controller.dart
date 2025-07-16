@@ -13,7 +13,6 @@ class OnboardingController extends GetxController {
   late final PageController pageController;
   final RxInt pageIndex = 0.obs;
 
-  // Expose pages as an unmodifiable list for the view.
   final List<OnboardingPageData> pages = kOnboardingPages;
 
   String get primaryButtonLabel => pageIndex.value < pages.length - 1

@@ -9,8 +9,10 @@ class CategorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: SizedBox(
-        height: 80,
+      child: Container(
+        decoration: BoxDecoration(color: AppColors.primary),
+
+        height: 84,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: categories.length,
@@ -30,7 +32,7 @@ class CategorySection extends StatelessWidget {
                   Text(
                     category.label,
                     style: const TextStyle(
-                      color: AppColors.black,
+                      color: AppColors.white,
                       fontSize: 12,
                     ),
                   ),

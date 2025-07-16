@@ -1,6 +1,7 @@
 import 'package:bevco/app/core/constants/app_constants.dart';
 import 'package:bevco/app/core/themes/app_colors.dart';
 import 'package:bevco/app/core/widgets/app_spacers.dart';
+import 'package:bevco/app/modules/user_dashboard/views/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -13,9 +14,6 @@ class HomeAppBar extends StatelessWidget {
       pinned: true,
       floating: true,
       elevation: 0,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-      ),
       title: Row(
         children: [
           const Icon(Icons.location_on, color: AppColors.white, size: 20),
@@ -31,7 +29,9 @@ class HomeAppBar extends StatelessWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.shopping_bag_outlined, color: AppColors.white),
-          onPressed: () {},
+          onPressed: () {
+            controller.logOut();
+          },
         ),
       ],
       bottom: PreferredSize(

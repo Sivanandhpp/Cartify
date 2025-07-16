@@ -66,25 +66,25 @@ class UserDashboardController extends GetxController {
       DealModel(
         title: 'UP TO\n80%\nOFF',
         subtitle: 'WOW DEALS',
-        color: AppColors.pink,
+        color: AppColors.white,
         imageUrl: AppImages.offer80,
       ),
       DealModel(
-        title: 'Apple\niPhone 16 Pro',
+        title: 'iPhone\n16 Pro',
         subtitle: 'UP TO 20% OFF',
-        color: AppColors.lightBlue,
+        color: AppColors.white,
         imageUrl: AppImages.product1,
       ),
       DealModel(
-        title: 'Apple Watch\nSeries 9',
+        title: 'Apple\nWatch',
         subtitle: 'STARTING ₹46,000/-',
-        color: AppColors.teal,
+        color: AppColors.white,
         imageUrl: AppImages.product2,
       ),
       DealModel(
-        title: 'Macbook &\nPro M3',
+        title: 'Macbook\nPro',
         subtitle: 'UP TO 25% OFF',
-        color: AppColors.purple,
+        color: AppColors.white,
         imageUrl: AppImages.product3,
       ),
     ];

@@ -1,3 +1,4 @@
+import 'package:bevco/app/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_images.dart';
@@ -17,7 +18,7 @@ class HotDealsSection extends StatelessWidget {
               const Text(
                 'Hot deals',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -26,7 +27,7 @@ class HotDealsSection extends StatelessWidget {
                 onPressed: () {},
                 child: const Text(
                   'See All >',
-                  style: TextStyle(color: Colors.white70),
+                  style: TextStyle(color: AppColors.primary),
                 ),
               ),
             ],

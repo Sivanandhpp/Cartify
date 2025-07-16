@@ -1,3 +1,4 @@
+import 'package:bevco/app/core/constants/app_images.dart';
 import 'package:bevco/app/core/widgets/app_spacers.dart';
 import 'package:bevco/app/modules/user_dashboard/views/widgets/video_banner_view.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +22,14 @@ class UserDashboardView extends GetView<UserDashboardController> {
       body: CustomScrollView(
         slivers: [
           const HomeAppBar(),
-          const SliverToBoxAdapter(child: AppSpacers.smallHeight),
           CategorySection(categories: controller.categories),
-          const SliverToBoxAdapter(child: AppSpacers.smallHeight),
-          VideoBannerView(),
-
+          SliverToBoxAdapter(
+            child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
+          ),
+          // VideoBannerView(),
           DealCardsSection(deals: controller.deals),
           const SliverToBoxAdapter(child: AppSpacers.mediumHeight),
           const ExpiryBannerSection(),
-          const SliverToBoxAdapter(child: AppSpacers.mediumHeight),
           const HotDealsSection(),
         ],
       ),

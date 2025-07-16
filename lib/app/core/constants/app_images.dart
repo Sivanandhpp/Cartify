@@ -6,4 +6,5 @@ class AppImages {
   static const String product2 = 'assets/images/products/product2.png';
   static const String product3 = 'assets/images/products/product3.png';
   static const String offer80 = 'assets/images/products/off.png';
+  static const String promoBanner = 'assets/images/promobanner.gif';
 }
