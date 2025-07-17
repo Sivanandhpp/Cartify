@@ -18,8 +18,8 @@ class LoginView extends GetView<LoginController> {
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
+        child: Expanded(
+          // height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

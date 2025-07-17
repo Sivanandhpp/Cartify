@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 import 'package:get/get.dart';
 
 import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
@@ -10,10 +8,14 @@ import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/otp_check/bindings/otp_check_binding.dart';
 import '../modules/otp_check/views/otp_check_view.dart';
+import '../modules/product_sheet/bindings/product_sheet_binding.dart';
+import '../modules/product_sheet/views/product_sheet_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/user_dashboard/bindings/user_dashboard_binding.dart';
 import '../modules/user_dashboard/views/user_dashboard_view.dart';
+
+// ignore_for_file: constant_identifier_names
 
 part 'app_routes.dart';
 
@@ -52,6 +54,11 @@ class AppPages {
       name: _Paths.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRODUCT_SHEET,
+      page: () => const ProductSheetView(),
+      binding: ProductSheetBinding(),
     ),
   ];
 }

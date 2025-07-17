@@ -11,6 +11,7 @@ abstract class Routes {
   static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
   static const SPLASH = _Paths.SPLASH;
   static const ONBOARDING = _Paths.ONBOARDING;
+  static const PRODUCT_SHEET = _Paths.PRODUCT_SHEET;
 }
 
 abstract class _Paths {
@@ -22,4 +23,5 @@ abstract class _Paths {
   static const ADMIN_DASHBOARD = '/admin-dashboard';
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';
+  static const PRODUCT_SHEET = '/product-sheet';
 }
