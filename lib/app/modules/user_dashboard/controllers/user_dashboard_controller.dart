@@ -41,7 +41,7 @@ class UserDashboardController extends GetxController {
         title: 'UP TO\n80%\nOFF',
         subtitle: 'WOW DEALS',
         color: AppColors.white,
-        imageUrl: AppImages.offer80,
+        imageUrl: AppImages.offerIcon,
       ),
       DealModel(
         title: 'iPhone\n16 Pro',
@@ -76,3 +76,13 @@ class UserDashboardController extends GetxController {
     Get.offAllNamed(Routes.LOGIN);
   }
 }
+
+
+
+
+
+
+
+
+
+

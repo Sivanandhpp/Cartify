@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/onboarding_controller.dart';
 import 'indicator_widget.dart';
-import '../../../../core/constants/app_padding.dart';
-import '../../../../core/widgets/app_buttons.dart';
+import '../../../../core/index.dart';
 
 class BottomControls extends StatelessWidget {
   const BottomControls({super.key});
@@ -21,7 +20,7 @@ class BottomControls extends StatelessWidget {
           ),
           Container(
             width: double.infinity,
-            padding: AppPaddings.screenPadding,
+            padding: AppPaddings.all16,
             child: AppButtons.primary(
               text: controller.primaryButtonLabel,
               onPressed: controller.handlePrimaryButtonTap,
@@ -32,3 +31,4 @@ class BottomControls extends StatelessWidget {
     );
   }
 }
+

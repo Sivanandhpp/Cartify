@@ -38,3 +38,4 @@ class OnboardingView extends GetView<OnboardingController> {
     );
   }
 }
+

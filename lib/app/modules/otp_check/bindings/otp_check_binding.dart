@@ -8,3 +8,4 @@ class OtpCheckBinding extends Bindings {
     Get.lazyPut<OtpCheckController>(() => OtpCheckController());
   }
 }
+

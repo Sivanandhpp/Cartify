@@ -27,3 +27,4 @@ class OtpFieldsRow extends GetView<OtpCheckController> {
     );
   }
 }
+

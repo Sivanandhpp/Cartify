@@ -26,37 +26,35 @@ class OtpCheckView extends GetView<OtpCheckController> {
       ),
       body: SingleChildScrollView(
         controller: controller.scrollController,
-        padding: AppPaddings.large,
+        padding: AppPaddings.all24,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            AppSpacers.smallHeight,
-            Image.asset(AppImages.otpBg, fit: BoxFit.cover),
-            AppSpacers.largeHeight,
-            const Text(
+            AppSpacers.h12,
+            Image.asset(AppImages.otpBackground, fit: BoxFit.cover),
+            AppSpacers.h32,
+            Text(
               AppStrings.otpCheckEnterOtp,
-              style: AppTextStyles.titleLarge,
+              style: AppTextStyles.titleLarge(AppColors.lightOnBackground),
               textAlign: TextAlign.center,
             ),
-            AppSpacers.smallHeight,
-            const Text(
+            AppSpacers.h12,
+            Text(
               AppStrings.otpCheckHelperTitle,
-              style: AppTextStyles.bodyLarge,
+              style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
               textAlign: TextAlign.center,
             ),
             Text.rich(
               TextSpan(
                 text: '${AppStrings.loginCountryCode} $mobile',
-                style: AppTextStyles.bodyLarge,
+                style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
                 children: [
                   WidgetSpan(
                     child: GestureDetector(
                       onTap: () => controller.goToLogin(),
                       child: Text(
                         '  ${AppStrings.otpCheckEditMobile}',
-                        style: AppTextStyles.labelLarge.copyWith(
-                          color: AppColors.primary,
-                        ),
+                        style: AppTextStyles.labelLarge(AppColors.primary),
                       ),
                     ),
                   ),
@@ -64,9 +62,9 @@ class OtpCheckView extends GetView<OtpCheckController> {
               ),
             ),
 
-            AppSpacers.largeHeight,
+            AppSpacers.h32,
             Form(key: controller.formKey, child: const OtpFieldsRow()),
-            AppSpacers.largeHeight,
+            AppSpacers.h32,
             SizedBox(
               width: double.infinity,
               child: AppButtons.primary(
@@ -74,20 +72,18 @@ class OtpCheckView extends GetView<OtpCheckController> {
                 text: AppStrings.otpCheckVerifyButton,
               ),
             ),
-            AppSpacers.mediumHeight,
+            AppSpacers.h24,
             Text.rich(
               TextSpan(
                 text: AppStrings.otpCheckResendText,
-                style: AppTextStyles.labelLarge,
+                style: AppTextStyles.labelLarge(AppColors.lightOnBackground),
                 children: [
                   WidgetSpan(
                     child: GestureDetector(
                       onTap: () => controller.resendOtp(mobile),
                       child: Text(
                         AppStrings.otpCheckResendButton,
-                        style: AppTextStyles.labelLarge.copyWith(
-                          color: AppColors.primary,
-                        ),
+                        style: AppTextStyles.labelLarge(AppColors.primary),
                       ),
                     ),
                   ),
@@ -100,3 +96,13 @@ class OtpCheckView extends GetView<OtpCheckController> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

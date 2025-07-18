@@ -30,3 +30,4 @@ const List<OnboardingPageData> kOnboardingPages = [
         'Track orders live, get doorstep delivery,\nand return items hassle-free.',
   ),
 ];
+

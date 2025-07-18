@@ -35,7 +35,7 @@ class LoginController extends GetxController {
     if (value == null || value.isEmpty) {
       return AppStrings.loginErrEmpty;
     }
-    if (!AppRegex.phone.hasMatch(value)) {
+    if (!AppRegex.mobileNumber.hasMatch(value)) {
       return AppStrings.loginErrNumberlength;
     }
     return null;
@@ -63,7 +63,6 @@ class LoginController extends GetxController {
       LogService.info('OTP sent successfully');
       ErrorService.showSuccess(
         '${AppStrings.otpSentMessage} ${phoneController.text}',
-        title: AppStrings.otpSent,
       );
 
       Get.toNamed(
@@ -78,3 +77,13 @@ class LoginController extends GetxController {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+

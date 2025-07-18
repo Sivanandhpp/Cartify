@@ -26,7 +26,7 @@ class LoginView extends GetView<LoginController> {
                 height: MediaQuery.of(context).size.height * 0.5,
                 child: Center(
                   child: Image.asset(
-                    AppImages.loginBg,
+                    AppImages.loginBackground,
                     fit: BoxFit.contain,
                     width: double.infinity,
                   ),
@@ -39,38 +39,42 @@ class LoginView extends GetView<LoginController> {
               left: 0,
               right: 0,
               child: Padding(
-                padding: AppPaddings.horizontalSmall,
+                padding: AppPaddings.horizontal12,
                 child: Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: AppBorderRadius.primaryBorder,
+                    borderRadius: AppBorderRadius.circular12,
                   ),
-                  padding: AppPaddings.large,
-                  child: const Column(
+                  padding: AppPaddings.all24,
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AppSpacers.smallHeight,
+                      AppSpacers.h12,
                       Text(
                         AppStrings.loginWelcome,
-                        style: AppTextStyles.title,
+                        style: AppTextStyles.titleLarge(
+                          AppColors.lightOnBackground,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      AppSpacers.smallHeight,
+                      AppSpacers.h12,
                       Text(
                         AppStrings.loginHelperTitle,
-                        style: AppTextStyles.body,
+                        style: AppTextStyles.bodyMedium(
+                          AppColors.lightOnBackground,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      AppSpacers.largeHeight,
-                      LoginForm(),
-                      AppSpacers.smallHeight,
+                      AppSpacers.h32,
+                      const LoginForm(),
+                      AppSpacers.h12,
                       Text(
                         AppStrings.loginTermsPolicy,
-                        style: AppTextStyles.caption,
+                        style: AppTextStyles.caption(AppColors.lightOnSurface),
                         textAlign: TextAlign.center,
                       ),
-                      AppSpacers.smallHeight,
+                      AppSpacers.h12,
                     ],
                   ),
                 ),
@@ -82,3 +86,13 @@ class LoginView extends GetView<LoginController> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

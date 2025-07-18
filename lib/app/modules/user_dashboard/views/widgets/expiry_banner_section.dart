@@ -50,7 +50,7 @@ class ExpiryBannerSection extends StatelessWidget {
               width: 50,
               height: 50,
               child: Image.asset(
-                AppImages.offer80,
+                AppImages.offerIcon,
               ), // Placeholder for gift icon
             ),
           ],
@@ -59,3 +59,13 @@ class ExpiryBannerSection extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

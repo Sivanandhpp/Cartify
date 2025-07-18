@@ -10,3 +10,4 @@ class SplashBinding extends Bindings {
 
   }
 }
+

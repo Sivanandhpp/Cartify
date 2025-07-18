@@ -17,10 +17,12 @@ void main() async {
 
   runApp(
     GetMaterialApp(
-      title: AppIdentity.appTitle,
+      title: AppEnvironment.displayName,
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: Get.find<ThemeService>().themeMode,
       debugShowCheckedModeBanner: false,
     ),
   );
@@ -29,9 +31,20 @@ void main() async {
 Future<void> initServices() async {
   LogService.info('Initializing services...');
 
-  // Put the services into memory, making them available globally
+  // Initialize core services in order of dependency
   Get.put(ErrorService(), permanent: true);
+  Get.put(ThemeService(), permanent: true);
   Get.put(CartService(), permanent: true);
 
   LogService.info('Services initialized successfully');
 }
+
+
+
+
+
+
+
+
+
+

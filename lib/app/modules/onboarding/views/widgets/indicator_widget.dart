@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/index.dart';
 
 class Indicator extends StatelessWidget {
   final int current, count;
@@ -24,3 +24,4 @@ class Indicator extends StatelessWidget {
     );
   }
 }
+

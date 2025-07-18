@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/onboarding_controller.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/constants/app_padding.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/index.dart';
 
 class SkipButton extends StatelessWidget {
   const SkipButton({super.key});
@@ -14,7 +12,7 @@ class SkipButton extends StatelessWidget {
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
-        padding: AppPaddings.small,
+        padding: AppPaddings.all8,
         child: TextButton(
           onPressed: controller.finishOnboarding,
           child: const Text(
@@ -26,3 +24,4 @@ class SkipButton extends StatelessWidget {
     );
   }
 }
+

@@ -51,3 +51,13 @@ class OnboardingController extends GetxController {
     Get.offAllNamed(Routes.LOGIN);
   }
 }
+
+
+
+
+
+
+
+
+
+

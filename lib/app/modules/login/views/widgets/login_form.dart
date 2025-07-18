@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/widgets/app_spacers.dart';
+import '../../../../core/index.dart';
 import '../../controllers/login_controller.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/app_buttons.dart';
-import '../../../../core/themes/app_text_styles.dart';
-import '../../../../core/themes/app_colors.dart';
 
 class LoginForm extends GetView<LoginController> {
   const LoginForm({super.key});
@@ -23,14 +18,14 @@ class LoginForm extends GetView<LoginController> {
             maxLength: 10,
             validator: controller.validatePhone,
             onFieldSubmitted: (_) => controller.sendOtp(),
-            style: AppTextStyles.bodyLarge,
+            style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.phone, color: AppColors.textPrimary),
+              prefixIcon: Icon(Icons.phone, color: AppColors.lightOnBackground),
               prefixText: AppStrings.loginCountryCode,
-              prefixStyle: AppTextStyles.bodyLarge,
+              prefixStyle: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
               hintText: AppStrings.loginEnterMobileNumber,
               border: OutlineInputBorder(
-                borderRadius: AppBorderRadius.secondaryBorder,
+                borderRadius: AppBorderRadius.circular8,
               ),
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 20,
@@ -39,7 +34,7 @@ class LoginForm extends GetView<LoginController> {
               counterText: '',
             ),
           ),
-          AppSpacers.smallHeight,
+          AppSpacers.h12,
           SizedBox(
             width: double.infinity,
             child: AppButtons.primary(
@@ -53,3 +48,4 @@ class LoginForm extends GetView<LoginController> {
     );
   }
 }
+

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/themes/app_colors.dart';
-import '../../../../core/themes/app_text_styles.dart';
+import '../../../../core/index.dart';
 
 class OtpDigitField extends StatelessWidget {
   const OtpDigitField({
@@ -52,13 +50,13 @@ class OtpDigitField extends StatelessWidget {
             filled: true,
             fillColor: isFilled ? AppColors.primary : Colors.white,
             border: OutlineInputBorder(
-              borderRadius: AppBorderRadius.secondaryBorder,
+              borderRadius: AppBorderRadius.circular8,
               borderSide: BorderSide(
                 color: isFilled ? AppColors.primary : const Color(0xFFFFFFFF),
               ),
             ),
           ),
-          style: AppTextStyles.titleLarge.copyWith(color: AppColors.background),
+          style: AppTextStyles.titleLarge(AppColors.lightBackground),
           onChanged: onChanged,
           validator: (value) => (value?.isEmpty ?? true) ? '' : null,
           onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -68,3 +66,4 @@ class OtpDigitField extends StatelessWidget {
     );
   }
 }
+

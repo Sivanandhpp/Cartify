@@ -18,7 +18,7 @@ class HomeAppBar extends StatelessWidget {
       title: const Row(
         children: [
           Icon(Icons.location_on, color: AppColors.white, size: 20),
-          AppSpacers.smallWidth,
+          AppSpacers.w8,
           Text(
             'Kozhikode Work',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -47,7 +47,7 @@ class HomeAppBar extends StatelessWidget {
               filled: true,
               fillColor: AppColors.white,
               border: OutlineInputBorder(
-                borderRadius: AppBorderRadius.secondaryBorder,
+                borderRadius: AppBorderRadius.circular8,
                 borderSide: BorderSide.none,
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -58,3 +58,13 @@ class HomeAppBar extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

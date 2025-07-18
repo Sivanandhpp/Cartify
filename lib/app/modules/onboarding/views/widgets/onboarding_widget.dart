@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/index.dart';
 
 class OnboardingPage extends StatelessWidget {
   final String image, title, subtitle;
@@ -37,3 +37,4 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 }
+

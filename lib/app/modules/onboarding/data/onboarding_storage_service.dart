@@ -8,3 +8,4 @@ class OnboardingStorageService {
   bool get isBoarded => _box.read(_kBoardedKey) ?? false;
   Future<void> markBoarded() => _box.write(_kBoardedKey, true);
 }
+

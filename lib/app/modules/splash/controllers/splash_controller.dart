@@ -28,3 +28,13 @@ class SplashController extends GetxController {
     super.onReady();
   }
 }
+
+
+
+
+
+
+
+
+
+

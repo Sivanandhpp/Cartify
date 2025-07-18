@@ -1,54 +1,47 @@
 import 'app_identity.dart';
 
-/// Application environment configuration
+// Application configuration that automatically updates based on AppIdentity
 class AppConfig {
-  static const String appName = AppIdentity.displayName;
-  static const String version = '1.0.0';
+  // 🎯 Identity (Auto-sourced from AppIdentity)
+  static String get packageName => AppIdentity.packageName;
+  static String get displayName => AppIdentity.displayName;
+  static String get bundleId => AppIdentity.bundleId;
+  static String get version => AppIdentity.version;
 
-  // Environment settings
-  static const bool isDebug = true; // Set to false in release
-  static const bool enableLogging = true;
-
-  // API Configuration
-  static const String baseUrl = AppIdentity.apiBaseUrl;
+  // 🌐 API Configuration
+  static String get baseUrl => AppIdentity.baseUrl;
+  static String get apiUrl => AppIdentity.apiUrl;
   static const Duration apiTimeout = Duration(seconds: 30);
 
-  // Storage keys
-  static const String isLoggedInKey = 'isLoggedIn';
-  static const String userRoleKey = 'userRole';
-  static const String isOnboardedKey = 'isBoarded';
-  static const String userTokenKey = 'userToken';
+  // 💾 Storage Configuration
+  static String get storageKey => '${AppIdentity.packageName}_storage';
+  static String get cartStorageKey => '${AppIdentity.packageName}_cart_items';
+  static String get themeStorageKey => '${AppIdentity.packageName}_theme_mode';
+  static String get userSessionKey => '${AppIdentity.packageName}_user_session';
+  static String get loginStatusKey => '${AppIdentity.packageName}_login_status';
+  static String get userRoleKey => '${AppIdentity.packageName}_user_role';
+  static String get preferencesKey => '${AppIdentity.packageName}_preferences';
 
-  // User roles
-  static const String adminRole = 'admin';
-  static const String userRole = 'user';
+  // 🎨 UI Configuration
+  static const bool enableDarkMode = true;
+  static const bool enableAnimations = true;
+  static const Duration animationDuration = Duration(milliseconds: 300);
 
-  // Default values
-  static const int otpLength = 4;
-  static const String defaultCountryCode = '+91';
+  // 🔧 Feature Flags
+  static const bool enableLogging = true;
+  static const bool enableCrashReporting = false;
+  static const bool enableAnalytics = false;
 
-  // Pagination
-  static const int defaultPageSize = 20;
-  static const int maxPageSize = 100;
-
-  // UI Configuration
-  static const double defaultPadding = 16.0;
-  static const double smallPadding = 8.0;
-  static const double largePadding = 24.0;
-
-  // Animation durations
-  static const Duration shortAnimation = Duration(milliseconds: 200);
-  static const Duration mediumAnimation = Duration(milliseconds: 300);
-  static const Duration longAnimation = Duration(milliseconds: 500);
-
-  // Validation patterns
-  static const String phonePattern = r'^[6-9]\d{9}$';
-  static const String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-
-  // Error messages
-  static const String networkErrorMessage =
-      'Network error occurred. Please check your connection.';
-  static const String serverErrorMessage =
-      'Server error occurred. Please try again later.';
-  static const String unknownErrorMessage = 'An unexpected error occurred.';
+  // 🔍 Debug Configuration
+  static const bool isDebugMode = true; // Will be false in release
+  static Map<String, dynamic> get debugInfo => {
+    ...AppIdentity.debugInfo,
+    'storageKey': storageKey,
+    'apiUrl': apiUrl,
+    'features': {
+      'darkMode': enableDarkMode,
+      'animations': enableAnimations,
+      'logging': enableLogging,
+    },
+  };
 }

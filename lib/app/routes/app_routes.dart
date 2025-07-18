@@ -25,3 +25,4 @@ abstract class _Paths {
   static const ONBOARDING = '/onboarding';
   static const PRODUCT_SHEET = '/product-sheet';
 }
+

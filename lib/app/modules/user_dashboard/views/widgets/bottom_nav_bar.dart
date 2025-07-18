@@ -2,8 +2,7 @@
 import '../../controllers/user_dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/index.dart';
 
 UserDashboardController controller = Get.find<UserDashboardController>();
 
@@ -30,3 +29,4 @@ Widget buildBottomNavBar() {
     ),
   );
 }
+

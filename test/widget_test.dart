@@ -17,12 +17,21 @@ void main() {
       GetMaterialApp(
         home: Scaffold(
           appBar: AppBar(title: const Text('Test')),
-          body: Center(child: Text(AppIdentity.testAppName)),
+          body: Center(child: Text(AppStrings.appName)),
         ),
       ),
     );
 
     // Verify the app renders without crashing
-    expect(find.text(AppIdentity.testAppName), findsOneWidget);
+    expect(find.text(AppStrings.appName), findsOneWidget);
   });
 }
+
+
+
+
+
+
+
+
+

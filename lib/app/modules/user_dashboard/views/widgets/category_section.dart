@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/themes/app_colors.dart';
+import '../../../../core/index.dart';
 import '../../models/category_model.dart';
 
 class CategorySection extends StatelessWidget {
@@ -45,3 +45,4 @@ class CategorySection extends StatelessWidget {
     );
   }
 }
+

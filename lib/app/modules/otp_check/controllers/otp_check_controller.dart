@@ -1,4 +1,5 @@
 // Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,8 +75,8 @@ class OtpCheckController extends GetxController {
 
   // -------------------------------------------------------------------------
   void _goToDashboard({required bool isAdmin}) {
-    _storage.write('isLoggedIn', true);
-    _storage.write('userRole', isAdmin ? 'admin' : 'user');
+    _storage.write(AppConfig.loginStatusKey, true);
+    _storage.write(AppConfig.userRoleKey, isAdmin ? 'admin' : 'user');
     Get.offAllNamed(isAdmin ? Routes.ADMIN_DASHBOARD : Routes.USER_DASHBOARD);
   }
 

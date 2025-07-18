@@ -13,3 +13,4 @@ class DealModel {
     this.imageUrl,
   });
 }
+
