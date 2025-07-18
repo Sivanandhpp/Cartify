@@ -59,18 +59,30 @@ class OtpCheckController extends GetxController {
     final otp = _otpControllers.map((c) => c.text).join();
 
     if (otp == '1234') {
-      Get.snackbar('Success', 'Welcome back admin!');
+      NotificationService.showSuccess(
+        title: 'Success',
+        message: 'Welcome back admin!',
+      );
       _goToDashboard(isAdmin: true);
     } else if (otp.length == otpLength) {
-      Get.snackbar('Success', 'OTP Verified!');
+      NotificationService.showSuccess(
+        title: 'Success',
+        message: 'OTP Verified!',
+      );
       _goToDashboard(isAdmin: false);
     } else {
-      Get.snackbar('Error', 'Please enter the 4‑digit OTP');
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Please enter the 4‑digit OTP',
+      );
     }
   }
 
   void resendOtp(String mobile) {
-    Get.snackbar('OTP', 'Resent OTP to +91 $mobile');
+    NotificationService.showInfo(
+      title: 'OTP',
+      message: 'Resent OTP to +91 $mobile',
+    );
   }
 
   // -------------------------------------------------------------------------

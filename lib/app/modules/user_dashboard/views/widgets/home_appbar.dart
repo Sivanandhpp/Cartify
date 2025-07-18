@@ -35,22 +35,22 @@ class HomeAppBar extends StatelessWidget {
           },
         ),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(64.0),
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(64.0),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: TextField(
             decoration: InputDecoration(
               hintText: 'Search for \'Products\'',
-              hintStyle: const TextStyle(color: AppColors.grey),
-              prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+              hintStyle: TextStyle(color: AppColors.grey),
+              prefixIcon: Icon(Icons.search, color: AppColors.grey),
               filled: true,
               fillColor: AppColors.white,
               border: OutlineInputBorder(
                 borderRadius: AppBorderRadius.circular8,
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              contentPadding: EdgeInsets.symmetric(vertical: 0),
             ),
           ),
         ),
@@ -58,13 +58,3 @@ class HomeAppBar extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../config/app_config.dart';
 import 'log_service.dart';
+import 'notification_service.dart';
 
 /// Theme management service for handling light/dark theme switching
 ///
@@ -73,13 +74,10 @@ class ThemeService extends GetxService {
 
     LogService.userAction('Theme changed to light');
 
-    Get.snackbar(
-      'Theme Changed',
-      'Switched to Light Theme',
-      snackPosition: SnackPosition.BOTTOM,
+    NotificationService.showInfo(
+      title: 'Theme Changed',
+      message: 'Switched to Light Theme',
       duration: const Duration(seconds: 2),
-      backgroundColor: Get.theme.colorScheme.primary,
-      colorText: Get.theme.colorScheme.onPrimary,
     );
   }
 
@@ -91,13 +89,10 @@ class ThemeService extends GetxService {
 
     LogService.userAction('Theme changed to dark');
 
-    Get.snackbar(
-      'Theme Changed',
-      'Switched to Dark Theme',
-      snackPosition: SnackPosition.BOTTOM,
+    NotificationService.showInfo(
+      title: 'Theme Changed',
+      message: 'Switched to Dark Theme',
       duration: const Duration(seconds: 2),
-      backgroundColor: Get.theme.colorScheme.primary,
-      colorText: Get.theme.colorScheme.onPrimary,
     );
   }
 
@@ -109,13 +104,10 @@ class ThemeService extends GetxService {
 
     LogService.userAction('Theme changed to system');
 
-    Get.snackbar(
-      'Theme Changed',
-      'Switched to System Theme',
-      snackPosition: SnackPosition.BOTTOM,
+    NotificationService.showInfo(
+      title: 'Theme Changed',
+      message: 'Switched to System Theme',
       duration: const Duration(seconds: 2),
-      backgroundColor: Get.theme.colorScheme.primary,
-      colorText: Get.theme.colorScheme.onPrimary,
     );
   }
 

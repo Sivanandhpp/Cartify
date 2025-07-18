@@ -4,6 +4,7 @@ import '../config/app_config.dart';
 import '../models/cart_item_model.dart';
 import '../models/product_model.dart';
 import 'log_service.dart';
+import 'notification_service.dart';
 
 /// Production-level cart management service
 ///
@@ -122,22 +123,16 @@ class CartService extends GetxService {
       await _saveCartToStorage();
 
       // Show success message
-      Get.snackbar(
-        'Added to Cart',
-        '${product.name} has been added to your cart',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Get.theme.colorScheme.primary,
-        colorText: Get.theme.colorScheme.onPrimary,
+      NotificationService.showSuccess(
+        title: 'Added to Cart',
+        message: '${product.name} has been added to your cart',
         duration: const Duration(seconds: 2),
       );
     } catch (e) {
       LogService.error('Failed to add item to cart', e);
-      Get.snackbar(
-        'Error',
-        'Failed to add item to cart. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Get.theme.colorScheme.error,
-        colorText: Get.theme.colorScheme.onError,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to add item to cart. Please try again.',
       );
     } finally {
       _isLoading.value = false;
@@ -162,10 +157,9 @@ class CartService extends GetxService {
       _calculateTotals();
       await _saveCartToStorage();
 
-      Get.snackbar(
-        'Removed from Cart',
-        '${removedItem.productName} has been removed from your cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showInfo(
+        title: 'Removed from Cart',
+        message: '${removedItem.productName} has been removed from your cart',
         duration: const Duration(seconds: 2),
       );
     } catch (e) {
@@ -214,10 +208,9 @@ class CartService extends GetxService {
       _calculateTotals();
       await _saveCartToStorage();
 
-      Get.snackbar(
-        'Cart Cleared',
-        'All items have been removed from your cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showInfo(
+        title: 'Cart Cleared',
+        message: 'All items have been removed from your cart',
         duration: const Duration(seconds: 2),
       );
     } catch (e) {
@@ -248,22 +241,16 @@ class CartService extends GetxService {
           'discountPercent': validCoupons[couponCode.toUpperCase()],
         });
 
-        Get.snackbar(
-          'Coupon Applied',
-          'Your coupon has been applied successfully!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.colorScheme.primary,
-          colorText: Get.theme.colorScheme.onPrimary,
+        NotificationService.showSuccess(
+          title: 'Coupon Applied',
+          message: 'Your coupon has been applied successfully!',
         );
 
         return true;
       } else {
-        Get.snackbar(
-          'Invalid Coupon',
-          'The coupon code you entered is not valid.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.colorScheme.error,
-          colorText: Get.theme.colorScheme.onError,
+        NotificationService.showError(
+          title: 'Invalid Coupon',
+          message: 'The coupon code you entered is not valid.',
         );
         return false;
       }

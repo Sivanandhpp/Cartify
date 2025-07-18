@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'log_service.dart';
+import 'notification_service.dart';
 
 /// Production-level error handling service
 ///
@@ -154,12 +154,9 @@ class ErrorService extends GetxService {
     if (error.type == ErrorType.network ||
         error.type == ErrorType.api ||
         error.type == ErrorType.business) {
-      Get.snackbar(
-        'Error',
-        userMessage,
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Get.theme.colorScheme.error,
-        colorText: Get.theme.colorScheme.onError,
+      NotificationService.showError(
+        title: 'Error',
+        message: userMessage,
         duration: const Duration(seconds: 4),
       );
     }
@@ -215,45 +212,30 @@ class ErrorService extends GetxService {
 
   /// Static method to show error message
   static void showError(String message) {
-    Get.snackbar(
-      'Error',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Get.theme.colorScheme.error.withOpacity(0.9),
-      colorText: Get.theme.colorScheme.onError,
+    NotificationService.showError(
+      title: 'Error',
+      message: message,
       duration: const Duration(seconds: 3),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
     );
     LogService.error('User shown error: $message');
   }
 
   /// Static method to show success message
   static void showSuccess(String message) {
-    Get.snackbar(
-      'Success',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
-      colorText: Colors.white,
+    NotificationService.showSuccess(
+      title: 'Success',
+      message: message,
       duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
     );
     LogService.info('User shown success: $message');
   }
 
   /// Static method to show info message
   static void showInfo(String message) {
-    Get.snackbar(
-      'Info',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Get.theme.colorScheme.primary.withOpacity(0.9),
-      colorText: Get.theme.colorScheme.onPrimary,
+    NotificationService.showInfo(
+      title: 'Info',
+      message: message,
       duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
     );
     LogService.info('User shown info: $message');
   }
@@ -283,4 +265,3 @@ class AppError {
     return 'AppError(type: $type, message: $message, timestamp: $timestamp)';
   }
 }
-

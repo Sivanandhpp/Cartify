@@ -78,13 +78,13 @@ class AppButtons {
           padding:
               padding ??
               const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          side: BorderSide(color: AppColors.primary, width: 1.5),
+          side: const BorderSide(color: AppColors.primary, width: 1.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -199,7 +199,7 @@ class AppButtons {
         selected: selected,
         onSelected: (_) => onPressed(),
         backgroundColor: AppColors.lightSurface,
-        selectedColor: AppColors.primary.withOpacity(0.2),
+        selectedColor: AppColors.primary.withValues(alpha: 0.2),
         checkmarkColor: AppColors.primary,
         labelStyle: AppTextStyles.bodySmall(
           selected ? AppColors.primary : AppColors.lightOnSurface,
@@ -246,4 +246,3 @@ class AppButtons {
     );
   }
 }
-

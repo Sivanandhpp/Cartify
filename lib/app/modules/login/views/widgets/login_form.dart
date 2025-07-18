@@ -20,11 +20,14 @@ class LoginForm extends GetView<LoginController> {
             onFieldSubmitted: (_) => controller.sendOtp(),
             style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.phone, color: AppColors.lightOnBackground),
+              prefixIcon: const Icon(
+                Icons.phone,
+                color: AppColors.lightOnBackground,
+              ),
               prefixText: AppStrings.loginCountryCode,
               prefixStyle: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
               hintText: AppStrings.loginEnterMobileNumber,
-              border: OutlineInputBorder(
+              border: const OutlineInputBorder(
                 borderRadius: AppBorderRadius.circular8,
               ),
               contentPadding: const EdgeInsets.symmetric(
@@ -48,4 +51,3 @@ class LoginForm extends GetView<LoginController> {
     );
   }
 }
-
