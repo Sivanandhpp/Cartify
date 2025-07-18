@@ -20,7 +20,7 @@ class OnboardingPage extends StatelessWidget {
           const SizedBox(height: 30),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
@@ -30,7 +30,7 @@ class OnboardingPage extends StatelessWidget {
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: Colors.black87),
+            style: const TextStyle(fontSize: 14, color: Colors.black87),
           ),
         ],
       ),

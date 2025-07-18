@@ -1,5 +1,5 @@
-import 'package:bevco/app/core/constants/app_images.dart';
-import 'package:bevco/app/core/widgets/app_spacers.dart';
+import 'package:cartify/app/core/constants/app_images.dart';
+import 'package:cartify/app/core/widgets/app_spacers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/themes/app_colors.dart';

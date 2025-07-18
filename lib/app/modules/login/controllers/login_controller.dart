@@ -1,4 +1,4 @@
-import 'package:bevco/app/core/constants/app_constants.dart';
+import 'package:cartify/app/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_strings.dart';

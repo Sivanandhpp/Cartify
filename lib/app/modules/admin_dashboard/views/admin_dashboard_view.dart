@@ -24,7 +24,7 @@ class AdminDashboardView extends GetView<AdminDashboardController> {
               },
               child: const Text('LOGOUT'),
             ),
-            Text(
+            const Text(
               'AdminDashboardView is working',
               style: TextStyle(fontSize: 20),
             ),

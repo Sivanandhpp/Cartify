@@ -1,7 +1,7 @@
-import 'package:bevco/app/core/constants/app_constants.dart';
-import 'package:bevco/app/core/themes/app_colors.dart';
-import 'package:bevco/app/core/widgets/app_spacers.dart';
-import 'package:bevco/app/modules/user_dashboard/views/widgets/bottom_nav_bar.dart';
+import 'package:cartify/app/core/constants/app_constants.dart';
+import 'package:cartify/app/core/themes/app_colors.dart';
+import 'package:cartify/app/core/widgets/app_spacers.dart';
+import 'package:cartify/app/modules/user_dashboard/views/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -14,16 +14,16 @@ class HomeAppBar extends StatelessWidget {
       pinned: true,
       floating: true,
       elevation: 0,
-      title: Row(
+      title: const Row(
         children: [
-          const Icon(Icons.location_on, color: AppColors.white, size: 20),
+          Icon(Icons.location_on, color: AppColors.white, size: 20),
           AppSpacers.smallWidth,
           Text(
             'Kozhikode Work',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
-          const Icon(Icons.arrow_drop_down, color: AppColors.white),
+          Icon(Icons.arrow_drop_down, color: AppColors.white),
         ],
       ),
       actions: [
@@ -41,8 +41,8 @@ class HomeAppBar extends StatelessWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: 'Search for \'Products\'',
-              hintStyle: TextStyle(color: AppColors.grey),
-              prefixIcon: Icon(Icons.search, color: AppColors.grey),
+              hintStyle: const TextStyle(color: AppColors.grey),
+              prefixIcon: const Icon(Icons.search, color: AppColors.grey),
               filled: true,
               fillColor: AppColors.white,
               border: OutlineInputBorder(

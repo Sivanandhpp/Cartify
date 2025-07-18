@@ -10,7 +10,7 @@ class CategorySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        decoration: BoxDecoration(color: AppColors.primary),
+        decoration: const BoxDecoration(color: AppColors.primary),
 
         height: 84,
         child: ListView.builder(

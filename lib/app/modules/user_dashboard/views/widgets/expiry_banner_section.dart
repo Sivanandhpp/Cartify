@@ -1,4 +1,4 @@
-import 'package:bevco/app/core/constants/app_images.dart';
+import 'package:cartify/app/core/constants/app_images.dart';
 import 'package:flutter/material.dart';
 
 class ExpiryBannerSection extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:bevco/app/modules/login/data/auth_service.dart';
+import 'package:cartify/app/modules/login/data/auth_service.dart';
 import 'package:get/get.dart';
 
 import '../controllers/login_controller.dart';

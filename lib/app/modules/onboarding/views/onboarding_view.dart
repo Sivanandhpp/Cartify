@@ -1,4 +1,4 @@
-import 'package:bevco/app/modules/onboarding/views/widgets/onboarding_widget.dart';
+import 'package:cartify/app/modules/onboarding/views/widgets/onboarding_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/onboarding_controller.dart';

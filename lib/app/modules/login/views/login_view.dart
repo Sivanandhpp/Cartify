@@ -1,10 +1,10 @@
-import 'package:bevco/app/core/constants/app_constants.dart';
-import 'package:bevco/app/core/constants/app_images.dart';
-import 'package:bevco/app/core/constants/app_padding.dart';
-import 'package:bevco/app/core/constants/app_strings.dart';
-import 'package:bevco/app/core/themes/app_colors.dart';
-import 'package:bevco/app/core/themes/app_text_styles.dart';
-import 'package:bevco/app/core/widgets/app_spacers.dart';
+import 'package:cartify/app/core/constants/app_constants.dart';
+import 'package:cartify/app/core/constants/app_images.dart';
+import 'package:cartify/app/core/constants/app_padding.dart';
+import 'package:cartify/app/core/constants/app_strings.dart';
+import 'package:cartify/app/core/themes/app_colors.dart';
+import 'package:cartify/app/core/themes/app_text_styles.dart';
+import 'package:cartify/app/core/widgets/app_spacers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
@@ -50,7 +50,7 @@ class LoginView extends GetView<LoginController> {
                     borderRadius: AppBorderRadius.primaryBorder,
                   ),
                   padding: AppPaddings.large,
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AppSpacers.smallHeight,
@@ -66,9 +66,9 @@ class LoginView extends GetView<LoginController> {
                         textAlign: TextAlign.center,
                       ),
                       AppSpacers.largeHeight,
-                      const LoginForm(),
+                      LoginForm(),
                       AppSpacers.smallHeight,
-                      const Text(
+                      Text(
                         AppStrings.loginTermsPolicy,
                         style: AppTextStyles.caption,
                         textAlign: TextAlign.center,

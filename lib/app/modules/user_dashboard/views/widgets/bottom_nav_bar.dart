@@ -1,4 +1,4 @@
-import 'package:bevco/app/modules/user_dashboard/controllers/user_dashboard_controller.dart';
+import 'package:cartify/app/modules/user_dashboard/controllers/user_dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

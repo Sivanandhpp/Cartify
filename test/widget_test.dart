@@ -16,12 +16,12 @@ void main() {
       GetMaterialApp(
         home: Scaffold(
           appBar: AppBar(title: const Text('Test')),
-          body: const Center(child: Text('Bevco App')),
+          body: const Center(child: Text('Cartify App')),
         ),
       ),
     );
 
     // Verify the app renders without crashing
-    expect(find.text('Bevco App'), findsOneWidget);
+    expect(find.text('Cartify App'), findsOneWidget);
   });
 }

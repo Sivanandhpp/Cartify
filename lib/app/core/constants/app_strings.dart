@@ -1,6 +1,6 @@
 class AppStrings {
   // App Main Strings
-  static const String appName = 'Bevco';
+  static const String appName = 'Cartify';
 
   // App Common Strings
   static const String error = 'Error!';

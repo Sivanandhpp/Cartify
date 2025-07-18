@@ -1,4 +1,4 @@
-import 'package:bevco/app/core/themes/app_theme.dart';
+import 'package:cartify/app/core/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -20,7 +20,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
-      title: 'Bevco',
+      title: 'Cartify',
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: AppTheme.lightTheme,

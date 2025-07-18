@@ -1,6 +1,6 @@
 /// Application environment configuration
 class AppConfig {
-  static const String appName = 'Bevco';
+  static const String appName = 'Cartify';
   static const String version = '1.0.0';
 
   // Environment settings
@@ -9,7 +9,7 @@ class AppConfig {
 
   // API Configuration
   static const String baseUrl =
-      'https://api.bevco.com'; // Replace with actual API URL
+      'https://api.cartify.com'; // Replace with actual API URL
   static const Duration apiTimeout = Duration(seconds: 30);
 
   // Storage keys

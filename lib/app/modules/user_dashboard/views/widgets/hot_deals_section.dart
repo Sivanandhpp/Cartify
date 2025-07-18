@@ -1,7 +1,7 @@
-import 'package:bevco/app/core/constants/app_images.dart';
-import 'package:bevco/app/core/services/cart_service.dart';
-import 'package:bevco/app/core/services/log_service.dart';
-import 'package:bevco/app/modules/product_sheet/views/product_sheet_view.dart';
+import 'package:cartify/app/core/constants/app_images.dart';
+import 'package:cartify/app/core/services/cart_service.dart';
+import 'package:cartify/app/core/services/log_service.dart';
+import 'package:cartify/app/modules/product_sheet/views/product_sheet_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

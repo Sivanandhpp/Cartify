@@ -1,9 +1,9 @@
-import 'package:bevco/app/core/constants/app_images.dart';
-import 'package:bevco/app/core/constants/app_padding.dart';
-import 'package:bevco/app/core/constants/app_strings.dart';
-import 'package:bevco/app/core/themes/app_text_styles.dart';
-import 'package:bevco/app/core/widgets/app_buttons.dart';
-import 'package:bevco/app/core/widgets/app_spacers.dart';
+import 'package:cartify/app/core/constants/app_images.dart';
+import 'package:cartify/app/core/constants/app_padding.dart';
+import 'package:cartify/app/core/constants/app_strings.dart';
+import 'package:cartify/app/core/themes/app_text_styles.dart';
+import 'package:cartify/app/core/widgets/app_buttons.dart';
+import 'package:cartify/app/core/widgets/app_spacers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/themes/app_colors.dart';
@@ -36,13 +36,13 @@ class OtpCheckView extends GetView<OtpCheckController> {
             AppSpacers.smallHeight,
             Image.asset(AppImages.otpBg, fit: BoxFit.cover),
             AppSpacers.largeHeight,
-            Text(
+            const Text(
               AppStrings.otpCheckEnterOtp,
               style: AppTextStyles.titleLarge,
               textAlign: TextAlign.center,
             ),
             AppSpacers.smallHeight,
-            Text(
+            const Text(
               AppStrings.otpCheckHelperTitle,
               style: AppTextStyles.bodyLarge,
               textAlign: TextAlign.center,

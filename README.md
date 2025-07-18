@@ -1,4 +1,4 @@
-# Bevco E-commerce App
+# Cartify E-commerce App
 
 A modern, production-ready Flutter e-commerce application built with GetX architecture.
 
