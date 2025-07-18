@@ -86,8 +86,12 @@ class OtpCheckController extends GetxController {
   @override
   void onClose() {
     scrollController.dispose();
-    for (final n in [..._otpFocusNodes, ..._rawKeyboardNodes]) n.dispose();
-    for (final c in _otpControllers) c.dispose();
+    for (final n in [..._otpFocusNodes, ..._rawKeyboardNodes]) {
+      n.dispose();
+    }
+    for (final c in _otpControllers) {
+      c.dispose();
+    }
     super.onClose();
   }
 }

@@ -17,49 +17,69 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
-      body: SingleChildScrollView(
-        child: Expanded(
-          // height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.asset(AppImages.loginBg, fit: BoxFit.cover),
-              AppSpacers.mediumHeight,
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: AppBorderRadius.verticalPrimaryBorder,
-                ),
-                padding: AppPaddings.large,
-                child: Column(
-                  children: [
-                    AppSpacers.smallHeight,
-                    Text(
-                      AppStrings.loginWelcome,
-                      style: AppTextStyless.title,
-                      textAlign: TextAlign.center,
-                    ),
-                    AppSpacers.smallHeight,
-                    Text(
-                      AppStrings.loginHelperTitle,
-                      style: AppTextStyless.body,
-                      textAlign: TextAlign.center,
-                    ),
-                    AppSpacers.largeHeight,
-                    const LoginForm(),
-                    AppSpacers.smallHeight,
-                    const Text(
-                      AppStrings.loginTermsPolicy,
-                      style: AppTextStyless.caption,
-                      textAlign: TextAlign.center,
-                    ),
-                    AppSpacers.largeHeight,
-                  ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Background image section
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Center(
+                  child: Image.asset(
+                    AppImages.loginBg,
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            // Bottom form container
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: AppPaddings.horizontalSmall,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: AppBorderRadius.primaryBorder,
+                  ),
+                  padding: AppPaddings.large,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AppSpacers.smallHeight,
+                      Text(
+                        AppStrings.loginWelcome,
+                        style: AppTextStyles.title,
+                        textAlign: TextAlign.center,
+                      ),
+                      AppSpacers.smallHeight,
+                      Text(
+                        AppStrings.loginHelperTitle,
+                        style: AppTextStyles.body,
+                        textAlign: TextAlign.center,
+                      ),
+                      AppSpacers.largeHeight,
+                      const LoginForm(),
+                      AppSpacers.smallHeight,
+                      const Text(
+                        AppStrings.loginTermsPolicy,
+                        style: AppTextStyles.caption,
+                        textAlign: TextAlign.center,
+                      ),
+                      AppSpacers.smallHeight,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

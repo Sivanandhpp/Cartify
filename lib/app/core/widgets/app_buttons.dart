@@ -25,7 +25,7 @@ class AppButtons {
           borderRadius: AppBorderRadius.secondaryBorder,
         ),
         padding: padding,
-        textStyle: textStyle ?? AppTextStyless.button,
+        textStyle: textStyle ?? AppTextStyles.button,
         elevation: 0,
       ),
 

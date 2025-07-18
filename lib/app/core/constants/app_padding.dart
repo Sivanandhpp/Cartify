@@ -6,6 +6,9 @@ class AppPaddings {
     vertical: 12.0,
   );
   static const EdgeInsets small = EdgeInsets.all(10.0);
+  static const EdgeInsets horizontalSmall = EdgeInsets.symmetric(
+    horizontal: 15.0,
+  );
   static const EdgeInsets medium = EdgeInsets.all(20.0);
   static const EdgeInsets large = EdgeInsets.all(30.0);
 }

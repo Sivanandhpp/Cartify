@@ -3,15 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'app/core/services/cart_service.dart';
+import 'app/core/services/error_service.dart';
+import 'app/core/services/log_service.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
-  await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize GetStorage
+  await GetStorage.init();
+
+  // Initialize services
   await initServices();
+
+  LogService.info('Application starting...');
+
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: 'Bevco',
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: AppTheme.lightTheme,
@@ -21,6 +30,11 @@ void main() async {
 }
 
 Future<void> initServices() async {
-  // Put the CartService into memory, making it available globally
-  Get.put(CartService());
+  LogService.info('Initializing services...');
+
+  // Put the services into memory, making them available globally
+  Get.put(ErrorService(), permanent: true);
+  Get.put(CartService(), permanent: true);
+
+  LogService.info('Services initialized successfully');
 }

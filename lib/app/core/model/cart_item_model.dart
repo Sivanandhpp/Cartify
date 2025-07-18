@@ -6,7 +6,7 @@ class CartItemModel {
   final RxInt quantity;
 
   CartItemModel({required this.product, int quantity = 1})
-    : this.quantity = quantity.obs;
+    : quantity = quantity.obs;
 
   // Computed property for the total price of this line item
   double get totalPrice => product.price * quantity.value;

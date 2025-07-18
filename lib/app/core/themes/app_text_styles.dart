@@ -79,55 +79,46 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
   );
-}
 
-class AppTextStyless {
-  static const TextStyle heading = TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-  );
-
-  static const TextStyle body = TextStyle(
-    fontSize: 16,
+  // Additional styles
+  static const caption = TextStyle(
+    fontSize: 12,
     fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
   );
 
-  static const TextStyle title = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-  );
-
-  static const TextStyle subtitle = TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.w500,
-    color: AppColors.textPrimary,
-  );
-
-  static const TextStyle label = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textPrimary,
-  );
-
-  static const TextStyle button = TextStyle(
+  // Legacy style names for backward compatibility
+  static const heading = titleLarge;
+  static const body = bodyLarge;
+  static const title = titleLarge;
+  static const subtitle = titleMedium;
+  static const label = labelLarge;
+  static const button = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.5,
   );
-
-  static const TextStyle caption = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    color: Colors.grey,
-  );
-
-  static const TextStyle error = TextStyle(
+  static const error = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: Colors.red,
   );
-  static final TextTheme textTheme = TextTheme(
-    titleLarge: heading,
-    bodyMedium: body,
+
+  static final TextTheme textTheme = const TextTheme(
+    displayLarge: displayLarge,
+    displayMedium: displayMedium,
+    displaySmall: displaySmall,
+    headlineLarge: headlineLarge,
+    headlineMedium: headlineMedium,
+    headlineSmall: headlineSmall,
+    titleLarge: titleLarge,
+    titleMedium: titleMedium,
+    titleSmall: titleSmall,
+    bodyLarge: bodyLarge,
+    bodyMedium: bodyMedium,
+    bodySmall: bodySmall,
+    labelLarge: labelLarge,
+    labelMedium: labelMedium,
+    labelSmall: labelSmall,
   );
 }

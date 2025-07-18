@@ -2,6 +2,8 @@ import 'package:bevco/app/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/services/error_service.dart';
+import '../../../core/services/log_service.dart';
 import '../../../routes/app_pages.dart';
 import '../data/auth_service.dart';
 
@@ -16,15 +18,26 @@ class LoginController extends GetxController {
 
   /* ---------- lifecycle ---------- */
   @override
+  void onInit() {
+    super.onInit();
+    LogService.info('LoginController initialized');
+  }
+
+  @override
   void onClose() {
     phoneController.dispose();
+    LogService.info('LoginController disposed');
     super.onClose();
   }
 
   /* ---------- validation ---------- */
   String? validatePhone(String? value) {
-    if (value == null || value.isEmpty) return AppStrings.loginErrEmpty;
-    if (!AppRegex.phone.hasMatch(value)) return AppStrings.loginErrNumberlength;
+    if (value == null || value.isEmpty) {
+      return AppStrings.loginErrEmpty;
+    }
+    if (!AppRegex.phone.hasMatch(value)) {
+      return AppStrings.loginErrNumberlength;
+    }
     return null;
   }
 
@@ -36,39 +49,32 @@ class LoginController extends GetxController {
 
   Future<void> sendOtp() async {
     if (!formKey.currentState!.validate()) {
-      _showError(AppStrings.otpsendError);
+      LogService.warning('Form validation failed');
+      ErrorService.showError(AppStrings.otpsendError);
       return;
     }
+
     isLoading.value = true;
+    LogService.info('Sending OTP to: ${phoneController.text}');
+
     try {
       await _authService.sendOtp(phoneController.text);
-      _showSuccess(
-        AppStrings.otpSent,
+
+      LogService.info('OTP sent successfully');
+      ErrorService.showSuccess(
         '${AppStrings.otpSentMessage} ${phoneController.text}',
+        title: AppStrings.otpSent,
       );
+
       Get.toNamed(
         Routes.OTP_CHECK,
         arguments: {'mobile': phoneController.text},
       );
-    } catch (_) {
-      _showError(AppStrings.otpsendError);
+    } catch (error) {
+      LogService.error('Failed to send OTP', error);
+      ErrorService.showError(AppStrings.otpsendError);
     } finally {
       isLoading.value = false;
     }
   }
-
-  /* ---------- helpers ---------- */
-  void _showSuccess(String title, String message) => Get.snackbar(
-    title,
-    message,
-    snackPosition: SnackPosition.TOP,
-    duration: AppDurations.otpSnackbar,
-  );
-
-  void _showError(String message) => Get.snackbar(
-    AppStrings.error,
-    message,
-    snackPosition: SnackPosition.TOP,
-    duration: AppDurations.otpSnackbar,
-  );
 }

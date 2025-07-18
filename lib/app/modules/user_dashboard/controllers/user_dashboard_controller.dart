@@ -73,9 +73,4 @@ class UserDashboardController extends GetxController {
     storage.remove('userRole');
     Get.offAllNamed(Routes.LOGIN);
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
 }
