@@ -1,8 +1,9 @@
-import 'package:cartify/app/core/constants/app_constants.dart';
-import 'package:cartify/app/core/themes/app_colors.dart';
-import 'package:cartify/app/core/widgets/app_spacers.dart';
-import 'package:cartify/app/modules/user_dashboard/views/widgets/bottom_nav_bar.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
+
+// Local imports (relative)
+import 'bottom_nav_bar.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});

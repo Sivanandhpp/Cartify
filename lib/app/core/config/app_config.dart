@@ -1,6 +1,8 @@
+import 'app_identity.dart';
+
 /// Application environment configuration
 class AppConfig {
-  static const String appName = 'Cartify';
+  static const String appName = AppIdentity.displayName;
   static const String version = '1.0.0';
 
   // Environment settings
@@ -8,8 +10,7 @@ class AppConfig {
   static const bool enableLogging = true;
 
   // API Configuration
-  static const String baseUrl =
-      'https://api.cartify.com'; // Replace with actual API URL
+  static const String baseUrl = AppIdentity.apiBaseUrl;
   static const Duration apiTimeout = Duration(seconds: 30);
 
   // Storage keys

@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -16,12 +17,12 @@ void main() {
       GetMaterialApp(
         home: Scaffold(
           appBar: AppBar(title: const Text('Test')),
-          body: const Center(child: Text('Cartify App')),
+          body: Center(child: Text(AppIdentity.testAppName)),
         ),
       ),
     );
 
     // Verify the app renders without crashing
-    expect(find.text('Cartify App'), findsOneWidget);
+    expect(find.text(AppIdentity.testAppName), findsOneWidget);
   });
 }

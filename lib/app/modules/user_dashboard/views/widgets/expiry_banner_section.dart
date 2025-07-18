@@ -1,4 +1,5 @@
-import 'package:cartify/app/core/constants/app_images.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 
 class ExpiryBannerSection extends StatelessWidget {

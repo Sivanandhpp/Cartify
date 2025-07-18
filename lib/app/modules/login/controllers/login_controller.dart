@@ -1,10 +1,10 @@
-import 'package:cartify/app/core/constants/app_constants.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/routes/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/services/error_service.dart';
-import '../../../core/services/log_service.dart';
-import '../../../routes/app_pages.dart';
+
+// Local imports (relative)
 import '../data/auth_service.dart';
 
 class LoginController extends GetxController {

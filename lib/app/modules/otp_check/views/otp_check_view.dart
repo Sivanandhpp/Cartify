@@ -1,12 +1,9 @@
-import 'package:cartify/app/core/constants/app_images.dart';
-import 'package:cartify/app/core/constants/app_padding.dart';
-import 'package:cartify/app/core/constants/app_strings.dart';
-import 'package:cartify/app/core/themes/app_text_styles.dart';
-import 'package:cartify/app/core/widgets/app_buttons.dart';
-import 'package:cartify/app/core/widgets/app_spacers.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/themes/app_colors.dart';
+
+// Local imports (relative)
 import '../controllers/otp_check_controller.dart';
 import 'widgets/otp_fields_row.dart';
 

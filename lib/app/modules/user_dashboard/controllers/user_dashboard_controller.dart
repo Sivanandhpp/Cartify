@@ -1,9 +1,11 @@
-import 'package:cartify/app/core/constants/app_images.dart';
-import 'package:cartify/app/routes/app_pages.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/routes/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import '../../../core/themes/app_colors.dart';
+
+// Local imports (relative)
 import '../models/category_model.dart';
 import '../models/deal_model.dart';
 

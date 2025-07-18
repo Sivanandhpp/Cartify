@@ -1,4 +1,5 @@
-import 'package:cartify/app/modules/onboarding/data/onboarding_storage_service.dart';
+// Local imports (relative)
+import '../data/onboarding_storage_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../controllers/onboarding_controller.dart';

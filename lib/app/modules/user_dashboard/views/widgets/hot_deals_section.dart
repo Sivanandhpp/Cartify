@@ -1,9 +1,10 @@
-import 'package:cartify/app/core/constants/app_images.dart';
-import 'package:cartify/app/core/services/cart_service.dart';
-import 'package:cartify/app/core/services/log_service.dart';
-import 'package:cartify/app/modules/product_sheet/views/product_sheet_view.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+// Cross-module imports (absolute)
+import 'package:cartify/app/modules/product_sheet/views/product_sheet_view.dart';
 
 /// The main widget that includes the title and the horizontal list.
 class HotDealsSection extends StatelessWidget {

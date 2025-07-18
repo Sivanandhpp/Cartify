@@ -1,6 +1,8 @@
+import '../config/app_identity.dart';
+
 class AppStrings {
   // App Main Strings
-  static const String appName = 'Cartify';
+  static const String appName = AppIdentity.displayName;
 
   // App Common Strings
   static const String error = 'Error!';

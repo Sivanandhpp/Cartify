@@ -1,8 +1,9 @@
-import 'package:cartify/app/core/constants/app_images.dart';
-import 'package:cartify/app/core/widgets/app_spacers.dart';
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/themes/app_colors.dart';
+
+// Local imports (relative)
 import '../controllers/user_dashboard_controller.dart';
 import 'widgets/bottom_nav_bar.dart';
 import 'widgets/category_section.dart';

@@ -1,4 +1,5 @@
-import 'package:cartify/app/core/themes/app_colors.dart';
+// Local imports (relative)
+import 'app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppTextStyles {

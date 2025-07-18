@@ -1,4 +1,5 @@
-import 'package:cartify/app/modules/onboarding/views/widgets/onboarding_widget.dart';
+// Local imports (relative)
+import 'widgets/onboarding_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/onboarding_controller.dart';
