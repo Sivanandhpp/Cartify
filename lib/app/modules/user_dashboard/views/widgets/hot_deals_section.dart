@@ -227,8 +227,30 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildAddButton(CartService cartService, String productId) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         LogService.info('Add button tapped for product: $productId');
+
+        // Convert the mock product data to a Product object
+        final Product productObject = Product(
+          id: product['id'] as String,
+          name: product['name'] as String,
+          description: 'Fresh ${product['name']}', // Mock description
+          price: product['originalPrice'] as double,
+          discountPrice: product['discountedPrice'] as double,
+          imageUrl: product['imageUrl'] as String,
+          category: 'Groceries', // Mock category
+          brand: 'Local', // Mock brand
+          rating: (product['rating'] as double?) ?? 0.0,
+          reviewCount: (product['reviewCount'] as int?) ?? 0,
+          stockQuantity: 100, // Mock stock
+          isInStock: true,
+          isOnSale: true,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        // Add to cart using the cart service
+        await cartService.addToCart(productObject, quantity: 1);
       },
       child: Container(
         width: 30,
@@ -267,9 +289,9 @@ class ProductCard extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 30),
             icon: const Icon(Icons.remove, color: Colors.white, size: 16),
-            onPressed: () {
+            onPressed: () async {
               LogService.info('Decrement quantity for product: $productId');
-              cartService.decrementQuantity(productId);
+              await cartService.decrementQuantity(productId);
             },
           ),
           Container(
@@ -288,9 +310,9 @@ class ProductCard extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 30),
             icon: const Icon(Icons.add, color: Colors.white, size: 16),
-            onPressed: () {
+            onPressed: () async {
               LogService.info('Increment quantity for product: $productId');
-              cartService.incrementQuantity(productId);
+              await cartService.incrementQuantity(productId);
             },
           ),
         ],
@@ -298,13 +320,3 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-

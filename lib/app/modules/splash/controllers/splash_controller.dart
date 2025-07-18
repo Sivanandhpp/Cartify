@@ -1,4 +1,5 @@
 // Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/index.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -8,9 +9,10 @@ class SplashController extends GetxController {
 
   @override
   void onReady() {
-    final isBoarded = storage.read('isBoarded') ?? false;
-    final isLoggedIn = storage.read('isLoggedIn') ?? false;
-    final userRole = storage.read('userRole') ?? 'user';
+    // 💾 Storage Configuration - Using centralized AppConfig keys
+    final isBoarded = storage.read(AppConfig.onboardingStatusKey) ?? false;
+    final isLoggedIn = storage.read(AppConfig.loginStatusKey) ?? false;
+    final userRole = storage.read(AppConfig.userRoleKey) ?? 'user';
     if (isBoarded) {
       if (isLoggedIn) {
         if (userRole == 'admin') {
@@ -28,13 +30,3 @@ class SplashController extends GetxController {
     super.onReady();
   }
 }
-
-
-
-
-
-
-
-
-
-

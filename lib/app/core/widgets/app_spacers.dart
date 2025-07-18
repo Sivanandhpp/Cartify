@@ -100,4 +100,3 @@ class AppSpacers {
     vertical: 16,
   );
 }
-

@@ -380,7 +380,8 @@ class CartService extends GetxService {
         });
       } else {
         // Remove item if quantity becomes 0
-        await removeFromCart(productId);
+        final cartItemId = _cartItems[existingIndex].id;
+        await removeFromCart(cartItemId);
         return;
       }
       await _saveCartToStorage();

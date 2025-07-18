@@ -20,7 +20,7 @@ class NotificationService {
     required String title,
     required String message,
     Duration? duration,
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
     bool logEvent = true,
   }) {
     if (logEvent) {
@@ -37,16 +37,16 @@ class NotificationService {
       icon: const Icon(
         Icons.check_circle_rounded,
         color: AppColors.white,
-        size: 28,
+        size: 20,
       ),
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       boxShadows: [
         BoxShadow(
           color: AppColors.lightSuccess.withValues(alpha: 0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
         ),
       ],
       animationDuration: const Duration(milliseconds: 300),
@@ -60,7 +60,7 @@ class NotificationService {
     required String title,
     required String message,
     Duration? duration,
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
     bool logEvent = true,
   }) {
     if (logEvent) {
@@ -74,15 +74,15 @@ class NotificationService {
       duration: duration ?? _longDuration,
       backgroundColor: AppColors.lightError,
       colorText: AppColors.white,
-      icon: const Icon(Icons.error_rounded, color: AppColors.white, size: 28),
+      icon: const Icon(Icons.error_rounded, color: AppColors.white, size: 20),
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       boxShadows: [
         BoxShadow(
           color: AppColors.lightError.withValues(alpha: 0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
         ),
       ],
       animationDuration: const Duration(milliseconds: 300),
@@ -96,7 +96,7 @@ class NotificationService {
     required String title,
     required String message,
     Duration? duration,
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
     bool logEvent = true,
   }) {
     if (logEvent) {
@@ -110,15 +110,15 @@ class NotificationService {
       duration: duration ?? _defaultDuration,
       backgroundColor: AppColors.lightWarning,
       colorText: AppColors.white,
-      icon: const Icon(Icons.warning_rounded, color: AppColors.white, size: 28),
+      icon: const Icon(Icons.warning_rounded, color: AppColors.white, size: 20),
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       boxShadows: [
         BoxShadow(
           color: AppColors.lightWarning.withValues(alpha: 0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
         ),
       ],
       animationDuration: const Duration(milliseconds: 300),
@@ -132,7 +132,7 @@ class NotificationService {
     required String title,
     required String message,
     Duration? duration,
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
     bool logEvent = true,
   }) {
     if (logEvent) {
@@ -146,15 +146,15 @@ class NotificationService {
       duration: duration ?? _defaultDuration,
       backgroundColor: AppColors.lightInfo,
       colorText: AppColors.white,
-      icon: const Icon(Icons.info_rounded, color: AppColors.white, size: 28),
+      icon: const Icon(Icons.info_rounded, color: AppColors.white, size: 20),
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       boxShadows: [
         BoxShadow(
           color: AppColors.lightInfo.withValues(alpha: 0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
         ),
       ],
       animationDuration: const Duration(milliseconds: 300),
@@ -168,7 +168,7 @@ class NotificationService {
     required String title,
     required String message,
     Duration? duration,
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
     IconData? icon,
     bool logEvent = true,
   }) {
@@ -184,16 +184,16 @@ class NotificationService {
       backgroundColor: AppColors.lightPrimary,
       colorText: AppColors.lightOnPrimary,
       icon: icon != null
-          ? Icon(icon, color: AppColors.lightOnPrimary, size: 28)
+          ? Icon(icon, color: AppColors.lightOnPrimary, size: 20)
           : null,
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       boxShadows: [
         BoxShadow(
           color: AppColors.lightPrimary.withValues(alpha: 0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
         ),
       ],
       animationDuration: const Duration(milliseconds: 300),
@@ -206,7 +206,7 @@ class NotificationService {
   static void showLoading({
     required String title,
     String message = 'Please wait...',
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
   }) {
     LogService.debug('Loading notification: $title');
 
@@ -218,16 +218,16 @@ class NotificationService {
       backgroundColor: AppColors.lightSurface,
       colorText: AppColors.lightOnSurface,
       icon: const SizedBox(
-        width: 24,
-        height: 24,
+        width: 20,
+        height: 20,
         child: CircularProgressIndicator(
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
         ),
       ),
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       showProgressIndicator: false,
       isDismissible: false,
       animationDuration: const Duration(milliseconds: 300),
@@ -252,7 +252,7 @@ class NotificationService {
     required Color textColor,
     IconData? icon,
     Duration? duration,
-    SnackPosition position = SnackPosition.BOTTOM,
+    SnackPosition position = SnackPosition.TOP,
     bool logEvent = true,
   }) {
     if (logEvent) {
@@ -266,15 +266,15 @@ class NotificationService {
       duration: duration ?? _defaultDuration,
       backgroundColor: backgroundColor,
       colorText: textColor,
-      icon: icon != null ? Icon(icon, color: textColor, size: 28) : null,
+      icon: icon != null ? Icon(icon, color: textColor, size: 20) : null,
       borderRadius: 12,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       boxShadows: [
         BoxShadow(
           color: backgroundColor.withValues(alpha: 0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
         ),
       ],
       animationDuration: const Duration(milliseconds: 300),

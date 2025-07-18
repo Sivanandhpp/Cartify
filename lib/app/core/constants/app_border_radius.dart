@@ -15,7 +15,7 @@ class AppBorderRadius {
   static const BorderRadius circular32 = BorderRadius.all(Radius.circular(32));
 
   // Common component radius
-  static const BorderRadius button = circular12;
+  static const BorderRadius button = circular24;
   static const BorderRadius card = circular12;
   static const BorderRadius input = circular8;
   static const BorderRadius dialog = circular16;
@@ -113,4 +113,3 @@ class AppBorderRadius {
   static const BorderRadius pill = BorderRadius.all(Radius.circular(999));
   static const BorderRadius none = BorderRadius.zero;
 }
-

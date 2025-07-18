@@ -12,6 +12,7 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const ONBOARDING = _Paths.ONBOARDING;
   static const PRODUCT_SHEET = _Paths.PRODUCT_SHEET;
+  static const CART = _Paths.CART;
 }
 
 abstract class _Paths {
@@ -24,5 +25,5 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';
   static const PRODUCT_SHEET = '/product-sheet';
+  static const CART = '/cart';
 }
-

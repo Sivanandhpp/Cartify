@@ -36,16 +36,12 @@ class UserDashboardView extends GetView<UserDashboardController> {
         ],
       ),
       bottomNavigationBar: buildBottomNavBar(),
+      // Temporary test button to add items to cart
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller.addDemoItemToCart,
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.add_shopping_cart, color: AppColors.white),
+      ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-

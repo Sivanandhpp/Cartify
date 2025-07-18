@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_border_radius.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
@@ -28,8 +29,8 @@ class AppButtons {
           padding:
               padding ??
               const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+          shape: const RoundedRectangleBorder(
+            borderRadius: AppBorderRadius.button,
           ),
           elevation: 2,
         ),
