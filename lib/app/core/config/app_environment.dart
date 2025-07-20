@@ -52,3 +52,6 @@ class AppEnvironment {
   static const bool enableLocationServices = true;
   static const bool enableCrashReporting = true;
 }
+
+
+

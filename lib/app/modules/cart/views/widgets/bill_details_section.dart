@@ -211,3 +211,6 @@ class BillDetailsSection extends StatelessWidget {
     // This could scroll to tip section or show a modal
   }
 }
+
+
+

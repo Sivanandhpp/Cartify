@@ -26,19 +26,19 @@ class OtpCheckView extends GetView<OtpCheckController> {
       ),
       body: SingleChildScrollView(
         controller: controller.scrollController,
-        padding: AppPaddings.all24,
+        padding: AppSpacing.paddingLarge,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            AppSpacers.h12,
+            AppSpacing.spaceMedium,
             Image.asset(AppImages.otpBackground, fit: BoxFit.cover),
-            AppSpacers.h32,
+            AppSpacing.spaceLarge,
             Text(
               AppStrings.otpCheckEnterOtp,
               style: AppTextStyles.titleLarge(AppColors.lightOnBackground),
               textAlign: TextAlign.center,
             ),
-            AppSpacers.h12,
+            AppSpacing.spaceMedium,
             Text(
               AppStrings.otpCheckHelperTitle,
               style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
@@ -62,9 +62,9 @@ class OtpCheckView extends GetView<OtpCheckController> {
               ),
             ),
 
-            AppSpacers.h32,
+            AppSpacing.spaceLarge,
             Form(key: controller.formKey, child: const OtpFieldsRow()),
-            AppSpacers.h32,
+            AppSpacing.spaceLarge,
             SizedBox(
               width: double.infinity,
               child: AppButtons.primary(
@@ -72,7 +72,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
                 text: AppStrings.otpCheckVerifyButton,
               ),
             ),
-            AppSpacers.h24,
+            AppSpacing.spaceLarge,
             Text.rich(
               TextSpan(
                 text: AppStrings.otpCheckResendText,
@@ -96,6 +96,9 @@ class OtpCheckView extends GetView<OtpCheckController> {
     );
   }
 }
+
+
+
 
 
 

@@ -261,10 +261,13 @@ class PaymentSection extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: AppColors.lightPrimary, size: 20),
+              const Icon(Icons.check_circle, color: AppColors.lightPrimary, size: 20),
           ],
         ),
       ),
     );
   }
 }
+
+
+

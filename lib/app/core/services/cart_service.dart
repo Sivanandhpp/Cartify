@@ -389,3 +389,6 @@ class CartService extends GetxService {
     }
   }
 }
+
+
+

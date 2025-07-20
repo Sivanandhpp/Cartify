@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../../core/index.dart';
 import '../controllers/cart_controller.dart';
 import 'widgets/cart_item_card.dart';
-import 'widgets/delivery_tip_section.dart';
 import 'widgets/bill_details_section.dart';
 import 'widgets/add_more_items_section.dart';
 import 'widgets/payment_section.dart';

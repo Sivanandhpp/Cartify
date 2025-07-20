@@ -60,3 +60,6 @@ class AppRegex {
   static bool isValidPincode(String value) => pincode.hasMatch(value);
 }
 
+
+
+

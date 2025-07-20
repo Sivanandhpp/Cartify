@@ -265,3 +265,6 @@ class AppError {
     return 'AppError(type: $type, message: $message, timestamp: $timestamp)';
   }
 }
+
+
+

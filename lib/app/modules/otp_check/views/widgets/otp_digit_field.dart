@@ -50,7 +50,7 @@ class OtpDigitField extends StatelessWidget {
             filled: true,
             fillColor: isFilled ? AppColors.primary : Colors.white,
             border: OutlineInputBorder(
-              borderRadius: AppBorderRadius.circular8,
+              borderRadius: AppSpacing.radiusSmall,
               borderSide: BorderSide(
                 color: isFilled ? AppColors.primary : const Color(0xFFFFFFFF),
               ),
@@ -66,4 +66,7 @@ class OtpDigitField extends StatelessWidget {
     );
   }
 }
+
+
+
 

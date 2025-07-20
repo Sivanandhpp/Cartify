@@ -1,3 +1,6 @@
+// Routes barrel export file
+// Usage: import 'package:cartify/app/routes/app_pages.dart';
+
 import 'package:get/get.dart';
 
 import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
@@ -69,3 +72,6 @@ class AppPages {
     ),
   ];
 }
+
+
+

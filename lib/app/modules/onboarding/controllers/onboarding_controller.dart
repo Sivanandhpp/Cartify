@@ -1,5 +1,5 @@
 // Core imports (absolute)
-import 'package:cartify/app/routes/index.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../data/onboarding_page_data.dart';
@@ -51,6 +51,9 @@ class OnboardingController extends GetxController {
     Get.offAllNamed(Routes.LOGIN);
   }
 }
+
+
+
 
 
 

@@ -12,7 +12,7 @@ class SkipButton extends StatelessWidget {
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
-        padding: AppPaddings.all8,
+        padding: AppSpacing.paddingSmall,
         child: TextButton(
           onPressed: controller.finishOnboarding,
           child: const Text(
@@ -24,4 +24,7 @@ class SkipButton extends StatelessWidget {
     );
   }
 }
+
+
+
 

@@ -9,3 +9,6 @@ class OnboardingStorageService {
   bool get isBoarded => _box.read(AppConfig.onboardingStatusKey) ?? false;
   Future<void> markBoarded() => _box.write(AppConfig.onboardingStatusKey, true);
 }
+
+
+

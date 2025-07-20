@@ -42,15 +42,7 @@ class CartController extends GetxController {
     deliveryTip.value = 0.0;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   // Cart operations
   void incrementQuantity(String cartItemId) {
@@ -124,3 +116,6 @@ class CartController extends GetxController {
     Get.back(); // Go back to shopping
   }
 }
+
+
+

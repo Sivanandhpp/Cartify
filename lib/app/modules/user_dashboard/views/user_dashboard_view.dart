@@ -28,7 +28,7 @@ class UserDashboardView extends GetView<UserDashboardController> {
           ),
 
           DealCardsSection(deals: controller.deals),
-          const SliverToBoxAdapter(child: AppSpacers.h24),
+          const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
           const ExpiryBannerSection(),
           const HotDealsSection(),
           const HotDealsSection(),
@@ -45,3 +45,6 @@ class UserDashboardView extends GetView<UserDashboardController> {
     );
   }
 }
+
+
+

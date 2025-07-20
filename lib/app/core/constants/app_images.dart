@@ -70,3 +70,6 @@ class AppImages {
   static const String searchIcon = '$_imagePath/icons/search.png';
 }
 
+
+
+

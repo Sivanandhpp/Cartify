@@ -1,5 +1,5 @@
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/routes/index.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -38,6 +38,9 @@ Future<void> initServices() async {
 
   LogService.info('Services initialized successfully');
 }
+
+
+
 
 
 

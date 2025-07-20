@@ -20,7 +20,7 @@ class BottomControls extends StatelessWidget {
           ),
           Container(
             width: double.infinity,
-            padding: AppPaddings.all16,
+            padding: AppSpacing.paddingMedium,
             child: AppButtons.primary(
               text: controller.primaryButtonLabel,
               onPressed: controller.handlePrimaryButtonTap,
@@ -31,4 +31,7 @@ class BottomControls extends StatelessWidget {
     );
   }
 }
+
+
+
 

@@ -16,16 +16,6 @@ class AppStrings {
   static const String login = 'Login';
   static const String logout = 'Logout';
   static const String signUp = 'Sign Up';
-  static const String forgotPassword = 'Forgot Password?';
-  static const String resetPassword = 'Reset Password';
-  static const String changePassword = 'Change Password';
-  static const String enterPassword = 'Enter Password';
-  static const String confirmPassword = 'Confirm Password';
-  static const String email = 'Email';
-  static const String emailAddress = 'Email Address';
-  static const String phoneNumber = 'Phone Number';
-  static const String enterPhoneNumber = 'Enter Phone Number';
-  static const String enterEmail = 'Enter Email';
   static const String otpVerification = 'OTP Verification';
   static const String enterOtp = 'Enter OTP';
   static const String resendOtp = 'Resend OTP';
@@ -34,13 +24,13 @@ class AppStrings {
 
   // Login specific strings
   static const String loginWelcome = 'Welcome Back!';
-  static const String loginHelperTitle = 'Sign in to continue';
+  static const String loginHelperTitle = 'Enter your Phone Number to continue';
   static const String loginCountryCode = '+91';
-  static const String loginEnterMobileNumber = 'Enter mobile number';
-  static const String loginTermsPolicy =
-      'By continuing, you agree to our Terms & Privacy Policy';
+  static const String loginEnterMobileNumber = 'Enter Phone Number';
   static const String loginErrEmpty = 'Mobile number cannot be empty';
   static const String loginErrNumberlength = 'Mobile number must be 10 digits';
+  static const String loginTermsPolicy =
+      'By continuing, you agree to our Terms & Privacy Policy';
 
   // OTP Check strings
   static const String otpCheckViewTitle = 'OTP Verification';
@@ -173,3 +163,6 @@ class AppStrings {
   static const String enterYourName = 'Enter your name';
   static const String enterYourMessage = 'Enter your message';
 }
+
+
+

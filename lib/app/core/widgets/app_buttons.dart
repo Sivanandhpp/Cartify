@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_border_radius.dart';
+import '../constants/app_spacing.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
@@ -20,7 +20,7 @@ class AppButtons {
   }) {
     return SizedBox(
       width: width ?? double.infinity,
-      height: height ?? 56,
+      height: height ?? 60,
       child: ElevatedButton(
         onPressed: enabled && !isLoading ? onPressed : null,
         style: ElevatedButton.styleFrom(
@@ -30,7 +30,7 @@ class AppButtons {
               padding ??
               const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: const RoundedRectangleBorder(
-            borderRadius: AppBorderRadius.button,
+            borderRadius: AppSpacing.radiusLarge,
           ),
           elevation: 2,
         ),

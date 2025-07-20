@@ -39,18 +39,18 @@ class LoginView extends GetView<LoginController> {
               left: 0,
               right: 0,
               child: Padding(
-                padding: AppPaddings.horizontal12,
+                padding: AppSpacing.paddingHorizontal,
                 child: Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: AppBorderRadius.circular12,
+                    borderRadius: AppSpacing.radiusLarge,
                   ),
-                  padding: AppPaddings.all24,
+                  padding: AppSpacing.paddingLarge,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AppSpacers.h12,
+                      AppSpacing.spaceMedium,
                       Text(
                         AppStrings.loginWelcome,
                         style: AppTextStyles.titleLarge(
@@ -58,7 +58,7 @@ class LoginView extends GetView<LoginController> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      AppSpacers.h12,
+                      AppSpacing.spaceMedium,
                       Text(
                         AppStrings.loginHelperTitle,
                         style: AppTextStyles.bodyMedium(
@@ -66,15 +66,15 @@ class LoginView extends GetView<LoginController> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      AppSpacers.h32,
+                      AppSpacing.spaceLarge,
                       const LoginForm(),
-                      AppSpacers.h12,
+                      AppSpacing.spaceMedium,
                       Text(
                         AppStrings.loginTermsPolicy,
                         style: AppTextStyles.caption(AppColors.lightOnSurface),
                         textAlign: TextAlign.center,
                       ),
-                      AppSpacers.h12,
+                      AppSpacing.spaceMedium,
                     ],
                   ),
                 ),
@@ -86,13 +86,3 @@ class LoginView extends GetView<LoginController> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-

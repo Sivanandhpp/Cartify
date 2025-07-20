@@ -27,8 +27,38 @@ class LoginForm extends GetView<LoginController> {
               prefixText: AppStrings.loginCountryCode,
               prefixStyle: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
               hintText: AppStrings.loginEnterMobileNumber,
-              border: const OutlineInputBorder(
-                borderRadius: AppBorderRadius.circular8,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide(
+                  color: AppColors.lightOnBackground.withValues(alpha: 0.3),
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide(
+                  color: AppColors.lightOnBackground.withValues(alpha: 0.3),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: const BorderSide(
+                  color: AppColors.lightPrimary,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: const BorderSide(
+                  color: AppColors.lightError,
+                  width: 1,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: const BorderSide(
+                  color: AppColors.lightError,
+                  width: 2,
+                ),
               ),
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 20,
@@ -37,7 +67,7 @@ class LoginForm extends GetView<LoginController> {
               counterText: '',
             ),
           ),
-          AppSpacers.h12,
+          AppSpacing.spaceMedium,
           SizedBox(
             width: double.infinity,
             child: AppButtons.primary(
@@ -51,3 +81,6 @@ class LoginForm extends GetView<LoginController> {
     );
   }
 }
+
+
+

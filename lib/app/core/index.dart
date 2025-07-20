@@ -4,12 +4,10 @@ export 'config/app_config.dart';
 export 'config/app_environment.dart';
 
 // Constants
-export 'constants/app_constants.dart';
 export 'constants/app_strings.dart';
 export 'constants/app_images.dart';
 export 'constants/app_validators.dart';
-export 'constants/app_paddings.dart';
-export 'constants/app_border_radius.dart';
+export 'constants/app_spacing.dart'; // Consolidated spacing, padding, and border radius
 
 // Models
 export 'models/product_model.dart';
@@ -33,4 +31,3 @@ export 'utils/app_regex.dart';
 
 // Widgets
 export 'widgets/app_buttons.dart';
-export 'widgets/app_spacers.dart';
