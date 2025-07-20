@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // Local imports (relative)
+import '../../../../routes/app_pages.dart';
 import 'bottom_nav_bar.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -32,7 +33,7 @@ class HomeAppBar extends StatelessWidget {
         IconButton(
           icon: _buildCartIcon(),
           onPressed: () {
-            controller.logOut();
+            Get.toNamed(Routes.CART);
           },
         ),
       ],
