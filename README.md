@@ -50,7 +50,7 @@ Cartify is a comprehensive e-commerce mobile application built with Flutter and 
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/sivanandhpp/cartify-ecommerce.git
+git clone https://github.com/sivanandhpp/ecommerce.git
 cd cartify-ecommerce
 
 # 2. Install dependencies
