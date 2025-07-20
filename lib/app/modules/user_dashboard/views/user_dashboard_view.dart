@@ -6,11 +6,11 @@ import 'package:get/get.dart';
 // Local imports (relative)
 import '../controllers/user_dashboard_controller.dart';
 import 'widgets/bottom_nav_bar.dart';
-import 'widgets/category_section.dart';
-import 'widgets/deal_cards_section.dart';
-import 'widgets/expiry_banner_section.dart';
-import 'widgets/home_appbar.dart';
-import 'widgets/hot_deals_section.dart';
+import 'widgets/home_page.dart';
+import 'widgets/categories_page.dart';
+import 'widgets/wishlist_page.dart';
+import 'widgets/offers_page.dart';
+import 'widgets/profile_page.dart';
 
 class UserDashboardView extends GetView<UserDashboardController> {
   const UserDashboardView({super.key});
@@ -19,32 +19,33 @@ class UserDashboardView extends GetView<UserDashboardController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        slivers: [
-          const HomeAppBar(),
-          CategorySection(categories: controller.categories),
-          SliverToBoxAdapter(
-            child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
-          ),
-
-          DealCardsSection(deals: controller.deals),
-          const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
-          const ExpiryBannerSection(),
-          const HotDealsSection(),
-          const HotDealsSection(),
-          const HotDealsSection(),
+      body: PageView(
+        controller: controller.pageController,
+        onPageChanged: (index) {
+          controller.selectedNavIndex.value = index;
+        },
+        children: const [
+          HomePage(),
+          CategoriesPage(),
+          WishlistPage(),
+          OffersPage(),
+          ProfilePage(),
         ],
       ),
       bottomNavigationBar: buildBottomNavBar(),
-      // Temporary test button to add items to cart
-      floatingActionButton: FloatingActionButton(
-        onPressed: controller.addDemoItemToCart,
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add_shopping_cart, color: AppColors.white),
+      // Temporary test button to add items to cart (only show on home page)
+      floatingActionButton: Obx(
+        () => controller.selectedNavIndex.value == 0
+            ? FloatingActionButton(
+                onPressed: controller.addDemoItemToCart,
+                backgroundColor: AppColors.primary,
+                child: const Icon(
+                  Icons.add_shopping_cart,
+                  color: AppColors.white,
+                ),
+              )
+            : const SizedBox.shrink(),
       ),
     );
   }
 }
-
-
-

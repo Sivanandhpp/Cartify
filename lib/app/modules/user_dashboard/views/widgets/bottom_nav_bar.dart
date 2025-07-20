@@ -16,59 +16,57 @@ Widget buildBottomNavBar() {
       selectedItemColor: AppColors.primary,
       unselectedItemColor: AppColors.grey,
       showUnselectedLabels: true,
+      elevation: 8,
       items: [
         const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         const BottomNavigationBarItem(
           icon: Icon(Icons.category),
           label: 'Categories',
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.reorder),
-          label: 'Reorder',
+        BottomNavigationBarItem(
+          icon: Stack(
+            children: [
+              const Icon(Icons.favorite),
+              if (controller.wishlistItems.isNotEmpty)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 12,
+                      minHeight: 12,
+                    ),
+                    child: Text(
+                      controller.wishlistItems.length > 9
+                          ? '9+'
+                          : controller.wishlistItems.length.toString(),
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          label: 'Wishlist',
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.local_offer),
           label: 'Offers',
         ),
-        BottomNavigationBarItem(icon: _buildCartIcon(), label: 'Cart'),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
       ],
     ),
   );
 }
-
-Widget _buildCartIcon() {
-  return Obx(() {
-    final itemCount = controller.cartItemCount;
-    return Stack(
-      children: [
-        const Icon(Icons.shopping_cart),
-        if (itemCount > 0)
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.white, width: 1),
-              ),
-              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-              child: Text(
-                itemCount > 99 ? '99+' : itemCount.toString(),
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-      ],
-    );
-  });
-}
-
-
-

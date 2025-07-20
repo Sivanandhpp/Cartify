@@ -9,50 +9,54 @@ import 'package:get_storage/get_storage.dart';
 import '../models/category_model.dart';
 import '../models/deal_model.dart';
 
-class UserDashboardController extends GetxController {
+class UserDashboardController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   final storage = GetStorage();
   final CartService _cartService = Get.find<CartService>();
 
   // State for Bottom Navigation Bar
   final selectedNavIndex = 0.obs;
+  late final PageController pageController;
+  late final AnimationController animationController;
+  late final Animation<double> fadeAnimation;
 
   // Cart reactive getter
   int get cartItemCount => _cartService.itemCount;
-
-  // Method to add a demo item to cart for testing
-  void addDemoItemToCart() {
-    // This is just for testing the cart badge functionality
-    // In real app, this would be called from product listing
-    _cartService.addToCart(
-      Product(
-        id: 'demo-1',
-        name: 'Demo Product',
-        description: 'Demo product for testing cart functionality',
-        price: 99.0,
-        discountPrice: 79.0,
-        imageUrl: 'assets/images/products/product1.png',
-        category: 'demo',
-        brand: 'Demo Brand',
-        rating: 4.5,
-        reviewCount: 10,
-        stockQuantity: 50,
-        isInStock: true,
-        isFeatured: true,
-        isOnSale: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    );
-  }
 
   // Data for UI sections
   late final List<CategoryModel> categories;
   late final List<DealModel> deals;
 
+  // Wishlist items
+  final RxList<Product> wishlistItems = <Product>[].obs;
+
+  // User profile data
+  final RxMap<String, dynamic> userProfile = <String, dynamic>{}.obs;
+
   @override
   void onInit() {
     super.onInit();
+
+    // Initialize page controller
+    pageController = PageController(initialPage: 0);
+
+    // Initialize animation controller
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    // Initialize fade animation
+    fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+    );
+
+    // Start animation
+    animationController.forward();
+
     _loadData();
+    _loadUserProfile();
+    _loadWishlistItems();
   }
 
   // A private method to initialize all the data for the screen.
@@ -95,36 +99,135 @@ class UserDashboardController extends GetxController {
     ];
   }
 
+  // Load user profile data
+  void _loadUserProfile() {
+    userProfile.value = {
+      'name': 'John Doe',
+      'email': 'john.doe@example.com',
+      'phone': '+91 9876543210',
+      'avatar': 'https://via.placeholder.com/100',
+      'totalOrders': 25,
+      'totalSpent': 45650.75,
+      'loyaltyPoints': 1250,
+      'memberSince': '2023-01-15',
+    };
+  }
+
+  // Load wishlist items
+  void _loadWishlistItems() {
+    wishlistItems.value = [
+      Product(
+        id: 'wish_1',
+        name: 'Wireless Headphones',
+        description: 'Premium sound quality wireless headphones',
+        price: 4999.0,
+        discountPrice: 3999.0,
+        imageUrl: AppImages.product1,
+        category: 'electronics',
+        brand: 'SoundMax',
+        rating: 4.5,
+        reviewCount: 150,
+        stockQuantity: 25,
+        isInStock: true,
+        isFeatured: true,
+        isOnSale: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+      Product(
+        id: 'wish_2',
+        name: 'Smart Watch',
+        description: 'Feature-rich smartwatch with health tracking',
+        price: 8999.0,
+        discountPrice: 6999.0,
+        imageUrl: AppImages.product2,
+        category: 'electronics',
+        brand: 'TechWear',
+        rating: 4.7,
+        reviewCount: 320,
+        stockQuantity: 15,
+        isInStock: true,
+        isFeatured: true,
+        isOnSale: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    ];
+  }
+
   void onNavItemTapped(int index) {
-    // Navigate to specific pages based on bottom nav selection
-    switch (index) {
-      case 0:
-        // Home - already on dashboard, just update index
-        selectedNavIndex.value = index;
-        break;
-      case 1:
-        // Categories - navigate to categories page (if exists)
-        selectedNavIndex.value = index;
-        // Get.toNamed(Routes.CATEGORIES);
-        break;
-      case 2:
-        // Reorder - navigate to reorder page (if exists)
-        selectedNavIndex.value = index;
-        // Get.toNamed(Routes.REORDER);
-        break;
-      case 3:
-        // Offers - navigate to offers page (if exists)
-        selectedNavIndex.value = index;
-        // Get.toNamed(Routes.OFFERS);
-        break;
-      case 4:
-        // Cart - navigate to cart page but don't update index yet
-        // Reset to home index after navigation
-        Get.toNamed(Routes.CART)?.then((_) {
-          selectedNavIndex.value = 0; // Reset to home after returning from cart
-        });
-        break;
+    if (selectedNavIndex.value != index) {
+      selectedNavIndex.value = index;
+
+      // Animate to the selected page
+      pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+
+      // Reset and restart fade animation for smooth transition
+      animationController.reset();
+      animationController.forward();
     }
+  }
+
+  // Method to add/remove item from wishlist
+  void toggleWishlist(Product product) {
+    final existingIndex = wishlistItems.indexWhere(
+      (item) => item.id == product.id,
+    );
+    if (existingIndex != -1) {
+      wishlistItems.removeAt(existingIndex);
+      NotificationService.showInfo(
+        title: 'Removed from Wishlist',
+        message: '${product.name} removed from your wishlist',
+      );
+    } else {
+      wishlistItems.add(product);
+      NotificationService.showSuccess(
+        title: 'Added to Wishlist',
+        message: '${product.name} added to your wishlist',
+      );
+    }
+  }
+
+  // Check if product is in wishlist
+  bool isInWishlist(String productId) {
+    return wishlistItems.any((item) => item.id == productId);
+  }
+
+  // Method to add a demo item to cart for testing
+  void addDemoItemToCart() {
+    // This is just for testing the cart badge functionality
+    // In real app, this would be called from product listing
+    _cartService.addToCart(
+      Product(
+        id: 'demo-1',
+        name: 'Demo Product',
+        description: 'Demo product for testing cart functionality',
+        price: 99.0,
+        discountPrice: 79.0,
+        imageUrl: 'assets/images/products/product1.png',
+        category: 'demo',
+        brand: 'Demo Brand',
+        rating: 4.5,
+        reviewCount: 10,
+        stockQuantity: 50,
+        isInStock: true,
+        isFeatured: true,
+        isOnSale: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    animationController.dispose();
+    super.onClose();
   }
 
   void logOut() {
@@ -134,6 +237,3 @@ class UserDashboardController extends GetxController {
     Get.offAllNamed(Routes.LOGIN);
   }
 }
-
-
-

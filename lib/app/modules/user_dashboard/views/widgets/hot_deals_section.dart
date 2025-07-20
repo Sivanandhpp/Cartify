@@ -256,7 +256,7 @@ class ProductCard extends StatelessWidget {
         width: 30,
         height: 30,
         decoration: BoxDecoration(
-          color: Colors.green,
+          color: AppColors.grey,
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -279,7 +279,7 @@ class ProductCard extends StatelessWidget {
     return Container(
       height: 30,
       decoration: BoxDecoration(
-        color: Colors.green,
+        color: AppColors.grey,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -320,6 +320,3 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-
-
-
