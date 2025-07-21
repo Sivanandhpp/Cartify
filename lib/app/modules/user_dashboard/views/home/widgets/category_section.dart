@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/index.dart';
-import '../../models/category_model.dart';
+import '../../../../../core/index.dart';
+import '../../../models/category_model.dart';
 
 class CategorySection extends StatelessWidget {
   final List<CategoryModel> categories;
@@ -45,7 +45,3 @@ class CategorySection extends StatelessWidget {
     );
   }
 }
-
-
-
-

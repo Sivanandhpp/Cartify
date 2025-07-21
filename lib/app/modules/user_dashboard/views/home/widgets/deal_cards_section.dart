@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/deal_model.dart';
+import '../../../models/deal_model.dart';
 
 class DealCardsSection extends StatelessWidget {
   final List<DealModel> deals;
@@ -69,7 +69,3 @@ class DealCardsSection extends StatelessWidget {
     );
   }
 }
-
-
-
-

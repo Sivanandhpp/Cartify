@@ -73,7 +73,7 @@ class OtpCheckController extends GetxController {
     } else {
       NotificationService.showError(
         title: 'Error',
-        message: 'Please enter the 4‑digit OTP',
+        message: 'Please enter the 4-digit OTP',
       );
     }
   }
@@ -109,6 +109,3 @@ class OtpCheckController extends GetxController {
     super.onClose();
   }
 }
-
-
-

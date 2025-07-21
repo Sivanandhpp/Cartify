@@ -6,11 +6,11 @@ import 'package:get/get.dart';
 // Local imports (relative)
 import '../controllers/user_dashboard_controller.dart';
 import 'widgets/bottom_nav_bar.dart';
-import 'widgets/home_page.dart';
-import 'widgets/categories_page.dart';
-import 'widgets/wishlist_page.dart';
-import 'widgets/offers_page.dart';
-import 'widgets/profile_page.dart';
+import 'home/home_page.dart';
+import 'categories/categories_page.dart';
+import 'wishlist/wishlist_page.dart';
+import 'offers/offers_page.dart';
+import 'profile/profile_page.dart';
 
 class UserDashboardView extends GetView<UserDashboardController> {
   const UserDashboardView({super.key});

@@ -1,9 +1,8 @@
-import 'package:cartify/app/modules/cart/bindings/cart_binding.dart';
-import 'package:cartify/app/modules/cart/views/cart_view.dart';
 import 'package:get/get.dart';
-
 import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/admin_dashboard/views/admin_dashboard_view.dart';
+import '../modules/cart/bindings/cart_binding.dart';
+import '../modules/cart/views/cart_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';

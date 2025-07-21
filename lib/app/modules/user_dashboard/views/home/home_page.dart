@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
 import '../../controllers/user_dashboard_controller.dart';
-import 'category_section.dart';
-import 'deal_cards_section.dart';
-import 'expiry_banner_section.dart';
-import 'home_appbar.dart';
-import 'hot_deals_section.dart';
+import 'widgets/category_section.dart';
+import 'widgets/deal_cards_section.dart';
+import 'widgets/expiry_banner_section.dart';
+import 'widgets/home_appbar.dart';
+import 'widgets/hot_deals_section.dart';
 
 class HomePage extends GetView<UserDashboardController> {
   const HomePage({super.key});
