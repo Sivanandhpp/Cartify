@@ -44,8 +44,6 @@ class ProductSheetWidget extends StatelessWidget {
                   slivers: [
                     // Full-screen image carousel at top
                     _buildFullScreenImageCarousel(),
-                    // App bar - only show when expanded, positioned below safe area
-                    if (controller.isDetailsExpanded.value) _buildSafeAppBar(),
                     // Drag handle - only show when not expanded
                     if (!controller.isDetailsExpanded.value) _buildDragHandle(),
                     _buildProductInfo(),
@@ -53,8 +51,10 @@ class ProductSheetWidget extends StatelessWidget {
                     _buildSellerDetails(),
                   ],
                 ),
-                // Frosted glass close button - always visible
-                _buildFrostedCloseButton(controller),
+                // App bar that slides down from top when expanded
+                _buildSlidingAppBar(controller),
+                // Standalone close button when not expanded
+                _buildStandaloneCloseButton(controller),
               ],
             ),
           ),
@@ -180,82 +180,123 @@ class ProductSheetWidget extends StatelessWidget {
     );
   }
 
-  // Frosted glass close button positioned at top-left
-  Widget _buildFrostedCloseButton(ProductSheetController controller) {
-    return Positioned(
-      top: MediaQuery.of(Get.context!).padding.top + 10,
-      left: 16,
-      child: GestureDetector(
-        onTap: () {
-          if (controller.isDetailsExpanded.value) {
-            controller.toggleDetails();
-          } else {
-            Get.back();
-          }
-        },
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1,
-                ),
-              ),
-              child: const Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Safe app bar positioned below the safe area when expanded
-  Widget _buildSafeAppBar() {
-    return SliverToBoxAdapter(
+  // Sliding app bar that comes from top when expanded, includes close button
+  Widget _buildSlidingAppBar(ProductSheetController controller) {
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      top: controller.isDetailsExpanded.value ? 0 : -100, // Slide from top
+      left: 0,
+      right: 0,
       child: Container(
-        margin: EdgeInsets.only(
-          top:
-              MediaQuery.of(Get.context!).padding.top +
-              60, // Below safe area + button
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(Get.context!).padding.top,
+          left: 8,
+          right: 16,
+          bottom: 8,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black.withOpacity(0.7),
+              Colors.black.withOpacity(0.3),
+              Colors.transparent,
+            ],
           ),
         ),
         child: Row(
           children: [
-            const SizedBox(width: 48), // Space for close button alignment
+            // Close button integrated into app bar
+            GestureDetector(
+              onTap: () {
+                if (controller.isDetailsExpanded.value) {
+                  controller.toggleDetails();
+                } else {
+                  Get.back();
+                }
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+            ),
+            // Title in center
             const Expanded(
               child: Text(
                 'Onion (Savala)',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
+            // Share button
             IconButton(
-              icon: const Icon(Icons.share_outlined, size: 24),
+              icon: const Icon(
+                Icons.share_outlined,
+                size: 24,
+                color: Colors.white,
+              ),
               onPressed: () {},
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Standalone close button for when app bar is not visible
+  Widget _buildStandaloneCloseButton(ProductSheetController controller) {
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      top: controller.isDetailsExpanded.value ? -100 : 12, // Hide when expanded
+      left: 12,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: controller.isDetailsExpanded.value ? 0.0 : 1.0,
+        child: GestureDetector(
+          onTap: () => Get.back(),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
