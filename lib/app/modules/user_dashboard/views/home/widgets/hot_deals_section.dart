@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // Local widget imports (relative)
-import '../../widgets/product_sheet.dart';
+import '../../product_sheet/product_sheet.dart';
 
 /// The main widget that includes the title and the horizontal list.
 class HotDealsSection extends StatelessWidget {
@@ -123,7 +123,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         LogService.info('Product card tapped: ${product['name']}');
-        showProductSheet(context);
+        showProductSheet();
       },
       child: Container(
         width: 160,

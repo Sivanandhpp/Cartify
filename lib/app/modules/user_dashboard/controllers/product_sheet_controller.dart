@@ -2,79 +2,163 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProductSheetController extends GetxController {
-  /// Controls the DraggableScrollableSheet.
-  final DraggableScrollableController sheetController =
-      DraggableScrollableController();
+  static ProductSheetController get to => Get.find();
 
-  /// Tracks whether the "View product details" section is expanded.
-  final isDetailsExpanded = false.obs;
+  late DraggableScrollableController draggableController;
+  late PageController imagePageController;
 
-  /// Defines the initial size of the sheet.
-  static const double initialSheetSize = 0.7;
+  // Sheet size constants
+  static const double minSheetSize = 0.1;
+  static const double initialSheetSize = 0.6;
+  static const double maxSheetSize = 0.95;
 
-  /// Defines the minimum size (allows dragging lower to close).
-  static const double minSheetSize = 0.69;
+  // UI State Observables
+  var isDetailsExpanded = false.obs;
+  var currentImageIndex = 0.obs;
+  var isAppBarVisible = false.obs;
+  var cartQuantity = 0.obs;
 
-  /// Defines the fully expanded size of the sheet.
-  static const double maxSheetSize = 1.0;
+  // Product Data Observables
+  var productName = 'Fresh Bell Pepper (Capsicum)'.obs;
+  var productDescription =
+      'Fresh, crispy bell peppers perfect for salads, cooking, and snacking. Rich in vitamins and antioxidants.'
+          .obs;
+  var productWeight = '250g'.obs;
+  var deliveryTime = 'Delivery in 15-30 mins'.obs;
+  var originalPrice = 85.0.obs;
+  var discountedPrice = 68.0.obs;
+  var discountPercentage = 20.obs;
+  var minimumOrderAmount = 199.obs;
+  var isVegetarian = true.obs;
 
-  /// Threshold below which the sheet will auto-close.
-  static const double closeThreshold = 0.01;
+  // Seller Data Observables
+  var sellerName = 'Fresh Mart Store'.obs;
+  var sellerLocation = 'Koramangala, Bangalore'.obs;
+  var sellerRating = 4.3.obs;
+
+  // Product Images
+  List<String> get productImages => [
+    'assets/images/products/product1.png',
+    'assets/images/products/product2.png',
+    'assets/images/products/product3.png',
+  ];
 
   @override
   void onInit() {
     super.onInit();
-    // Add a listener to detect when the sheet is dragged by the user.
-    sheetController.addListener(() {
-      final currentSize = sheetController.size;
+    draggableController = DraggableScrollableController();
+    imagePageController = PageController();
 
-      // If the sheet is dragged to its maximum size, update the expanded state.
-      if (currentSize >= 0.95) {
-        isDetailsExpanded.value = true;
-      } else if (currentSize < 0.85) {
-        // If dragged below 0.85, collapse the details
-        isDetailsExpanded.value = false;
-      }
-
-      // If dragged below close threshold, close the sheet
-      if (currentSize < closeThreshold) {
-        _closeSheet();
-      }
-    });
-  }
-
-  /// Closes the sheet by popping the bottom sheet
-  void _closeSheet() {
-    if (Get.isBottomSheetOpen ?? false) {
-      Get.back();
-    }
-  }
-
-  /// Toggles the "View product details" section and animates the sheet.
-  void toggleDetails() {
-    isDetailsExpanded.value = !isDetailsExpanded.value;
-
-    // Animate the sheet to the appropriate size.
-    if (isDetailsExpanded.value) {
-      // Animate to the maximum size.
-      sheetController.animateTo(
-        maxSheetSize,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      // Animate back to the initial size.
-      sheetController.animateTo(
-        initialSheetSize,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
+    // Listen to draggable controller changes
+    draggableController.addListener(_onSheetSizeChanged);
   }
 
   @override
   void onClose() {
-    sheetController.dispose();
+    draggableController.removeListener(_onSheetSizeChanged);
+    draggableController.dispose();
+    imagePageController.dispose();
     super.onClose();
+  }
+
+  // UI Actions
+  void toggleDetails() {
+    isDetailsExpanded.value = !isDetailsExpanded.value;
+  }
+
+  void closeSheet() {
+    Get.back();
+  }
+
+  void onImagePageChanged(int index) {
+    currentImageIndex.value = index;
+  }
+
+  void _onSheetSizeChanged() {
+    if (draggableController.isAttached) {
+      final size = draggableController.size;
+      isAppBarVisible.value = size > 0.8;
+    }
+  }
+
+  // Product Actions
+  void addToCart() {
+    cartQuantity.value++;
+    Get.snackbar(
+      'Added to Cart',
+      '${productName.value} added to cart',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(16),
+      borderRadius: 8,
+    );
+  }
+
+  void removeFromCart() {
+    if (cartQuantity.value > 0) {
+      cartQuantity.value--;
+    }
+  }
+
+  void addToWishlist() {
+    Get.snackbar(
+      'Added to Wishlist',
+      '${productName.value} added to wishlist',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(16),
+      borderRadius: 8,
+    );
+  }
+
+  // Seller Actions
+  void visitSellerStore() {
+    Get.snackbar(
+      'Opening Store',
+      'Redirecting to ${sellerName.value}',
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(16),
+      borderRadius: 8,
+    );
+  }
+
+  void contactSeller() {
+    Get.snackbar(
+      'Contact Seller',
+      'Opening chat with ${sellerName.value}',
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(16),
+      borderRadius: 8,
+    );
+  }
+
+  // Data Management
+  void updateProductData({
+    String? name,
+    String? description,
+    String? weight,
+    double? originalPriceValue,
+    double? discountedPriceValue,
+    int? discountPercent,
+  }) {
+    if (name != null) productName.value = name;
+    if (description != null) productDescription.value = description;
+    if (weight != null) productWeight.value = weight;
+    if (originalPriceValue != null) originalPrice.value = originalPriceValue;
+    if (discountedPriceValue != null)
+      discountedPrice.value = discountedPriceValue;
+    if (discountPercent != null) discountPercentage.value = discountPercent;
+  }
+
+  void updateSellerData({String? name, String? location, double? rating}) {
+    if (name != null) sellerName.value = name;
+    if (location != null) sellerLocation.value = location;
+    if (rating != null) sellerRating.value = rating;
   }
 }
