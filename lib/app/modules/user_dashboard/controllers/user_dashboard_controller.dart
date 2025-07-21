@@ -9,16 +9,13 @@ import 'package:get_storage/get_storage.dart';
 import '../models/category_model.dart';
 import '../models/deal_model.dart';
 
-class UserDashboardController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class UserDashboardController extends GetxController {
   final storage = GetStorage();
   final CartService _cartService = Get.find<CartService>();
 
   // State for Bottom Navigation Bar
   final selectedNavIndex = 0.obs;
   late final PageController pageController;
-  late final AnimationController animationController;
-  late final Animation<double> fadeAnimation;
 
   // Cart reactive getter
   int get cartItemCount => _cartService.itemCount;
@@ -39,20 +36,6 @@ class UserDashboardController extends GetxController
 
     // Initialize page controller
     pageController = PageController(initialPage: 0);
-
-    // Initialize animation controller
-    animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    // Initialize fade animation
-    fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
-    );
-
-    // Start animation
-    animationController.forward();
 
     _loadData();
     _loadUserProfile();
@@ -166,9 +149,8 @@ class UserDashboardController extends GetxController
         curve: Curves.easeInOut,
       );
 
-      // Reset and restart fade animation for smooth transition
-      animationController.reset();
-      animationController.forward();
+      // No need to reset fade animation for bottom nav taps
+      // This prevents the white screen flash between page transitions
     }
   }
 
@@ -226,7 +208,6 @@ class UserDashboardController extends GetxController
   @override
   void onClose() {
     pageController.dispose();
-    animationController.dispose();
     super.onClose();
   }
 

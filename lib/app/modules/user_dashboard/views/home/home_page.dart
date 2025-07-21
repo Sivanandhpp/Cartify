@@ -13,25 +13,22 @@ class HomePage extends GetView<UserDashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: controller.fadeAnimation,
-      child: CustomScrollView(
-        slivers: [
-          const HomeAppBar(),
-          CategorySection(categories: controller.categories),
-          SliverToBoxAdapter(
-            child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
-          ),
-          DealCardsSection(deals: controller.deals),
-          const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
-          const ExpiryBannerSection(),
-          const HotDealsSection(),
-          const HotDealsSection(),
-          const HotDealsSection(),
-          // Add bottom padding for safe area
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        const HomeAppBar(),
+        CategorySection(categories: controller.categories),
+        SliverToBoxAdapter(
+          child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
+        ),
+        DealCardsSection(deals: controller.deals),
+        const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
+        const ExpiryBannerSection(),
+        const HotDealsSection(),
+        const HotDealsSection(),
+        const HotDealsSection(),
+        // Add bottom padding for safe area
+        const SliverToBoxAdapter(child: SizedBox(height: 100)),
+      ],
     );
   }
 }

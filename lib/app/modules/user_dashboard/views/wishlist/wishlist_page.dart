@@ -8,47 +8,44 @@ class WishlistPage extends GetView<UserDashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: controller.fadeAnimation,
-      child: CustomScrollView(
-        slivers: [
-          // App Bar
-          SliverAppBar(
-            floating: true,
-            pinned: false,
-            backgroundColor: AppColors.primary,
-            title: Obx(
-              () => Text(
-                'Wishlist (${controller.wishlistItems.length})',
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+    return CustomScrollView(
+      slivers: [
+        // App Bar
+        SliverAppBar(
+          floating: true,
+          pinned: false,
+          backgroundColor: AppColors.primary,
+          title: Obx(
+            () => Text(
+              'Wishlist (${controller.wishlistItems.length})',
+              style: const TextStyle(
+                color: AppColors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            centerTitle: true,
-            elevation: 0,
-            actions: [
-              if (controller.wishlistItems.isNotEmpty)
-                IconButton(
-                  icon: const Icon(Icons.clear_all, color: AppColors.white),
-                  onPressed: () => _showClearAllDialog(context),
-                ),
-            ],
           ),
+          centerTitle: true,
+          elevation: 0,
+          actions: [
+            if (controller.wishlistItems.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.clear_all, color: AppColors.white),
+                onPressed: () => _showClearAllDialog(context),
+              ),
+          ],
+        ),
 
-          // Wishlist Content
-          Obx(
-            () => controller.wishlistItems.isEmpty
-                ? _buildEmptyWishlist()
-                : _buildWishlistGrid(),
-          ),
+        // Wishlist Content
+        Obx(
+          () => controller.wishlistItems.isEmpty
+              ? _buildEmptyWishlist()
+              : _buildWishlistGrid(),
+        ),
 
-          // Add bottom padding for safe area
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-        ],
-      ),
+        // Add bottom padding for safe area
+        const SliverToBoxAdapter(child: SizedBox(height: 100)),
+      ],
     );
   }
 

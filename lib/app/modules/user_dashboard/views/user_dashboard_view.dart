@@ -24,6 +24,8 @@ class UserDashboardView extends GetView<UserDashboardController> {
         onPageChanged: (index) {
           controller.selectedNavIndex.value = index;
         },
+        physics:
+            const ClampingScrollPhysics(), // Better physics for smoother navigation
         children: const [
           HomePage(),
           CategoriesPage(),
