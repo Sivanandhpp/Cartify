@@ -17,6 +17,10 @@ class UserDashboardController extends GetxController {
   final selectedNavIndex = 0.obs;
   late final PageController pageController;
 
+  // Navigation bar visibility control
+  final isNavBarVisible = true.obs;
+  double _lastScrollOffset = 0.0;
+
   // Cart reactive getter
   int get cartItemCount => _cartService.itemCount;
 
@@ -177,6 +181,26 @@ class UserDashboardController extends GetxController {
   // Check if product is in wishlist
   bool isInWishlist(String productId) {
     return wishlistItems.any((item) => item.id == productId);
+  }
+
+  // Method to handle scroll changes for nav bar visibility
+  void handleScrollUpdate(double offset) {
+    const double threshold =
+        50.0; // Minimum scroll distance to trigger hide/show
+
+    if (offset > _lastScrollOffset + threshold) {
+      // Scrolling down - hide nav bar
+      if (isNavBarVisible.value) {
+        isNavBarVisible.value = false;
+      }
+    } else if (offset < _lastScrollOffset - threshold) {
+      // Scrolling up - show nav bar
+      if (!isNavBarVisible.value) {
+        isNavBarVisible.value = true;
+      }
+    }
+
+    _lastScrollOffset = offset;
   }
 
   @override

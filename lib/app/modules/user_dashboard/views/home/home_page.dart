@@ -13,22 +13,30 @@ class HomePage extends GetView<UserDashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        const HomeAppBar(),
-        CategorySection(categories: controller.categories),
-        SliverToBoxAdapter(
-          child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
-        ),
-        DealCardsSection(deals: controller.deals),
-        const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
-        const ExpiryBannerSection(),
-        const HotDealsSection(),
-        const HotDealsSection(),
-        const HotDealsSection(),
-        // Add bottom padding for safe area
-        const SliverToBoxAdapter(child: SizedBox(height: 100)),
-      ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo is ScrollUpdateNotification) {
+          controller.handleScrollUpdate(scrollInfo.metrics.pixels);
+        }
+        return false;
+      },
+      child: CustomScrollView(
+        slivers: [
+          const HomeAppBar(),
+          CategorySection(categories: controller.categories),
+          SliverToBoxAdapter(
+            child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
+          ),
+          DealCardsSection(deals: controller.deals),
+          const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
+          const ExpiryBannerSection(),
+          const HotDealsSection(),
+          const HotDealsSection(),
+          const HotDealsSection(),
+          // Add bottom padding for safe area + cart widget + nav bar
+          const SliverToBoxAdapter(child: SizedBox(height: 180)),
+        ],
+      ),
     );
   }
 }
