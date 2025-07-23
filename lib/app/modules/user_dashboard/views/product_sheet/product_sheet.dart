@@ -11,7 +11,9 @@ import 'widgets/product_info_section.dart';
 import 'widgets/seller_details_section.dart';
 
 class ProductSheetWidget extends StatelessWidget {
-  const ProductSheetWidget({super.key});
+  final Map<String, dynamic>? productData;
+
+  const ProductSheetWidget({super.key, this.productData});
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +83,10 @@ class ProductSheetWidget extends StatelessWidget {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 borderRadius: BorderRadius.circular(25),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   width: 1.5,
                                 ),
                               ),
@@ -108,10 +110,10 @@ class ProductSheetWidget extends StatelessWidget {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 borderRadius: BorderRadius.circular(25),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   width: 1.5,
                                 ),
                               ),
@@ -136,10 +138,10 @@ class ProductSheetWidget extends StatelessWidget {
   }
 }
 
-// Helper function to show product sheet
-void showProductSheet() {
+// Helper function to show product sheet with product data
+void showProductSheet({Map<String, dynamic>? productData}) {
   Get.bottomSheet(
-    const ProductSheetWidget(),
+    ProductSheetWidget(productData: productData),
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     enableDrag: true,

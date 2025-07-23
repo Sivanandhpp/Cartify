@@ -50,7 +50,7 @@ class ProfilePage extends GetView<UserDashboardController> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -84,7 +84,7 @@ class ProfilePage extends GetView<UserDashboardController> {
                                 'user@example.com',
                             style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.grey.withOpacity(0.8),
+                              color: AppColors.grey.withValues(alpha: 0.8),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -92,7 +92,7 @@ class ProfilePage extends GetView<UserDashboardController> {
                             controller.userProfile['phone'] ?? '+91 9876543210',
                             style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.grey.withOpacity(0.8),
+                              color: AppColors.grey.withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -257,9 +257,9 @@ class ProfilePage extends GetView<UserDashboardController> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         children: [
@@ -278,7 +278,7 @@ class ProfilePage extends GetView<UserDashboardController> {
             title,
             style: TextStyle(
               fontSize: 12,
-              color: color.withOpacity(0.8),
+              color: color.withValues(alpha: 0.8),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -306,7 +306,7 @@ class ProfilePage extends GetView<UserDashboardController> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -333,7 +333,7 @@ class ProfilePage extends GetView<UserDashboardController> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: AppColors.primary, size: 20),
@@ -355,7 +355,7 @@ class ProfilePage extends GetView<UserDashboardController> {
                     subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.grey.withOpacity(0.7),
+                      color: AppColors.grey.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -364,7 +364,7 @@ class ProfilePage extends GetView<UserDashboardController> {
             Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: AppColors.grey.withOpacity(0.5),
+              color: AppColors.grey.withValues(alpha: 0.5),
             ),
           ],
         ),

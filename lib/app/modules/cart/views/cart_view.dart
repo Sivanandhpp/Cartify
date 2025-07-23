@@ -1,3 +1,4 @@
+import 'package:cartify/app/modules/cart/views/widgets/delivery_tip_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/index.dart';
@@ -23,7 +24,7 @@ class CartView extends GetView<CartController> {
         return Column(
           children: [
             // Savings banner
-            // if (controller.totalSavings > 0) _buildSavingsBanner(),
+            if (controller.totalSavings > 0) _buildSavingsBanner(),
 
             // Scrollable content
             Expanded(
@@ -43,13 +44,7 @@ class CartView extends GetView<CartController> {
                     const SizedBox(height: 16),
 
                     // Delivery tip section
-                    // const DeliveryTipSection(),
-
-                    // const SizedBox(height: 16),
-
-                    // Add more items section
-                    // const AddMoreItemsSection(),
-
+                    const DeliveryTipSection(),
                     // const SizedBox(height: 16),
 
                     // Bill details section

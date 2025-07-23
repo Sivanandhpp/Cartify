@@ -44,7 +44,7 @@ class CategoriesPage extends GetView<UserDashboardController> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -100,10 +100,10 @@ class CategoriesPage extends GetView<UserDashboardController> {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors[index % colors.length].withOpacity(0.1),
+        color: colors[index % colors.length].withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colors[index % colors.length].withOpacity(0.3),
+          color: colors[index % colors.length].withValues(alpha: 0.3),
           width: 1,
         ),
       ),

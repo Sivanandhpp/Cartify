@@ -32,53 +32,49 @@ class ProductInfoSection extends StatelessWidget {
   }
 
   Widget _buildDeliveryTime() {
-    return Obx(
-      () => Text(
-        controller.deliveryTime.value,
+    return  Text(
+        controller.deliveryTime,
         style: const TextStyle(
           color: Colors.grey,
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
-      ),
-    );
+      );
+ 
   }
 
   Widget _buildProductName() {
-    return Obx(
-      () => Text(
-        controller.productName.value,
+    return Text(
+        controller.productName,
         style: const TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: Colors.black87,
         ),
-      ),
-    );
+      );
+
   }
 
   Widget _buildProductDescription() {
-    return Obx(
-      () => Text(
-        controller.productDescription.value,
+    return Text(
+        controller.productDescription,
         style: const TextStyle(color: Colors.grey, fontSize: 14, height: 1.4),
-      ),
-    );
+      );
+
   }
 
   Widget _buildWeightAndDiscount() {
     return Row(
       children: [
-        Obx(
-          () => Text(
-            controller.productWeight.value,
+        Text(
+            controller.productWeight,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
           ),
-        ),
+   
         const Spacer(),
         _buildPriceWithDiscount(),
       ],
@@ -88,26 +84,24 @@ class ProductInfoSection extends StatelessWidget {
   Widget _buildPriceWithDiscount() {
     return Row(
       children: [
-        Obx(
-          () => Text(
-            '₹${controller.originalPrice.value}',
+      Text(
+            '₹${controller.originalPrice}',
             style: const TextStyle(
               decoration: TextDecoration.lineThrough,
               color: Colors.grey,
               fontSize: 16,
             ),
           ),
-        ),
+   
         const SizedBox(width: 8),
-        Obx(
-          () => Container(
+      Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.orange.shade100,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              '${controller.discountPercentage.value}% OFF',
+              '${controller.discountPercentage}% OFF',
               style: TextStyle(
                 color: Colors.orange.shade700,
                 fontWeight: FontWeight.bold,
@@ -115,7 +109,7 @@ class ProductInfoSection extends StatelessWidget {
               ),
             ),
           ),
-        ),
+     
       ],
     );
   }
@@ -145,30 +139,27 @@ class ProductInfoSection extends StatelessWidget {
         children: [
           Icon(Icons.lock, color: Colors.green.shade700, size: 16),
           const SizedBox(width: 4),
-          Obx(
-            () => Text(
-              '₹${controller.discountedPrice.value}',
+          Text(
+              '₹${controller.discountedPrice}',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.green.shade700,
               ),
             ),
-          ),
+       
         ],
       ),
     );
   }
 
   Widget _buildMinimumOrderText() {
-    return Obx(
-      () => Text(
-        'SHOP FOR ₹${controller.minimumOrderAmount.value}',
-        style: const TextStyle(
-          color: Colors.grey,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
+    return const Text(
+      'SHOP FOR ₹199', // Static value since minimumOrderAmount was removed
+      style: TextStyle(
+        color: Colors.grey,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

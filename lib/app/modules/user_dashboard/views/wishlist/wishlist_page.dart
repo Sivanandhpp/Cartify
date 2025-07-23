@@ -65,7 +65,7 @@ class WishlistPage extends GetView<UserDashboardController> {
           Icon(
             Icons.favorite_border,
             size: 100,
-            color: AppColors.grey.withOpacity(0.5),
+            color: AppColors.grey.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 24),
           Text(
@@ -73,7 +73,7 @@ class WishlistPage extends GetView<UserDashboardController> {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: AppColors.grey.withOpacity(0.7),
+              color: AppColors.grey.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 12),
@@ -81,7 +81,7 @@ class WishlistPage extends GetView<UserDashboardController> {
             'Add products you love to your wishlist',
             style: TextStyle(
               fontSize: 16,
-              color: AppColors.grey.withOpacity(0.6),
+              color: AppColors.grey.withValues(alpha: 0.6),
             ),
             textAlign: TextAlign.center,
           ),
@@ -135,7 +135,7 @@ class WishlistPage extends GetView<UserDashboardController> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -174,7 +174,7 @@ class WishlistPage extends GetView<UserDashboardController> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                               ),
                             ],
@@ -239,7 +239,7 @@ class WishlistPage extends GetView<UserDashboardController> {
                       product.brand,
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.grey.withOpacity(0.8),
+                        color: AppColors.grey.withValues(alpha: 0.8),
                       ),
                     ),
 
@@ -268,7 +268,7 @@ class WishlistPage extends GetView<UserDashboardController> {
                               style: TextStyle(
                                 fontSize: 11,
                                 decoration: TextDecoration.lineThrough,
-                                color: AppColors.grey.withOpacity(0.6),
+                                color: AppColors.grey.withValues(alpha: 0.6),
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),

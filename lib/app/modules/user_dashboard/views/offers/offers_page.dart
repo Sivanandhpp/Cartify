@@ -97,7 +97,7 @@ class OffersPage extends GetView<UserDashboardController> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.2),
+                            color: AppColors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(
@@ -227,9 +227,9 @@ class OffersPage extends GetView<UserDashboardController> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: InkWell(
         onTap: () {
@@ -268,7 +268,10 @@ class OffersPage extends GetView<UserDashboardController> {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: TextStyle(fontSize: 12, color: color.withOpacity(0.7)),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: color.withValues(alpha: 0.7),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -288,10 +291,10 @@ class OffersPage extends GetView<UserDashboardController> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -304,10 +307,10 @@ class OffersPage extends GetView<UserDashboardController> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: color.withOpacity(0.3),
+                  color: color.withValues(alpha: 0.3),
                   style: BorderStyle.solid,
                 ),
               ),
@@ -338,7 +341,7 @@ class OffersPage extends GetView<UserDashboardController> {
                     validity,
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.grey.withOpacity(0.7),
+                      color: AppColors.grey.withValues(alpha: 0.7),
                     ),
                   ),
                 ],

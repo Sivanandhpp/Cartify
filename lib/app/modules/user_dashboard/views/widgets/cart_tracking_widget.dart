@@ -57,7 +57,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
+        color: Colors.green.withValues(alpha: 0.1),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
       ),
       child: Row(
@@ -109,7 +109,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
+                color: Colors.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Stack(
@@ -385,7 +385,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.1),
+                    color: Colors.orange.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Stack(

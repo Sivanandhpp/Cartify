@@ -20,7 +20,7 @@ class SellerDetailsSection extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -51,26 +51,23 @@ class SellerDetailsSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Obx(
-                    () => Text(
-                      controller.sellerName.value,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                  Text(
+                    controller.sellerName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
                     ),
                   ),
+
                   const SizedBox(width: 6),
                   _buildVerifiedBadge(),
                 ],
               ),
               const SizedBox(height: 4),
-              Obx(
-                () => Text(
-                  controller.sellerLocation.value,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
+              Text(
+                controller.sellerLocation,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
@@ -81,26 +78,24 @@ class SellerDetailsSection extends StatelessWidget {
   }
 
   Widget _buildSellerAvatar() {
-    return Obx(
-      () => Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Colors.green.shade400, Colors.green.shade600],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Colors.green.shade400, Colors.green.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Center(
-          child: Text(
-            controller.sellerName.value.substring(0, 1).toUpperCase(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+      ),
+      child: Center(
+        child: Text(
+          controller.sellerName.substring(0, 1).toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -133,28 +128,26 @@ class SellerDetailsSection extends StatelessWidget {
   }
 
   Widget _buildRatingBadge() {
-    return Obx(
-      () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.green.shade600,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.star, color: Colors.white, size: 14),
-            const SizedBox(width: 4),
-            Text(
-              controller.sellerRating.value.toStringAsFixed(1),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.green.shade600,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.star, color: Colors.white, size: 14),
+          const SizedBox(width: 4),
+          Text(
+            controller.sellerRating.toStringAsFixed(1),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

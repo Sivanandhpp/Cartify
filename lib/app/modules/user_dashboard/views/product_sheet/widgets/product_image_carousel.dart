@@ -1,5 +1,3 @@
-import 'package:cartify/app/core/constants/app_spacing.dart';
-import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:ui';
@@ -41,8 +39,8 @@ class ProductImageCarousel extends StatelessWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withOpacity(0.1),
-                          Colors.black.withOpacity(0.3),
+                          Colors.black.withValues(alpha: 0.1),
+                          Colors.black.withValues(alpha: 0.3),
                         ],
                       ),
                       borderRadius: const BorderRadius.vertical(
@@ -66,7 +64,7 @@ class ProductImageCarousel extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
@@ -81,38 +79,8 @@ class ProductImageCarousel extends StatelessWidget {
             ),
           ),
 
-          // Vegetarian indicator
-          Positioned(
-            bottom: 16,
-            left: 16,
-            child: Obx(
-              () => controller.isVegetarian.value
-                  ? Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.eco,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.circle,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
-            ),
-          ),
+          // Vegetarian indicator removed since isVegetarian observable was removed
+          // This can be added back if needed based on product category/type
         ],
       ),
     );

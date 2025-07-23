@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '../../../core/index.dart';
+import '../../../routes/app_pages.dart';
 
 class CartController extends GetxController {
   // Get the cart service instance
@@ -41,8 +42,6 @@ class CartController extends GetxController {
     // Initialize with default tip
     deliveryTip.value = 0.0;
   }
-
-
 
   // Cart operations
   void incrementQuantity(String cartItemId) {
@@ -89,22 +88,36 @@ class CartController extends GetxController {
 
       NotificationService.dismiss();
 
-      // Clear cart after successful payment
-      clearCart();
+      // Generate order details
+      final orderId =
+          '#ORD${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}';
+      final deliveryDate = DateTime.now().add(const Duration(minutes: 30));
 
-      NotificationService.showSuccess(
-        title: 'Order Placed Successfully',
-        message: 'Your order has been placed and will be delivered soon!',
+      // Navigate to order success page with order details
+      Get.toNamed(
+        Routes.ORDER_SUCCESS,
+        arguments: {
+          'orderId': orderId,
+          'deliveryDate': deliveryDate,
+          'totalAmount': finalTotal,
+          'itemCount': itemCount,
+        },
       );
-
-      // Navigate back to home or order confirmation
-      Get.back();
     } catch (e) {
       NotificationService.dismiss();
       NotificationService.showError(
         title: 'Payment Failed',
         message:
             'There was an error processing your payment. Please try again.',
+      );
+       Get.toNamed(
+        Routes.ORDER_SUCCESS,
+        arguments: {
+          'orderId': 'orderId',
+          'deliveryDate': 'deliveryDate',
+          'totalAmount': finalTotal,
+          'itemCount': itemCount,
+        },
       );
     } finally {
       isProcessingPayment.value = false;
@@ -116,6 +129,3 @@ class CartController extends GetxController {
     Get.back(); // Go back to shopping
   }
 }
-
-
-
