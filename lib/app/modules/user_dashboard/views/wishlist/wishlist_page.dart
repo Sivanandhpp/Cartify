@@ -8,44 +8,52 @@ class WishlistPage extends GetView<UserDashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        // App Bar
-        SliverAppBar(
-          floating: true,
-          pinned: false,
-          backgroundColor: AppColors.primary,
-          title: Obx(
-            () => Text(
-              'Wishlist (${controller.wishlistItems.length})',
-              style: const TextStyle(
-                color: AppColors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo is ScrollUpdateNotification) {
+          controller.handleScrollUpdate(scrollInfo.metrics.pixels);
+        }
+        return false;
+      },
+      child: CustomScrollView(
+        slivers: [
+          // App Bar
+          SliverAppBar(
+            floating: true,
+            pinned: false,
+            backgroundColor: AppColors.primary,
+            title: Obx(
+              () => Text(
+                'Wishlist (${controller.wishlistItems.length})',
+                style: const TextStyle(
+                  color: AppColors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+            centerTitle: true,
+            elevation: 0,
+            actions: [
+              if (controller.wishlistItems.isNotEmpty)
+                IconButton(
+                  icon: const Icon(Icons.clear_all, color: AppColors.white),
+                  onPressed: () => _showClearAllDialog(context),
+                ),
+            ],
           ),
-          centerTitle: true,
-          elevation: 0,
-          actions: [
-            if (controller.wishlistItems.isNotEmpty)
-              IconButton(
-                icon: const Icon(Icons.clear_all, color: AppColors.white),
-                onPressed: () => _showClearAllDialog(context),
-              ),
-          ],
-        ),
 
-        // Wishlist Content
-        Obx(
-          () => controller.wishlistItems.isEmpty
-              ? _buildEmptyWishlist()
-              : _buildWishlistGrid(),
-        ),
+          // Wishlist Content
+          Obx(
+            () => controller.wishlistItems.isEmpty
+                ? _buildEmptyWishlist()
+                : _buildWishlistGrid(),
+          ),
 
-        // Add bottom padding for safe area
-        const SliverToBoxAdapter(child: SizedBox(height: 100)),
-      ],
+          // Add bottom padding for safe area + cart widget + nav bar
+          const SliverToBoxAdapter(child: SizedBox(height: 180)),
+        ],
+      ),
     );
   }
 
@@ -105,9 +113,9 @@ class WishlistPage extends GetView<UserDashboardController> {
     return SliverPadding(
       padding: const EdgeInsets.all(16),
       sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.7,
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200, // Maximum width for each item
+          childAspectRatio: 0.65, // Adjusted for better content fit
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
         ),
@@ -120,182 +128,205 @@ class WishlistPage extends GetView<UserDashboardController> {
   }
 
   Widget _buildWishlistItem(Product product) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product Image with Remove Button
-          Expanded(
-            flex: 3,
-            child: Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(16),
-                    ),
-                    image: DecorationImage(
-                      image: AssetImage(product.imageUrl),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: () => controller.toggleWishlist(product),
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                if (product.hasDiscount)
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '${product.discountPercentage.toInt()}% OFF',
-                        style: const TextStyle(
-                          color: AppColors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
+    return IntrinsicHeight(
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-          ),
-
-          // Product Details
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    product.brand,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.grey.withOpacity(0.8),
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      if (product.hasDiscount) ...[
-                        Text(
-                          product.formattedDiscountPrice,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          product.formattedPrice,
-                          style: TextStyle(
-                            fontSize: 12,
-                            decoration: TextDecoration.lineThrough,
-                            color: AppColors.grey.withOpacity(0.6),
-                          ),
-                        ),
-                      ] else
-                        Text(
-                          product.formattedPrice,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Add to cart functionality
-                        Get.snackbar(
-                          'Added to Cart',
-                          '${product.name} added to cart',
-                          snackPosition: SnackPosition.BOTTOM,
-                          duration: const Duration(seconds: 1),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Add to Cart',
-                        style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product Image with Remove Button
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: AspectRatio(
+                aspectRatio: 1.1, // Slightly wider than square
+                child: Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(product.imageUrl),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () => controller.toggleWishlist(product),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (product.hasDiscount)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '${product.discountPercentage.toInt()}% OFF',
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+
+            // Product Details - flexible content area
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Product name - flexible height
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+
+                    // Brand name
+                    Text(
+                      product.brand,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.grey.withOpacity(0.8),
+                      ),
+                    ),
+
+                    // Push price and button to bottom
+                    const Spacer(),
+
+                    // Price row
+                    Row(
+                      children: [
+                        if (product.hasDiscount) ...[
+                          Flexible(
+                            child: Text(
+                              product.formattedDiscountPrice,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              product.formattedPrice,
+                              style: TextStyle(
+                                fontSize: 11,
+                                decoration: TextDecoration.lineThrough,
+                                color: AppColors.grey.withOpacity(0.6),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ] else
+                          Flexible(
+                            child: Text(
+                              product.formattedPrice,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // Add to Cart button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 32, // Fixed height for button
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Add to cart functionality
+                          Get.snackbar(
+                            'Added to Cart',
+                            '${product.name} added to cart',
+                            snackPosition: SnackPosition.BOTTOM,
+                            duration: const Duration(seconds: 1),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                        child: const Text(
+                          'Add to Cart',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
