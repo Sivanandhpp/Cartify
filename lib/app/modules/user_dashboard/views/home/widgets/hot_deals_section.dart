@@ -3,8 +3,8 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Cross-module imports (absolute)
-import 'package:cartify/app/modules/product_sheet/views/product_sheet_view.dart';
+// Local widget imports (relative)
+import '../../product_sheet/product_sheet.dart';
 
 /// The main widget that includes the title and the horizontal list.
 class HotDealsSection extends StatelessWidget {
@@ -123,7 +123,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         LogService.info('Product card tapped: ${product['name']}');
-        showProductSheet(context);
+        showProductSheet();
       },
       child: Container(
         width: 160,

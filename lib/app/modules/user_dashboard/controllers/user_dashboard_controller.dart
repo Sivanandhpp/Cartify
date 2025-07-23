@@ -179,32 +179,6 @@ class UserDashboardController extends GetxController {
     return wishlistItems.any((item) => item.id == productId);
   }
 
-  // Method to add a demo item to cart for testing
-  void addDemoItemToCart() {
-    // This is just for testing the cart badge functionality
-    // In real app, this would be called from product listing
-    _cartService.addToCart(
-      Product(
-        id: 'demo-1',
-        name: 'Demo Product',
-        description: 'Demo product for testing cart functionality',
-        price: 99.0,
-        discountPrice: 79.0,
-        imageUrl: 'assets/images/products/product1.png',
-        category: 'demo',
-        brand: 'Demo Brand',
-        rating: 4.5,
-        reviewCount: 10,
-        stockQuantity: 50,
-        isInStock: true,
-        isFeatured: true,
-        isOnSale: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    );
-  }
-
   @override
   void onClose() {
     pageController.dispose();
