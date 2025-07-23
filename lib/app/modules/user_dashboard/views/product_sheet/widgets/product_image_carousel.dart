@@ -1,3 +1,5 @@
+import 'package:cartify/app/core/constants/app_spacing.dart';
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:ui';
@@ -51,42 +53,6 @@ class ProductImageCarousel extends StatelessWidget {
                 );
               },
             ),
-          ),
-
-          // Frosted glass close button at top left - only show when header is not visible
-          Obx(
-            () => !controller.isAppBarVisible.value
-                ? Positioned(
-                    top: 16,
-                    left: 16,
-                    child: GestureDetector(
-                      onTap: controller.closeSheet,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
           ),
 
           // Page indicators at bottom right of image
