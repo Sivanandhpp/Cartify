@@ -15,25 +15,40 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
       // Hide widget if cart is empty
       if (cartService.isEmpty) return const SizedBox.shrink();
 
-      return Container(
-        // margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(12),
-            right: Radius.circular(12),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Delivery info banner
-            _buildDeliveryBanner(),
+      // Add a delay to ensure proper positioning on initial load
+      return FutureBuilder(
+        future: Future.delayed(const Duration(milliseconds: 300)),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            // Return an invisible placeholder to maintain layout
+            return const SizedBox.shrink();
+          }
 
-            // Cart summary row
-            _buildCartSummary(cartService, context),
-          ],
-        ),
+          return AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: 1.0,
+            child: Container(
+              // margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.horizontal(
+                  left: Radius.circular(12),
+                  right: Radius.circular(12),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Delivery info banner
+                  _buildDeliveryBanner(),
+
+                  // Cart summary row
+                  _buildCartSummary(cartService, context),
+                ],
+              ),
+            ),
+          );
+        },
       );
     });
   }
@@ -106,7 +121,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                       size: 20,
                     ),
                   ),
-                  if (cartService.itemCount > 0)
+                  if (cartService.totalQuantity > 0)
                     Positioned(
                       right: 2,
                       top: 2,
@@ -121,9 +136,9 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                           minHeight: 16,
                         ),
                         child: Text(
-                          cartService.itemCount > 9
+                          cartService.totalQuantity > 9
                               ? '9+'
-                              : cartService.itemCount.toString(),
+                              : cartService.totalQuantity.toString(),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 10,
@@ -147,7 +162,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                   Row(
                     children: [
                       Text(
-                        '${cartService.itemCount} Items',
+                        '${cartService.totalQuantity} Items',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -319,7 +334,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                       ),
                       const Spacer(),
                       Text(
-                        '${cartService.itemCount} items',
+                        '${cartService.totalQuantity} items',
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
@@ -396,9 +411,9 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                             minHeight: 16,
                           ),
                           child: Text(
-                            cartService.itemCount > 9
+                            cartService.totalQuantity > 9
                                 ? '9+'
-                                : cartService.itemCount.toString(),
+                                : cartService.totalQuantity.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
@@ -421,7 +436,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                     Row(
                       children: [
                         Text(
-                          '${cartService.itemCount} Items',
+                          '${cartService.totalQuantity} Items',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,

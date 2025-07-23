@@ -63,19 +63,13 @@ class UserDashboardView extends GetView<UserDashboardController> {
           ),
 
           // Cart tracking widget with dynamic positioning
-          Positioned(
-            left: 0,
-            right: 0,
-            child: Obx(
-              () => AnimatedPositioned(
+          Obx(
+            () => Positioned(
+              left: 0,
+              right: 0,
+              bottom: controller.isNavBarVisible.value ? 80 : 0,
+              child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                bottom: controller.isNavBarVisible.value
-                    ? 80
-                    : MediaQuery.of(
-                        context,
-                      ).padding.bottom, // Above nav bar or above safe area
-                left: 0,
-                right: 0,
                 child: const CartTrackingWidget(),
               ),
             ),
