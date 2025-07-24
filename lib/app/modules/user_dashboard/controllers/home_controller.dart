@@ -1,5 +1,6 @@
 // Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/modules/user_dashboard/controllers/user_dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,7 @@ import 'base_dashboard_controller.dart';
 
 /// Home page controller that manages home-specific data and logic
 /// Extends base controller for common dashboard functionality
-class HomeController extends BaseDashboardController {
+class HomeController extends UserDashboardController {
   // Data for home page sections
   final RxList<CategoryModel> categories = <CategoryModel>[].obs;
   final RxList<DealModel> deals = <DealModel>[].obs;
