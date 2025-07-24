@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 // Local widget imports (relative)
 import '../../product_sheet/product_sheet.dart';
+import '../../../controllers/hot_deals_controller.dart';
 
 /// The main widget that includes the title and the horizontal list.
 class HotDealsSection extends StatelessWidget {
@@ -12,40 +13,8 @@ class HotDealsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A list of mock data to populate the cards.
-    final List<Map<String, dynamic>> mockProducts = [
-      {
-        'id': 'onion_01',
-        'imageUrl': AppImages.product1,
-        'name': 'Onion (Savala)',
-        'weight': '1 kg',
-        'offerPercentage': 20,
-        'originalPrice': 35.0,
-        'discountedPrice': 32.0,
-      },
-      {
-        'id': 'lays_01',
-        'imageUrl': AppImages.product2,
-        'name': "Lay's Hot & Sweet Chilli Potato Chips",
-        'weight': '52 g',
-        'offerPercentage': 10,
-        'originalPrice': 20.0,
-        'discountedPrice': 18.0,
-        'rating': 4.2,
-        'reviewCount': 128,
-      },
-      {
-        'id': 'tomato_01',
-        'imageUrl': AppImages.product3,
-        'name': 'Tomato (Local)',
-        'weight': '500 g',
-        'offerPercentage': 15,
-        'originalPrice': 25.0,
-        'discountedPrice': 21.25,
-        'rating': 4.0,
-        'reviewCount': 56,
-      },
-    ];
+    final HotDealsController hotDealsController =
+        Get.find<HotDealsController>();
 
     return SliverToBoxAdapter(
       child: Container(
@@ -89,19 +58,78 @@ class HotDealsSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Horizontal List
-            SizedBox(
-              height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: mockProducts.length,
-                padding: const EdgeInsets.only(left: 16.0),
-                itemBuilder: (BuildContext context, int index) {
-                  final Map<String, dynamic> product = mockProducts[index];
-                  return ProductCard(product: product);
-                },
-              ),
-            ),
+            // Horizontal List with API data
+            Obx(() {
+              if (hotDealsController.isLoading.value) {
+                return const SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  ),
+                );
+              }
+
+              if (hotDealsController.hasError.value) {
+                return SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          hotDealsController.errorMessage.value,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed: () => hotDealsController.refreshHotDeals(),
+                          child: const Text(
+                            'Retry',
+                            style: TextStyle(color: AppColors.primary),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              if (!hotDealsController.hasProducts) {
+                return const SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Text(
+                      'No hot deals available',
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  ),
+                );
+              }
+
+              return SizedBox(
+                height: 300,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: hotDealsController.displayProducts.length,
+                  padding: const EdgeInsets.only(left: 16.0),
+                  itemBuilder: (BuildContext context, int index) {
+                    final BeverageProduct product =
+                        hotDealsController.displayProducts[index];
+                    return BeverageProductCard(product: product);
+                  },
+                ),
+              );
+            }),
           ],
         ),
       ),
@@ -109,20 +137,19 @@ class HotDealsSection extends StatelessWidget {
   }
 }
 
-/// Individual product card widget
-class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.product});
+/// Individual beverage product card widget
+class BeverageProductCard extends StatelessWidget {
+  const BeverageProductCard({super.key, required this.product});
 
-  final Map<String, dynamic> product;
+  final BeverageProduct product;
 
   @override
   Widget build(BuildContext context) {
     final CartService cartService = Get.find<CartService>();
-    final String productId = product['id'] as String;
 
     return GestureDetector(
       onTap: () {
-        LogService.info('Product card tapped: ${product['name']}');
+        LogService.info('Product card tapped: ${product.name}');
         showProductSheet();
       },
       child: Container(
@@ -140,7 +167,7 @@ class ProductCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                     border: Border.all(color: Colors.grey.shade300, width: 1),
                     image: DecorationImage(
-                      image: AssetImage(product['imageUrl'] as String),
+                      image: NetworkImage(product.imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -149,12 +176,12 @@ class ProductCard extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Obx(() {
-                    final int quantity = cartService.getQuantity(productId);
+                    final int quantity = cartService.getQuantity(product.id);
                     return quantity == 0
-                        ? _buildAddButton(cartService, productId)
+                        ? _buildAddButton(cartService, product)
                         : _buildQuantitySelector(
                             cartService,
-                            productId,
+                            product.id,
                             quantity,
                           );
                   }),
@@ -164,36 +191,35 @@ class ProductCard extends StatelessWidget {
             const SizedBox(height: 8),
 
             // Product Details
-            const Text(
-              '13 MINS',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+            Text(
+              product.formattedVolume,
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
             const SizedBox(height: 4),
             Text(
-              product['name'] as String,
+              product.name,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
             const SizedBox(height: 4),
-            if (product['rating'] != null)
-              Row(
-                children: [
-                  const Icon(Icons.star, color: Colors.green, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${product['rating']} (${product['reviewCount']})',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                ],
-              ),
+            Row(
+              children: [
+                const Icon(Icons.star, color: Colors.green, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  product.formattedRating,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
 
             // Pricing
             Row(
               children: [
                 Text(
-                  '${product['offerPercentage']}% OFF',
+                  product.discountText,
                   style: const TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
@@ -202,7 +228,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  '₹${(product['originalPrice'] as double).toStringAsFixed(0)}',
+                  product.formattedOriginalPrice,
                   style: const TextStyle(
                     decoration: TextDecoration.lineThrough,
                     color: Colors.grey,
@@ -211,7 +237,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  '₹${(product['discountedPrice'] as double).toStringAsFixed(0)}',
+                  product.formattedOfferPrice,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -225,29 +251,13 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAddButton(CartService cartService, String productId) {
+  Widget _buildAddButton(CartService cartService, BeverageProduct product) {
     return GestureDetector(
       onTap: () async {
-        LogService.info('Add button tapped for product: $productId');
+        LogService.info('Add button tapped for product: ${product.id}');
 
-        // Convert the mock product data to a Product object
-        final Product productObject = Product(
-          id: product['id'] as String,
-          name: product['name'] as String,
-          description: 'Fresh ${product['name']}', // Mock description
-          price: product['originalPrice'] as double,
-          discountPrice: product['discountedPrice'] as double,
-          imageUrl: product['imageUrl'] as String,
-          category: 'Groceries', // Mock category
-          brand: 'Local', // Mock brand
-          rating: (product['rating'] as double?) ?? 0.0,
-          reviewCount: (product['reviewCount'] as int?) ?? 0,
-          stockQuantity: 100, // Mock stock
-          isInStock: true,
-          isOnSale: true,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+        // Convert the beverage product to a Product object
+        final Product productObject = product.toProduct();
 
         // Add to cart using the cart service
         await cartService.addToCart(productObject, quantity: 1);

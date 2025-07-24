@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../controllers/user_dashboard_controller.dart';
 import '../controllers/product_sheet_controller.dart';
+import '../controllers/hot_deals_controller.dart';
 
 class UserDashboardBinding extends Bindings {
   @override
@@ -11,5 +12,6 @@ class UserDashboardBinding extends Bindings {
       fenix: true,
     );
     Get.lazyPut<ProductSheetController>(() => ProductSheetController());
+    Get.lazyPut<HotDealsController>(() => HotDealsController());
   }
 }
