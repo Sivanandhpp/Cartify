@@ -12,14 +12,14 @@ export 'constants/app_spacing.dart'; // Consolidated spacing, padding, and borde
 // Models
 export 'models/product_model.dart';
 export 'models/cart_item_model.dart';
-export 'models/beverage_product_model.dart';
+export 'models/api_product_model.dart';
 
 // Services
 export 'services/log_service.dart';
 export 'services/error_service.dart';
 export 'services/notification_service.dart';
 export 'services/cart_service.dart';
-export 'services/beverage_api_service.dart';
+export 'services/api_service.dart';
 export 'services/theme_service.dart';
 
 // Theme

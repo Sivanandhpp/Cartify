@@ -1,7 +1,7 @@
 import 'product_model.dart';
 
-/// Beverage product model for API data
-class BeverageProduct {
+/// API product model for external data
+class ApiProduct {
   final String id;
   final String name;
   final String brand;
@@ -17,7 +17,7 @@ class BeverageProduct {
   final String description;
   final String imageUrl;
 
-  const BeverageProduct({
+  const ApiProduct({
     required this.id,
     required this.name,
     required this.brand,
@@ -34,9 +34,9 @@ class BeverageProduct {
     required this.imageUrl,
   });
 
-  /// Create BeverageProduct from JSON
-  factory BeverageProduct.fromJson(Map<String, dynamic> json) {
-    return BeverageProduct(
+  /// Create ApiProduct from JSON
+  factory ApiProduct.fromJson(Map<String, dynamic> json) {
+    return ApiProduct(
       id: json['id'] as String,
       name: json['name'] as String,
       brand: json['brand'] as String,
@@ -54,7 +54,7 @@ class BeverageProduct {
     );
   }
 
-  /// Convert BeverageProduct to JSON
+  /// Convert ApiProduct to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,

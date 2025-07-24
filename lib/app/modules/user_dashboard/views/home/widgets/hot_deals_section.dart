@@ -123,9 +123,9 @@ class HotDealsSection extends StatelessWidget {
                   itemCount: hotDealsController.displayProducts.length,
                   padding: const EdgeInsets.only(left: 16.0),
                   itemBuilder: (BuildContext context, int index) {
-                    final BeverageProduct product =
+                    final ApiProduct product =
                         hotDealsController.displayProducts[index];
-                    return BeverageProductCard(product: product);
+                    return ApiProductCard(product: product);
                   },
                 ),
               );
@@ -137,11 +137,11 @@ class HotDealsSection extends StatelessWidget {
   }
 }
 
-/// Individual beverage product card widget
-class BeverageProductCard extends StatelessWidget {
-  const BeverageProductCard({super.key, required this.product});
+/// Individual product card widget
+class ApiProductCard extends StatelessWidget {
+  const ApiProductCard({super.key, required this.product});
 
-  final BeverageProduct product;
+  final ApiProduct product;
 
   @override
   Widget build(BuildContext context) {
@@ -251,12 +251,12 @@ class BeverageProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAddButton(CartService cartService, BeverageProduct product) {
+  Widget _buildAddButton(CartService cartService, ApiProduct product) {
     return GestureDetector(
       onTap: () async {
         LogService.info('Add button tapped for product: ${product.id}');
 
-        // Convert the beverage product to a Product object
+        // Convert the API product to a Product object
         final Product productObject = product.toProduct();
 
         // Add to cart using the cart service

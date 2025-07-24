@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import '../../../core/models/beverage_product_model.dart';
-import '../../../core/services/beverage_api_service.dart';
+import '../../../core/models/api_product_model.dart';
+import '../../../core/services/api_service.dart';
 import '../../../core/services/log_service.dart';
 
 /// Controller for managing hot deals data and state
 class HotDealsController extends GetxController {
-  // Observable list of beverage products
-  final RxList<BeverageProduct> beverageProducts = <BeverageProduct>[].obs;
+  // Observable list of products
+  final RxList<ApiProduct> products = <ApiProduct>[].obs;
 
   // Loading state
   final RxBool isLoading = true.obs;
@@ -30,13 +30,11 @@ class HotDealsController extends GetxController {
 
       LogService.info('Fetching hot deals products...');
 
-      final products = await BeverageApiService.fetchHotDealsProducts(
-        limit: 10,
-      );
-      beverageProducts.assignAll(products);
+      final fetchedProducts = await ApiService.fetchHotDealsProducts(limit: 10);
+      products.assignAll(fetchedProducts);
 
       LogService.info(
-        'Successfully loaded ${products.length} hot deals products',
+        'Successfully loaded ${fetchedProducts.length} hot deals products',
       );
     } catch (e) {
       LogService.error('Failed to fetch hot deals products: $e');
@@ -54,14 +52,14 @@ class HotDealsController extends GetxController {
   }
 
   /// Get limited products for display
-  List<BeverageProduct> get displayProducts {
+  List<ApiProduct> get displayProducts {
     const maxDisplay = 25;
-    return beverageProducts.take(maxDisplay).toList();
+    return products.take(maxDisplay).toList();
   }
 
   /// Check if there are products to display
-  bool get hasProducts => beverageProducts.isNotEmpty;
+  bool get hasProducts => products.isNotEmpty;
 
   /// Get product count
-  int get productCount => beverageProducts.length;
+  int get productCount => products.length;
 }
