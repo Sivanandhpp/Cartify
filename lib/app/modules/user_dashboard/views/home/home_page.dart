@@ -31,8 +31,8 @@ class HomePage extends GetView<UserDashboardController> {
           const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
           const ExpiryBannerSection(),
           const HotDealsSection(),
-          const HotDealsSection(),
-          const HotDealsSection(),
+          // const HotDealsSection(),
+          // const HotDealsSection(),
           // Add bottom padding for safe area + cart widget + nav bar
           const SliverToBoxAdapter(child: SizedBox(height: 180)),
         ],
