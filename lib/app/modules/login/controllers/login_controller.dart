@@ -36,7 +36,7 @@ class LoginController extends GetxController {
       return AppStrings.loginErrEmpty;
     }
     if (!AppRegex.mobileNumber.hasMatch(value)) {
-      return AppStrings.loginErrNumberlength;
+      return AppStrings.loginErrNumber;
     }
     return null;
   }
@@ -77,16 +77,3 @@ class LoginController extends GetxController {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -35,7 +35,7 @@ class OtpDigitField extends StatelessWidget {
       child: Container(
         width: 65,
         height: 65,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+        margin: AppSpacing.marginSmall,
         child: TextFormField(
           controller: controller,
           focusNode: focusNode,
@@ -50,9 +50,21 @@ class OtpDigitField extends StatelessWidget {
             filled: true,
             fillColor: isFilled ? AppColors.primary : Colors.white,
             border: OutlineInputBorder(
-              borderRadius: AppSpacing.radiusSmall,
+              borderRadius: AppSpacing.radiusMedium,
               borderSide: BorderSide(
-                color: isFilled ? AppColors.primary : const Color(0xFFFFFFFF),
+                color: isFilled ? AppColors.primary : AppColors.grey,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: AppSpacing.radiusMedium,
+              borderSide: BorderSide(
+                color: isFilled ? AppColors.primary : AppColors.grey,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: AppSpacing.radiusMedium,
+              borderSide: BorderSide(
+                color: isFilled ? AppColors.primary : AppColors.grey,
               ),
             ),
           ),
@@ -66,7 +78,3 @@ class OtpDigitField extends StatelessWidget {
     );
   }
 }
-
-
-
-

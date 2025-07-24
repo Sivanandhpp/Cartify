@@ -19,7 +19,7 @@ class LoginView extends GetView<LoginController> {
           children: [
             // Background image section
             Positioned(
-              top: 0,
+              top: 20,
               left: 0,
               right: 0,
               child: SizedBox(
@@ -44,7 +44,7 @@ class LoginView extends GetView<LoginController> {
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: AppColors.background,
-                    borderRadius: AppSpacing.radiusLarge,
+                    borderRadius: AppSpacing.radiusXlarge,
                   ),
                   padding: AppSpacing.paddingLarge,
                   child: Column(

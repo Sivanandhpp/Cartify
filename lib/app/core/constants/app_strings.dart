@@ -28,7 +28,7 @@ class AppStrings {
   static const String loginCountryCode = '+91';
   static const String loginEnterMobileNumber = 'Enter Phone Number';
   static const String loginErrEmpty = 'Mobile number cannot be empty';
-  static const String loginErrNumberlength = 'Mobile number must be 10 digits';
+  static const String loginErrNumber = 'Mobile number must be valid 10 digits';
   static const String loginTermsPolicy =
       'By continuing, you agree to our Terms & Privacy Policy';
 
@@ -37,7 +37,7 @@ class AppStrings {
   static const String otpCheckEnterOtp = 'Enter verification code';
   static const String otpCheckHelperTitle =
       'We have sent a verification code to';
-  static const String otpCheckEditMobile = 'Edit Mobile Number';
+  static const String otpCheckEditMobile = 'Edit';
   static const String otpCheckVerifyButton = 'Verify';
   static const String otpCheckResendText = "Didn't receive code?";
   static const String otpCheckResendButton = 'Resend';
@@ -163,6 +163,3 @@ class AppStrings {
   static const String enterYourName = 'Enter your name';
   static const String enterYourMessage = 'Enter your message';
 }
-
-
-

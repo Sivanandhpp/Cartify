@@ -11,21 +11,26 @@ class AppSpacing {
   static const double xlarge = 32.0;
 
   // Common paddings
-  static const EdgeInsets paddingSmall = EdgeInsets.all(8);
-  static const EdgeInsets paddingMedium = EdgeInsets.all(16);
-  static const EdgeInsets paddingLarge = EdgeInsets.all(24);
+  static const EdgeInsets paddingSmall = EdgeInsets.all(small);
+  static const EdgeInsets paddingMedium = EdgeInsets.all(medium);
+  static const EdgeInsets paddingLarge = EdgeInsets.all(large);
 
-  static const EdgeInsets paddingHorizontal = EdgeInsets.symmetric(
-    horizontal: 16,
-  );
-  static const EdgeInsets paddingVertical = EdgeInsets.symmetric(vertical: 16);
+  static const EdgeInsets paddingHorizontal = EdgeInsets.symmetric(horizontal: medium);
+  static const EdgeInsets paddingVertical = EdgeInsets.symmetric(vertical: medium);
 
+  // Common margins
+  static const EdgeInsets marginSmall = EdgeInsets.all(small);
+  static const EdgeInsets marginMedium = EdgeInsets.all(medium);
+  static const EdgeInsets marginLarge = EdgeInsets.all(large);
+
+  static const EdgeInsets marginHorizontal = EdgeInsets.symmetric(horizontal: medium);
+  static const EdgeInsets marginVertical = EdgeInsets.symmetric(vertical: medium);
+  
   // Common border radius
-  static const BorderRadius radiusSmall = BorderRadius.all(Radius.circular(8));
-  static const BorderRadius radiusMedium = BorderRadius.all(
-    Radius.circular(16),
-  );
-  static const BorderRadius radiusLarge = BorderRadius.all(Radius.circular(24));
+  static const BorderRadius radiusSmall = BorderRadius.all(Radius.circular(small));
+  static const BorderRadius radiusMedium = BorderRadius.all(Radius.circular(medium));
+  static const BorderRadius radiusLarge = BorderRadius.all(Radius.circular(large));
+  static const BorderRadius radiusXlarge = BorderRadius.all(Radius.circular(xlarge));
 
   // Spacing widgets - no need for separate file!
   static const Widget spaceSmall = SizedBox(height: small);

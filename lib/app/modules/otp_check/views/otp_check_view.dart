@@ -64,7 +64,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
 
             AppSpacing.spaceLarge,
             Form(key: controller.formKey, child: const OtpFieldsRow()),
-            AppSpacing.spaceLarge,
+            AppSpacing.spaceMedium,
             SizedBox(
               width: double.infinity,
               child: AppButtons.primary(
@@ -96,16 +96,3 @@ class OtpCheckView extends GetView<OtpCheckController> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

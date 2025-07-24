@@ -21,8 +21,8 @@ void main() async {
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: Get.find<ThemeService>().themeMode,
+      // darkTheme: AppTheme.darkTheme,
+      // themeMode: Get.find<ThemeService>().themeMode,
       debugShowCheckedModeBanner: false,
     ),
   );
