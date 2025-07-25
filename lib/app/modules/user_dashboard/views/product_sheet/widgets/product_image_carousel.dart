@@ -1,9 +1,5 @@
-import 'package:cartify/app/core/constants/app_spacing.dart';
-import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:ui';
-
 import '../../../controllers/product_sheet_controller.dart';
 
 class ProductImageCarousel extends StatelessWidget {
@@ -31,7 +27,10 @@ class ProductImageCarousel extends StatelessWidget {
                       top: Radius.circular(20),
                     ),
                     image: DecorationImage(
-                      image: AssetImage(controller.productImages[index]),
+                      image: controller.productImages[index].startsWith('http')
+                          ? NetworkImage(controller.productImages[index])
+                          : AssetImage(controller.productImages[index])
+                                as ImageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -55,7 +54,7 @@ class ProductImageCarousel extends StatelessWidget {
             ),
           ),
 
-          // Page indicators at bottom right of image
+          // Page indicators
           Positioned(
             bottom: 16,
             right: 16,
@@ -78,39 +77,6 @@ class ProductImageCarousel extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ),
-
-          // Vegetarian indicator
-          Positioned(
-            bottom: 16,
-            left: 16,
-            child: Obx(
-              () => controller.isVegetarian.value
-                  ? Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.eco,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.circle,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
             ),
           ),
         ],

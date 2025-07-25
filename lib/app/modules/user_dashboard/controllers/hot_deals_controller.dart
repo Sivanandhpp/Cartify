@@ -50,16 +50,4 @@ class HotDealsController extends GetxController {
     LogService.info('Refreshing hot deals...');
     await fetchHotDealsProducts();
   }
-
-  /// Get limited products for display
-  List<ApiProduct> get displayProducts {
-    const maxDisplay = 25;
-    return products.take(maxDisplay).toList();
-  }
-
-  /// Check if there are products to display
-  bool get hasProducts => products.isNotEmpty;
-
-  /// Get product count
-  int get productCount => products.length;
 }

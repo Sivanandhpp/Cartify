@@ -193,7 +193,9 @@ class SellerDetailsSection extends StatelessWidget {
       children: [
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: controller.visitSellerStore,
+            onPressed: () {
+              
+            },
             icon: const Icon(Icons.store_outlined, size: 16),
             label: const Text('Visit Store'),
             style: OutlinedButton.styleFrom(
@@ -209,7 +211,9 @@ class SellerDetailsSection extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: controller.contactSeller,
+            onPressed: () {
+              
+            },
             icon: const Icon(Icons.chat_outlined, size: 16),
             label: const Text('Contact'),
             style: OutlinedButton.styleFrom(

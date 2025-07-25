@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/models/api_product_model.dart';
 
 class ProductSheetController extends GetxController {
   static ProductSheetController get to => Get.find();
@@ -37,11 +38,31 @@ class ProductSheetController extends GetxController {
   var sellerRating = 4.3.obs;
 
   // Product Images
+  var productImageUrl = ''.obs;
+
   List<String> get productImages => [
+    if (productImageUrl.value.isNotEmpty) productImageUrl.value,
     'assets/images/products/product1.png',
     'assets/images/products/product2.png',
     'assets/images/products/product3.png',
   ];
+
+  /// Initialize controller with API product data
+  void initializeWithProduct(ApiProduct product) {
+    productName.value = product.name;
+    productDescription.value = product.description;
+    productWeight.value = product.volume;
+    originalPrice.value = product.priceINR;
+    discountedPrice.value = product.offerPrice;
+    discountPercentage.value = product.offerPercentage;
+    sellerName.value = product.brand;
+    deliveryTime.value = 'Delivery in 15-30 mins';
+    minimumOrderAmount.value = 199;
+    isVegetarian.value = true;
+    sellerLocation.value = 'Store Location';
+    sellerRating.value = product.rating;
+    productImageUrl.value = product.imageUrl;
+  }
 
   @override
   void onInit() {
@@ -113,52 +134,5 @@ class ProductSheetController extends GetxController {
       margin: const EdgeInsets.all(16),
       borderRadius: 8,
     );
-  }
-
-  // Seller Actions
-  void visitSellerStore() {
-    Get.snackbar(
-      'Opening Store',
-      'Redirecting to ${sellerName.value}',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
-    );
-  }
-
-  void contactSeller() {
-    Get.snackbar(
-      'Contact Seller',
-      'Opening chat with ${sellerName.value}',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
-    );
-  }
-
-  // Data Management
-  void updateProductData({
-    String? name,
-    String? description,
-    String? weight,
-    double? originalPriceValue,
-    double? discountedPriceValue,
-    int? discountPercent,
-  }) {
-    if (name != null) productName.value = name;
-    if (description != null) productDescription.value = description;
-    if (weight != null) productWeight.value = weight;
-    if (originalPriceValue != null) originalPrice.value = originalPriceValue;
-    if (discountedPriceValue != null)
-      discountedPrice.value = discountedPriceValue;
-    if (discountPercent != null) discountPercentage.value = discountPercent;
-  }
-
-  void updateSellerData({String? name, String? location, double? rating}) {
-    if (name != null) sellerName.value = name;
-    if (location != null) sellerLocation.value = location;
-    if (rating != null) sellerRating.value = rating;
   }
 }

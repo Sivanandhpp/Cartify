@@ -19,7 +19,7 @@ class HotDealsSection extends StatelessWidget {
     return Obx(() {
       return HorizontalProductListWidget(
         title: 'Hot deals',
-        products: hotDealsController.displayProducts,
+        products: hotDealsController.products.take(10).toList(),
         isLoading: hotDealsController.isLoading.value,
         hasError: hotDealsController.hasError.value,
         errorMessage: hotDealsController.errorMessage.value,

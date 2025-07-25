@@ -11,11 +11,18 @@ import 'widgets/product_info_section.dart';
 import 'widgets/seller_details_section.dart';
 
 class ProductSheetWidget extends StatelessWidget {
-  const ProductSheetWidget({super.key});
+  const ProductSheetWidget({super.key, this.product});
+
+  final ApiProduct? product;
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProductSheetController());
+
+    // Initialize controller with product data if provided
+    if (product != null) {
+      controller.initializeWithProduct(product!);
+    }
 
     return DraggableScrollableSheet(
       controller: controller.draggableController,
@@ -134,15 +141,4 @@ class ProductSheetWidget extends StatelessWidget {
       },
     );
   }
-}
-
-// Helper function to show product sheet
-void showProductSheet() {
-  Get.bottomSheet(
-    const ProductSheetWidget(),
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    enableDrag: true,
-    ignoreSafeArea: false,
-  );
 }
