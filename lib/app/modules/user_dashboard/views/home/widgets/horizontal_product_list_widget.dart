@@ -3,7 +3,7 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 
 // Local widget imports (relative)
-import 'api_product_card.dart';
+import 'product_card.dart';
 
 /// Reusable horizontal product list widget with loading and error states
 class HorizontalProductListWidget extends StatelessWidget {
