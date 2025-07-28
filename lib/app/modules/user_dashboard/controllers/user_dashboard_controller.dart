@@ -86,8 +86,6 @@ class UserDashboardController extends GetxController {
     ];
   }
 
- 
-
   // Load user profile data
   void _loadUserProfile() {
     userProfile.value = {
@@ -107,39 +105,35 @@ class UserDashboardController extends GetxController {
     wishlistItems.value = [
       Product(
         id: 'wish_1',
-        name: 'Wireless Headphones',
-        description: 'Premium sound quality wireless headphones',
-        price: 4999.0,
-        discountPrice: 3999.0,
-        imageUrl: AppImages.product1,
-        category: 'electronics',
-        brand: 'SoundMax',
+        name: 'Premium Whiskey',
+        brand: 'Highland Reserve',
+        category: 'Spirits',
+        subCategory: 'Whiskey',
+        volume: '750ml',
+        alcoholContentABV: 40.0,
+        priceINR: 4999.0,
+        offerPercentage: 20,
+        offerPrice: 3999.0,
         rating: 4.5,
         reviewCount: 150,
-        stockQuantity: 25,
-        isInStock: true,
-        isFeatured: true,
-        isOnSale: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        description: 'Premium aged whiskey with rich flavor profile',
+        imageUrl: AppImages.product1,
       ),
       Product(
         id: 'wish_2',
-        name: 'Smart Watch',
-        description: 'Feature-rich smartwatch with health tracking',
-        price: 8999.0,
-        discountPrice: 6999.0,
-        imageUrl: AppImages.product2,
-        category: 'electronics',
-        brand: 'TechWear',
+        name: 'Craft Beer Pack',
+        brand: 'BrewMaster',
+        category: 'Beer',
+        subCategory: 'Craft Beer',
+        volume: '330ml x 6',
+        alcoholContentABV: 5.2,
+        priceINR: 899.0,
+        offerPercentage: 15,
+        offerPrice: 764.0,
         rating: 4.7,
         reviewCount: 320,
-        stockQuantity: 15,
-        isInStock: true,
-        isFeatured: true,
-        isOnSale: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        description: 'Premium craft beer variety pack with unique flavors',
+        imageUrl: AppImages.product2,
       ),
     ];
   }

@@ -11,7 +11,9 @@ import 'widgets/product_info_section.dart';
 import 'widgets/seller_details_section.dart';
 
 class ProductSheetWidget extends StatelessWidget {
-  const ProductSheetWidget({super.key});
+  const ProductSheetWidget({super.key, this.product});
+
+  final Product? product;
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +46,30 @@ class ProductSheetWidget extends StatelessWidget {
                 controller: scrollController,
                 slivers: [
                   // Product Image Carousel
-                  ProductImageCarousel(controller: controller),
+                  Obx(
+                    () => ProductImageCarousel(
+                      images: controller.getProductImages(product!),
+                      currentImageIndex: controller.currentImageIndex.value,
+                      totalImages: product!.numberOfImages,
+                      pageController: controller.imagePageController,
+                      onPageChanged: controller.onImagePageChanged,
+                    ),
+                  ),
 
                   // Product Information Section
-                  ProductInfoSection(controller: controller),
+                  if (product != null)
+                    ProductInfoSection(
+                      product: product!,
+                      onAddToCart: controller.addToCart,
+                      onRemoveFromCart: controller.removeFromCart,
+                    ),
 
                   // Expandable Details Section
-                  ExpandableDetailsSection(controller: controller),
+                  if (product != null)
+                    ExpandableDetailsSection(product: product!),
 
                   // Seller Details Section
-                  SellerDetailsSection(controller: controller),
+                  if (product != null) SellerDetailsSection(product: product!),
 
                   // Bottom Padding
                   const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -134,15 +150,4 @@ class ProductSheetWidget extends StatelessWidget {
       },
     );
   }
-}
-
-// Helper function to show product sheet
-void showProductSheet() {
-  Get.bottomSheet(
-    const ProductSheetWidget(),
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    enableDrag: true,
-    ignoreSafeArea: false,
-  );
 }

@@ -1,3 +1,4 @@
+
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -38,16 +39,3 @@ Future<void> initServices() async {
 
   LogService.info('Services initialized successfully');
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

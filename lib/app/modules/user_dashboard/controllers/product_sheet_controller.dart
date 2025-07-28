@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/models/product_model.dart';
 
 class ProductSheetController extends GetxController {
   static ProductSheetController get to => Get.find();
@@ -13,35 +14,8 @@ class ProductSheetController extends GetxController {
   static const double maxSheetSize = 0.95;
 
   // UI State Observables
-  var isDetailsExpanded = false.obs;
-  var currentImageIndex = 0.obs;
   var isAppBarVisible = false.obs;
-  var cartQuantity = 0.obs;
-
-  // Product Data Observables
-  var productName = 'Fresh Bell Pepper (Capsicum)'.obs;
-  var productDescription =
-      'Fresh, crispy bell peppers perfect for salads, cooking, and snacking. Rich in vitamins and antioxidants.'
-          .obs;
-  var productWeight = '250g'.obs;
-  var deliveryTime = 'Delivery in 15-30 mins'.obs;
-  var originalPrice = 85.0.obs;
-  var discountedPrice = 68.0.obs;
-  var discountPercentage = 20.obs;
-  var minimumOrderAmount = 199.obs;
-  var isVegetarian = true.obs;
-
-  // Seller Data Observables
-  var sellerName = 'Fresh Mart Store'.obs;
-  var sellerLocation = 'Koramangala, Bangalore'.obs;
-  var sellerRating = 4.3.obs;
-
-  // Product Images
-  List<String> get productImages => [
-    'assets/images/products/product1.png',
-    'assets/images/products/product2.png',
-    'assets/images/products/product3.png',
-  ];
+  var currentImageIndex = 0.obs;
 
   @override
   void onInit() {
@@ -62,16 +36,33 @@ class ProductSheetController extends GetxController {
   }
 
   // UI Actions
-  void toggleDetails() {
-    isDetailsExpanded.value = !isDetailsExpanded.value;
-  }
-
   void closeSheet() {
     Get.back();
   }
 
   void onImagePageChanged(int index) {
     currentImageIndex.value = index;
+  }
+
+  /// Get product images with fallback
+  List<String> getProductImages(Product product) {
+    List<String> images = [];
+
+    // Add API product images if available
+    if (product.imageList.isNotEmpty) {
+      images.addAll(product.imageList);
+    }
+
+    // Add fallback placeholder images if no API images
+    if (images.isEmpty) {
+      images.addAll([
+        'assets/images/products/product1.png',
+        'assets/images/products/product2.png',
+        'assets/images/products/product3.png',
+      ]);
+    }
+
+    return images;
   }
 
   void _onSheetSizeChanged() {
@@ -83,10 +74,9 @@ class ProductSheetController extends GetxController {
 
   // Product Actions
   void addToCart() {
-    cartQuantity.value++;
     Get.snackbar(
       'Added to Cart',
-      '${productName.value} added to cart',
+      'Product added to cart',
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.green,
       colorText: Colors.white,
@@ -97,15 +87,13 @@ class ProductSheetController extends GetxController {
   }
 
   void removeFromCart() {
-    if (cartQuantity.value > 0) {
-      cartQuantity.value--;
-    }
+    // Cart removal logic can be handled here
   }
 
   void addToWishlist() {
     Get.snackbar(
       'Added to Wishlist',
-      '${productName.value} added to wishlist',
+      'Product added to wishlist',
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.red,
       colorText: Colors.white,
@@ -113,52 +101,5 @@ class ProductSheetController extends GetxController {
       margin: const EdgeInsets.all(16),
       borderRadius: 8,
     );
-  }
-
-  // Seller Actions
-  void visitSellerStore() {
-    Get.snackbar(
-      'Opening Store',
-      'Redirecting to ${sellerName.value}',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
-    );
-  }
-
-  void contactSeller() {
-    Get.snackbar(
-      'Contact Seller',
-      'Opening chat with ${sellerName.value}',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 8,
-    );
-  }
-
-  // Data Management
-  void updateProductData({
-    String? name,
-    String? description,
-    String? weight,
-    double? originalPriceValue,
-    double? discountedPriceValue,
-    int? discountPercent,
-  }) {
-    if (name != null) productName.value = name;
-    if (description != null) productDescription.value = description;
-    if (weight != null) productWeight.value = weight;
-    if (originalPriceValue != null) originalPrice.value = originalPriceValue;
-    if (discountedPriceValue != null)
-      discountedPrice.value = discountedPriceValue;
-    if (discountPercent != null) discountPercentage.value = discountPercent;
-  }
-
-  void updateSellerData({String? name, String? location, double? rating}) {
-    if (name != null) sellerName.value = name;
-    if (location != null) sellerLocation.value = location;
-    if (rating != null) sellerRating.value = rating;
   }
 }

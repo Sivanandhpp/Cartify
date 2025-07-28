@@ -2,14 +2,12 @@ import 'package:get/get.dart';
 import '../../../core/index.dart';
 
 class CartController extends GetxController {
-  // Get the cart service instance
   final CartService _cartService = Get.find<CartService>();
 
-  // Reactive variables
   final RxDouble deliveryTip = 0.0.obs;
   final RxBool isProcessingPayment = false.obs;
 
-  // Getters that react to cart service changes
+  // Getters
   List<CartItem> get cartItems => _cartService.cartItems;
   double get subtotal => _cartService.subtotal;
   double get total => _cartService.total;
@@ -21,28 +19,25 @@ class CartController extends GetxController {
   bool get isEmpty => _cartService.isEmpty;
   bool get isLoading => _cartService.isLoading;
 
-  // Constants for charges
+  // Constants
   static const double handlingFee = 9.80;
   static const double deliveryPartnerFee = 30.0;
-  static const double gstRate = 0.18; // 18% GST
+  static const double gstRate = 0.18;
 
   // Calculated values
   double get gstAmount => subtotal * gstRate;
   double get finalTotal =>
       subtotal +
       handlingFee +
-      (deliveryPartnerFee > 0 ? deliveryPartnerFee : 0) +
+      deliveryPartnerFee +
       gstAmount +
       deliveryTip.value;
 
   @override
   void onInit() {
     super.onInit();
-    // Initialize with default tip
     deliveryTip.value = 0.0;
   }
-
-
 
   // Cart operations
   void incrementQuantity(String cartItemId) {
@@ -78,18 +73,14 @@ class CartController extends GetxController {
 
     try {
       isProcessingPayment.value = true;
-
       NotificationService.showLoading(
         title: 'Processing Payment',
         message: 'Please wait while we process your order...',
       );
 
-      // Simulate payment processing
       await Future.delayed(const Duration(seconds: 3));
 
       NotificationService.dismiss();
-
-      // Clear cart after successful payment
       clearCart();
 
       NotificationService.showSuccess(
@@ -97,7 +88,6 @@ class CartController extends GetxController {
         message: 'Your order has been placed and will be delivered soon!',
       );
 
-      // Navigate back to home or order confirmation
       Get.back();
     } catch (e) {
       NotificationService.dismiss();
@@ -111,11 +101,7 @@ class CartController extends GetxController {
     }
   }
 
-  // Add more items navigation
   void addMoreItems() {
-    Get.back(); // Go back to shopping
+    Get.back();
   }
 }
-
-
-

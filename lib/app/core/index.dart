@@ -18,7 +18,9 @@ export 'services/log_service.dart';
 export 'services/error_service.dart';
 export 'services/notification_service.dart';
 export 'services/cart_service.dart';
+export 'services/api_service.dart';
 export 'services/theme_service.dart';
+export 'services/sheet_service.dart';
 
 // Theme
 export 'theme/app_colors.dart';

@@ -1,15 +1,20 @@
-import 'package:cartify/app/core/constants/app_spacing.dart';
-import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:ui';
-
-import '../../../controllers/product_sheet_controller.dart';
 
 class ProductImageCarousel extends StatelessWidget {
-  final ProductSheetController controller;
+  final List<String> images;
+  final int currentImageIndex;
+  final int totalImages;
+  final PageController pageController;
+  final Function(int) onPageChanged;
 
-  const ProductImageCarousel({super.key, required this.controller});
+  const ProductImageCarousel({
+    super.key,
+    required this.images,
+    required this.currentImageIndex,
+    required this.totalImages,
+    required this.pageController,
+    required this.onPageChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +22,13 @@ class ProductImageCarousel extends StatelessWidget {
       child: Stack(
         children: [
           // Main product image container
-          Container(
-            height: 300,
+          SizedBox(
+            height: 400,
             width: double.infinity,
             child: PageView.builder(
-              controller: controller.imagePageController,
-              onPageChanged: controller.onImagePageChanged,
-              itemCount: controller.productImages.length,
+              controller: pageController,
+              onPageChanged: onPageChanged,
+              itemCount: totalImages,
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
@@ -31,7 +36,9 @@ class ProductImageCarousel extends StatelessWidget {
                       top: Radius.circular(20),
                     ),
                     image: DecorationImage(
-                      image: AssetImage(controller.productImages[index]),
+                      image: images[index].startsWith('http')
+                          ? NetworkImage(images[index])
+                          : AssetImage(images[index]) as ImageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -55,62 +62,24 @@ class ProductImageCarousel extends StatelessWidget {
             ),
           ),
 
-          // Page indicators at bottom right of image
+          // Page indicators
           Positioned(
             bottom: 16,
             right: 16,
-            child: Obx(
-              () => Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Text(
-                  '${controller.currentImageIndex.value + 1}/${controller.productImages.length}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(
+                '${currentImageIndex + 1}/$totalImages',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          ),
-
-          // Vegetarian indicator
-          Positioned(
-            bottom: 16,
-            left: 16,
-            child: Obx(
-              () => controller.isVegetarian.value
-                  ? Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.eco,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.circle,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ),
             ),
           ),
         ],
