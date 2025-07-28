@@ -1,12 +1,10 @@
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import '../../../controllers/product_sheet_controller.dart';
 
 class SellerDetailsSection extends StatelessWidget {
-  final ProductSheetController controller;
+  final ApiProduct product;
 
-  const SellerDetailsSection({super.key, required this.controller});
+  const SellerDetailsSection({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +49,12 @@ class SellerDetailsSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Obx(
-                    () => Text(
-                      controller.sellerName.value,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                  Text(
+                    product.brand,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -66,11 +62,9 @@ class SellerDetailsSection extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 4),
-              Obx(
-                () => Text(
-                  controller.sellerLocation.value,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
+              const Text(
+                'Store Location',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
@@ -81,26 +75,26 @@ class SellerDetailsSection extends StatelessWidget {
   }
 
   Widget _buildSellerAvatar() {
-    return Obx(
-      () => Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Colors.green.shade400, Colors.green.shade600],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Colors.green.shade400, Colors.green.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Center(
-          child: Text(
-            controller.sellerName.value.substring(0, 1).toUpperCase(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+      ),
+      child: Center(
+        child: Text(
+          product.brand.isNotEmpty
+              ? product.brand.substring(0, 1).toUpperCase()
+              : 'S',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -133,28 +127,26 @@ class SellerDetailsSection extends StatelessWidget {
   }
 
   Widget _buildRatingBadge() {
-    return Obx(
-      () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.green.shade600,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.star, color: Colors.white, size: 14),
-            const SizedBox(width: 4),
-            Text(
-              controller.sellerRating.value.toStringAsFixed(1),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.green.shade600,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.star, color: Colors.white, size: 14),
+          const SizedBox(width: 4),
+          Text(
+            product.rating.toStringAsFixed(1),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -193,9 +185,7 @@ class SellerDetailsSection extends StatelessWidget {
       children: [
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () {
-              
-            },
+            onPressed: () {},
             icon: const Icon(Icons.store_outlined, size: 16),
             label: const Text('Visit Store'),
             style: OutlinedButton.styleFrom(
@@ -211,9 +201,7 @@ class SellerDetailsSection extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () {
-              
-            },
+            onPressed: () {},
             icon: const Icon(Icons.chat_outlined, size: 16),
             label: const Text('Contact'),
             style: OutlinedButton.styleFrom(

@@ -82,7 +82,7 @@ class ApiProduct {
       description: description,
       price: priceINR,
       discountPrice: offerPrice,
-      imageUrl: imageUrl,
+      imageUrl: imageList.isNotEmpty ? imageList.first : imageUrl,
       category: category,
       brand: brand,
       rating: rating,
@@ -109,4 +109,17 @@ class ApiProduct {
 
   /// Get formatted rating with review count
   String get formattedRating => '$rating ($reviewCount)';
+
+  /// Get list of image URLs from comma-separated string
+  List<String> get imageList {
+    if (imageUrl.isEmpty) return [];
+    return imageUrl
+        .split(',')
+        .map((url) => url.trim())
+        .where((url) => url.isNotEmpty)
+        .toList();
+  }
+
+  /// Get number of images
+  int get numberOfImages => imageList.length;
 }

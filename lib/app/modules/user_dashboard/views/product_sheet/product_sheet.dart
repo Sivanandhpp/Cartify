@@ -19,11 +19,6 @@ class ProductSheetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ProductSheetController());
 
-    // Initialize controller with product data if provided
-    if (product != null) {
-      controller.initializeWithProduct(product!);
-    }
-
     return DraggableScrollableSheet(
       controller: controller.draggableController,
       initialChildSize: ProductSheetController.initialSheetSize,
@@ -51,16 +46,30 @@ class ProductSheetWidget extends StatelessWidget {
                 controller: scrollController,
                 slivers: [
                   // Product Image Carousel
-                  ProductImageCarousel(controller: controller),
+                  Obx(
+                    () => ProductImageCarousel(
+                      images: controller.getProductImages(product!),
+                      currentImageIndex: controller.currentImageIndex.value,
+                      totalImages: product!.numberOfImages,
+                      pageController: controller.imagePageController,
+                      onPageChanged: controller.onImagePageChanged,
+                    ),
+                  ),
 
                   // Product Information Section
-                  ProductInfoSection(controller: controller),
+                  if (product != null)
+                    ProductInfoSection(
+                      product: product!,
+                      onAddToCart: controller.addToCart,
+                      onRemoveFromCart: controller.removeFromCart,
+                    ),
 
                   // Expandable Details Section
-                  ExpandableDetailsSection(controller: controller),
+                  if (product != null)
+                    ExpandableDetailsSection(product: product!),
 
                   // Seller Details Section
-                  SellerDetailsSection(controller: controller),
+                  if (product != null) SellerDetailsSection(product: product!),
 
                   // Bottom Padding
                   const SliverToBoxAdapter(child: SizedBox(height: 100)),
