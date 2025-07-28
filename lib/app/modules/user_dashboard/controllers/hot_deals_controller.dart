@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import '../../../core/models/api_product_model.dart';
+import '../../../core/models/product_model.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/services/log_service.dart';
 
 /// Controller for managing hot deals data and state
 class HotDealsController extends GetxController {
   // Observable list of products
-  final RxList<ApiProduct> products = <ApiProduct>[].obs;
+  final RxList<Product> products = <Product>[].obs;
 
   // Loading state
   final RxBool isLoading = true.obs;

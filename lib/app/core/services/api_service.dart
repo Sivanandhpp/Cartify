@@ -1,8 +1,6 @@
 import 'dart:convert';
+import 'package:cartify/app/core/index.dart';
 import 'package:http/http.dart' as http;
-import '../models/api_product_model.dart';
-import 'log_service.dart';
-import 'error_service.dart';
 
 /// Service for fetching products from JSONBin.io API
 class ApiService {
@@ -12,7 +10,7 @@ class ApiService {
       r'$2a$10$zDMIipp.oXBVa5aRBh4LMeQAqKpixzSSkrLcNVBWNRlxL1.cPdZMG';
 
   /// Fetch products from the API
-  static Future<List<ApiProduct>> fetchProducts() async {
+  static Future<List<Product>> fetchProducts() async {
     try {
       LogService.apiRequest('GET', _baseUrl);
 
@@ -33,7 +31,7 @@ class ApiService {
         final productsJson = data['record']['beverageProducts'] as List;
 
         final products = productsJson
-            .map((json) => ApiProduct.fromJson(json as Map<String, dynamic>))
+            .map((json) => Product.fromJson(json as Map<String, dynamic>))
             .toList();
 
         LogService.info('✅ Successfully fetched ${products.length} products');
@@ -58,9 +56,7 @@ class ApiService {
   }
 
   /// Fetch limited products for hot deals section
-  static Future<List<ApiProduct>> fetchHotDealsProducts({
-    int limit = 10,
-  }) async {
+  static Future<List<Product>> fetchHotDealsProducts({int limit = 10}) async {
     try {
       final allProducts = await fetchProducts();
 

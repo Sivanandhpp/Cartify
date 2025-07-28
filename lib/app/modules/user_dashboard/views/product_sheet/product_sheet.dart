@@ -13,7 +13,7 @@ import 'widgets/seller_details_section.dart';
 class ProductSheetWidget extends StatelessWidget {
   const ProductSheetWidget({super.key, this.product});
 
-  final ApiProduct? product;
+  final Product? product;
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,6 @@ export 'constants/app_spacing.dart'; // Consolidated spacing, padding, and borde
 // Models
 export 'models/product_model.dart';
 export 'models/cart_item_model.dart';
-export 'models/api_product_model.dart';
 
 // Services
 export 'services/log_service.dart';

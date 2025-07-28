@@ -2,7 +2,7 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 
 class ExpandableDetailsSection extends StatefulWidget {
-  final ApiProduct product;
+  final Product product;
 
   const ExpandableDetailsSection({super.key, required this.product});
 

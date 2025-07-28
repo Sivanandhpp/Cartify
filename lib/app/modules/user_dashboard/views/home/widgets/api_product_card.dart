@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// Reusable product card widget for displaying API products
-class ApiProductCard extends StatelessWidget {
-  const ApiProductCard({super.key, required this.product});
+class ProductCard extends StatelessWidget {
+  const ProductCard({super.key, required this.product});
 
-  final ApiProduct product;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -117,16 +117,13 @@ class ApiProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAddButton(CartService cartService, ApiProduct product) {
+  Widget _buildAddButton(CartService cartService, Product product) {
     return GestureDetector(
       onTap: () async {
         LogService.info('Add button tapped for product: ${product.id}');
 
-        // Convert the API product to a Product object
-        final Product productObject = product.toProduct();
-
         // Add to cart using the cart service
-        await cartService.addToCart(productObject, quantity: 1);
+        await cartService.addToCart(product, quantity: 1);
       },
       child: Container(
         width: 30,

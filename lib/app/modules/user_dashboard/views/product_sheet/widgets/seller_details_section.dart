@@ -2,7 +2,7 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 
 class SellerDetailsSection extends StatelessWidget {
-  final ApiProduct product;
+  final Product product;
 
   const SellerDetailsSection({super.key, required this.product});
 

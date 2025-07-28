@@ -20,7 +20,7 @@ class HorizontalProductListWidget extends StatelessWidget {
   });
 
   final String title;
-  final List<ApiProduct> products;
+  final List<Product> products;
   final bool isLoading;
   final bool hasError;
   final String errorMessage;
@@ -140,8 +140,8 @@ class HorizontalProductListWidget extends StatelessWidget {
         itemCount: products.length,
         padding: const EdgeInsets.only(left: 16.0),
         itemBuilder: (BuildContext context, int index) {
-          final ApiProduct product = products[index];
-          return ApiProductCard(product: product);
+          final Product product = products[index];
+          return ProductCard(product: product);
         },
       ),
     );

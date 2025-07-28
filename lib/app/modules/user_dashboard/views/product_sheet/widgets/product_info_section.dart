@@ -2,7 +2,7 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 
 class ProductInfoSection extends StatelessWidget {
-  final ApiProduct product;
+  final Product product;
   final VoidCallback onAddToCart;
   final VoidCallback onRemoveFromCart;
 

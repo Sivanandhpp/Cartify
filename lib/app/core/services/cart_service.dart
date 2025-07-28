@@ -105,8 +105,8 @@ class CartService extends GetxService {
           productId: product.id,
           productName: product.name,
           productImage: product.imageUrl,
-          price: product.price,
-          discountPrice: product.discountPrice,
+          price: product.priceINR,
+          discountPrice: product.offerPrice,
           quantity: quantity,
           addedAt: DateTime.now(),
         );
@@ -115,7 +115,7 @@ class CartService extends GetxService {
         LogService.business('Added item to cart', {
           'productId': product.id,
           'quantity': quantity,
-          'price': product.price,
+          'price': product.priceINR,
         });
       }
 
@@ -389,6 +389,3 @@ class CartService extends GetxService {
     }
   }
 }
-
-
-

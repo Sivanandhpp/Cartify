@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/models/api_product_model.dart';
+import '../../../core/models/product_model.dart';
 
 class ProductSheetController extends GetxController {
   static ProductSheetController get to => Get.find();
@@ -45,7 +45,7 @@ class ProductSheetController extends GetxController {
   }
 
   /// Get product images with fallback
-  List<String> getProductImages(ApiProduct product) {
+  List<String> getProductImages(Product product) {
     List<String> images = [];
 
     // Add API product images if available
