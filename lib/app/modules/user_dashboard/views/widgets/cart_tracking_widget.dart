@@ -515,7 +515,7 @@ class CartTrackingWidget extends GetView<UserDashboardController> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: item.productImage.isNotEmpty
-                  ? Image.asset(item.productImage, fit: BoxFit.cover)
+                  ? Image.network(item.productImage, fit: BoxFit.cover)
                   : Icon(Icons.image_outlined, color: Colors.grey[400]),
             ),
           ),

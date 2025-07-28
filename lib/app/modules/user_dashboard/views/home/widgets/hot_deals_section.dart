@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 // Local widget imports (relative)
 import '../../../controllers/hot_deals_controller.dart';
-import 'horizontal_product_list_widget.dart';
+import 'horizontal_product_list.dart';
 
 /// The main widget that includes the title and the horizontal list.
 class HotDealsSection extends StatelessWidget {
