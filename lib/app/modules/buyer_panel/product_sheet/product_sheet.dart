@@ -4,7 +4,7 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controllers/product_sheet_controller.dart';
+import '../../buyer_panel/product_sheet/controllers/product_sheet_controller.dart';
 import 'widgets/expandable_details_section.dart';
 import 'widgets/product_image_carousel.dart';
 import 'widgets/product_info_section.dart';

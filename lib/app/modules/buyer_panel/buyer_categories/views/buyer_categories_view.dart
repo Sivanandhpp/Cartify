@@ -1,8 +1,11 @@
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
+// Local imports
 import '../controllers/buyer_categories_controller.dart';
+import '../../buyer_home/models/category_model.dart';
 
 class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
   const BuyerCategoriesView({super.key});
@@ -73,7 +76,10 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
-              delegate: SliverChildBuilderDelegate((context, index) {
+              delegate: SliverChildBuilderDelegate((
+                BuildContext context,
+                int index,
+              ) {
                 final category = controller.categories[index];
                 return _buildCategoryCard(category, index);
               }, childCount: controller.categories.length),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../modules/buyer_panel/product_sheet/product_sheet.dart';
 import '../models/product_model.dart';
-import '../../modules/user_dashboard/views/product_sheet/product_sheet.dart';
 
 /// Service for managing bottom sheets
 class SheetService {

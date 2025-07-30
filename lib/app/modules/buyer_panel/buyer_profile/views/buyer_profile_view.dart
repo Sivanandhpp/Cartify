@@ -1,7 +1,9 @@
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
+// Local imports
 import '../controllers/buyer_profile_controller.dart';
 
 class BuyerProfileView extends GetView<BuyerProfileController> {

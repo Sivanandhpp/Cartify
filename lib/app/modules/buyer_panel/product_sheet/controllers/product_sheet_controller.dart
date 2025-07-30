@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/models/product_model.dart';
+import '../../../../core/models/product_model.dart';
 
 class ProductSheetController extends GetxController {
   static ProductSheetController get to => Get.find();

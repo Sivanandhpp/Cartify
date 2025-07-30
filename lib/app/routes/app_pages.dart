@@ -24,8 +24,6 @@ import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/user_dashboard/bindings/user_dashboard_binding.dart';
-import '../modules/user_dashboard/views/user_dashboard_view.dart';
 
 // Routes barrel export file
 // Usage: import 'package:cartify/app/routes/app_pages.dart';
@@ -59,11 +57,6 @@ class AppPages {
       name: _Paths.OTP_CHECK,
       page: () => const OtpCheckView(),
       binding: OtpCheckBinding(),
-    ),
-    GetPage(
-      name: _Paths.USER_DASHBOARD,
-      page: () => const UserDashboardView(),
-      binding: UserDashboardBinding(),
     ),
     GetPage(
       name: _Paths.ADMIN_DASHBOARD,

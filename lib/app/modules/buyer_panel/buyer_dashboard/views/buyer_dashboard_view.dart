@@ -8,6 +8,10 @@ import '../controllers/buyer_dashboard_controller.dart';
 import 'widgets/bottom_nav_bar.dart';
 import 'widgets/cart_tracking_widget.dart';
 import '../../buyer_home/views/buyer_home_view.dart';
+import '../../buyer_categories/views/buyer_categories_view.dart';
+import '../../buyer_wishlist/views/buyer_wishlist_view.dart';
+import '../../buyer_offers/views/buyer_offers_view.dart';
+import '../../buyer_profile/views/buyer_profile_view.dart';
 
 class BuyerDashboardView extends GetView<BuyerDashboardController> {
   const BuyerDashboardView({super.key});
@@ -27,11 +31,10 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
             physics: const ClampingScrollPhysics(),
             children: const [
               BuyerHomeView(),
-              // TODO: Add other pages when they are created
-              // CategoriesPage(),
-              // WishlistPage(),
-              // OffersPage(),
-              // ProfilePage(),
+              BuyerCategoriesView(),
+              BuyerWishlistView(),
+              BuyerOffersView(),
+              BuyerProfileView(),
             ],
           ),
 

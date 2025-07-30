@@ -1,12 +1,14 @@
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
+// Local imports
 import '../controllers/buyer_wishlist_controller.dart';
 
 class BuyerWishlistView extends GetView<BuyerWishlistController> {
   const BuyerWishlistView({super.key});
- @override
+  @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollInfo) {
