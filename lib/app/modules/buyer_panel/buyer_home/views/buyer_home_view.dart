@@ -1,15 +1,17 @@
+// Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/index.dart';
-import '../../controllers/user_dashboard_controller.dart';
-import '../../controllers/hot_deals_controller.dart';
-import '../../models/category_model.dart';
-import '../../models/deal_model.dart';
-import '../../../buyer_panel/buyer_home/views/widgets/horizontal_product_list.dart';
 
-class HomePage extends GetView<UserDashboardController> {
-  const HomePage({super.key});
+// Local imports
+import '../controllers/buyer_home_controller.dart';
+import '../controllers/hot_deals_controller.dart';
+import '../models/category_model.dart';
+import '../models/deal_model.dart';
+import 'widgets/horizontal_product_list.dart';
 
+class BuyerHomeView extends GetView<BuyerHomeController> {
+  const BuyerHomeView({super.key});
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(

@@ -2,14 +2,26 @@ import 'package:get/get.dart';
 
 import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/admin_dashboard/views/admin_dashboard_view.dart';
-import '../modules/user_panel/cart/bindings/cart_binding.dart';
-import '../modules/user_panel/cart/views/cart_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
 import '../modules/authentication/login/views/login_view.dart';
-import '../modules/onboarding/bindings/onboarding_binding.dart';
-import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/authentication/otp_check/bindings/otp_check_binding.dart';
 import '../modules/authentication/otp_check/views/otp_check_view.dart';
+import '../modules/buyer_panel/buyer_categories/bindings/buyer_categories_binding.dart';
+import '../modules/buyer_panel/buyer_categories/views/buyer_categories_view.dart';
+import '../modules/buyer_panel/buyer_offers/bindings/buyer_offers_binding.dart';
+import '../modules/buyer_panel/buyer_offers/views/buyer_offers_view.dart';
+import '../modules/buyer_panel/buyer_dashboard/bindings/buyer_dashboard_binding.dart';
+import '../modules/buyer_panel/buyer_dashboard/views/buyer_dashboard_view.dart';
+import '../modules/buyer_panel/buyer_home/bindings/buyer_home_binding.dart';
+import '../modules/buyer_panel/buyer_home/views/buyer_home_view.dart';
+import '../modules/buyer_panel/cart/bindings/cart_binding.dart';
+import '../modules/buyer_panel/cart/views/cart_view.dart';
+import '../modules/buyer_panel/buyer_profile/bindings/buyer_profile_binding.dart';
+import '../modules/buyer_panel/buyer_profile/views/buyer_profile_view.dart';
+import '../modules/buyer_panel/buyer_wishlist/bindings/buyer_wishlist_binding.dart';
+import '../modules/buyer_panel/buyer_wishlist/views/buyer_wishlist_view.dart';
+import '../modules/onboarding/bindings/onboarding_binding.dart';
+import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/user_dashboard/bindings/user_dashboard_binding.dart';
@@ -62,6 +74,36 @@ class AppPages {
       name: _Paths.CART,
       page: () => const CartView(),
       binding: CartBinding(),
-    )
+    ),
+    GetPage(
+      name: _Paths.BUYER_DASHBOARD,
+      page: () => const BuyerDashboardView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_HOME,
+      page: () => const BuyerHomeView(),
+      binding: BuyerHomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_CATEGORIES,
+      page: () => const BuyerCategoriesView(),
+      binding: BuyerCategoriesBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_OFFERS,
+      page: () => const BuyerOffersView(),
+      binding: BuyerOffersBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_PROFILE,
+      page: () => const BuyerProfileView(),
+      binding: BuyerProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_WISHLIST,
+      page: () => const BuyerWishlistView(),
+      binding: BuyerWishlistBinding(),
+    ),
   ];
 }

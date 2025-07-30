@@ -22,7 +22,7 @@ class SplashController extends GetxController {
         if (userRole == 'admin') {
           Get.offAllNamed(Routes.ADMIN_DASHBOARD);
         } else {
-          Get.offAllNamed(Routes.USER_DASHBOARD);
+          Get.offAllNamed(Routes.BUYER_DASHBOARD);
         }
       } else {
         Get.offAllNamed(Routes.LOGIN);

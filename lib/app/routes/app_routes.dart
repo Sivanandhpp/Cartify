@@ -12,6 +12,12 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const ONBOARDING = _Paths.ONBOARDING;
   static const CART = _Paths.CART;
+  static const BUYER_DASHBOARD = _Paths.BUYER_DASHBOARD;
+  static const BUYER_HOME = _Paths.BUYER_HOME;
+  static const BUYER_CATEGORIES = _Paths.BUYER_CATEGORIES;
+  static const BUYER_OFFERS = _Paths.BUYER_OFFERS;
+  static const BUYER_PROFILE = _Paths.BUYER_PROFILE;
+  static const BUYER_WISHLIST = _Paths.BUYER_WISHLIST;
 }
 
 abstract class _Paths {
@@ -23,4 +29,10 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';
   static const CART = '/cart';
+  static const BUYER_DASHBOARD = '/buyer-dashboard';
+  static const BUYER_HOME = '/buyer-home';
+  static const BUYER_CATEGORIES = '/buyer-categories';
+  static const BUYER_OFFERS = '/buyer-offers';
+  static const BUYER_PROFILE = '/buyer-profile';
+  static const BUYER_WISHLIST = '/buyer-wishlist';
 }
