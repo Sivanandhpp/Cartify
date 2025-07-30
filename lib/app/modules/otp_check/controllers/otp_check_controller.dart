@@ -4,6 +4,7 @@ import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../login/data/auth_service.dart';
 
 class OtpCheckController extends GetxController {
   // --- public --------------------------------------------------------------
@@ -13,9 +14,11 @@ class OtpCheckController extends GetxController {
 
   // rx
   final filled = <bool>[].obs;
+  final RxBool isResending = false.obs;
 
   // --- private -------------------------------------------------------------
   final _storage = GetStorage();
+  final _authService = AuthService();
   late final List<TextEditingController> _otpControllers;
   late final List<FocusNode> _otpFocusNodes;
   late final List<FocusNode> _rawKeyboardNodes;
@@ -78,11 +81,37 @@ class OtpCheckController extends GetxController {
     }
   }
 
-  void resendOtp(String mobile) {
-    NotificationService.showInfo(
-      title: 'OTP',
-      message: 'Resent OTP to +91 $mobile',
-    );
+  Future<void> resendOtp(String mobile) async {
+    if (isResending.value) return;
+
+    try {
+      isResending.value = true;
+      LogService.info('Resending OTP to: $mobile');
+
+      final result = await _authService.sendOtp(mobile);
+
+      if (result['success'] == true) {
+        NotificationService.showSuccess(
+          title: 'OTP Resent',
+          message: result['message'],
+        );
+        LogService.info('OTP resent successfully to: $mobile');
+      } else {
+        NotificationService.showError(
+          title: 'Resend Failed',
+          message: result['message'],
+        );
+        LogService.error('Failed to resend OTP: ${result['message']}');
+      }
+    } catch (e) {
+      LogService.error('Error resending OTP', e);
+      NotificationService.showError(
+        title: 'Resend Failed',
+        message: AppStrings.networkError,
+      );
+    } finally {
+      isResending.value = false;
+    }
   }
 
   // -------------------------------------------------------------------------

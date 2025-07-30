@@ -73,21 +73,31 @@ class OtpCheckView extends GetView<OtpCheckController> {
               ),
             ),
             AppSpacing.spaceLarge,
-            Text.rich(
-              TextSpan(
-                text: AppStrings.otpCheckResendText,
-                style: AppTextStyles.labelLarge(AppColors.lightOnBackground),
-                children: [
-                  WidgetSpan(
-                    child: GestureDetector(
-                      onTap: () => controller.resendOtp(mobile),
-                      child: Text(
-                        AppStrings.otpCheckResendButton,
-                        style: AppTextStyles.labelLarge(AppColors.primary),
+            Obx(
+              () => Text.rich(
+                TextSpan(
+                  text: AppStrings.otpCheckResendText,
+                  style: AppTextStyles.labelLarge(AppColors.lightOnBackground),
+                  children: [
+                    WidgetSpan(
+                      child: GestureDetector(
+                        onTap: controller.isResending.value
+                            ? null
+                            : () => controller.resendOtp(mobile),
+                        child: Text(
+                          controller.isResending.value
+                              ? 'Resending...'
+                              : AppStrings.otpCheckResendButton,
+                          style: AppTextStyles.labelLarge(
+                            controller.isResending.value
+                                ? AppColors.primary.withOpacity(0.5)
+                                : AppColors.primary,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

@@ -58,17 +58,20 @@ class LoginController extends GetxController {
     LogService.info('Sending OTP to: ${phoneController.text}');
 
     try {
-      await _authService.sendOtp(phoneController.text);
+      final result = await _authService.sendOtp(phoneController.text);
 
-      LogService.info('OTP sent successfully');
-      ErrorService.showSuccess(
-        '${AppStrings.otpSentMessage} ${phoneController.text}',
-      );
+      if (result['success'] == true) {
+        LogService.info('OTP sent successfully');
+        ErrorService.showSuccess(result['message']);
 
-      Get.toNamed(
-        Routes.OTP_CHECK,
-        arguments: {'mobile': phoneController.text},
-      );
+        Get.toNamed(
+          Routes.OTP_CHECK,
+          arguments: {'mobile': phoneController.text},
+        );
+      } else {
+        LogService.error('Failed to send OTP: ${result['message']}');
+        ErrorService.showError(result['message']);
+      }
     } catch (error) {
       LogService.error('Failed to send OTP', error);
       ErrorService.showError(AppStrings.otpsendError);

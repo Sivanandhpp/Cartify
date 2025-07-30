@@ -2,6 +2,7 @@
 export 'config/app_identity.dart';
 export 'config/app_config.dart';
 export 'config/app_environment.dart';
+export 'config/api_endpoints.dart';
 
 // Constants
 export 'constants/app_strings.dart';
