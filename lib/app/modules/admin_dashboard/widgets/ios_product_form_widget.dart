@@ -308,7 +308,7 @@ class _IOSProductFormWidgetState extends State<IOSProductFormWidget> {
                               },
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: _buildIOSDropdown(
                               label: 'Subcategory',
@@ -558,6 +558,7 @@ class _IOSProductFormWidgetState extends State<IOSProductFormWidget> {
       ),
       child: DropdownButtonFormField<String>(
         value: value,
+        isExpanded: true,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: icon != null
@@ -568,7 +569,15 @@ class _IOSProductFormWidgetState extends State<IOSProductFormWidget> {
           labelStyle: TextStyle(color: Colors.grey.shade700),
         ),
         items: items.map((item) {
-          return DropdownMenuItem<String>(value: item, child: Text(item));
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(
+              item,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: const TextStyle(fontSize: 14),
+            ),
+          );
         }).toList(),
         onChanged: onChanged,
       ),

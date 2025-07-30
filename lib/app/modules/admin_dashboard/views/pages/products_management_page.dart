@@ -187,7 +187,7 @@ class ProductsManagementPage extends GetView<AdminDashboardController> {
           crossAxisCount: 2,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.5,
         ),
         itemCount: controller.products.length,
         itemBuilder: (context, index) {
@@ -217,7 +217,7 @@ class ProductsManagementPage extends GetView<AdminDashboardController> {
         children: [
           // Product Image
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(

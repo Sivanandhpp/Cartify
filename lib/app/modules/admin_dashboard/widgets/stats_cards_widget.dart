@@ -13,7 +13,7 @@ class StatsCardsWidget extends StatelessWidget {
     required this.cards,
     this.isLoading = false,
     this.crossAxisCount = 2,
-    this.childAspectRatio = 1.4,
+    this.childAspectRatio = 1.0,
     this.spacing = 16,
   });
 
