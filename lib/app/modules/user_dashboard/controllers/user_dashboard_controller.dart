@@ -206,9 +206,9 @@ class UserDashboardController extends GetxController {
   }
 
   void logOut() {
-    // 💾 Storage Configuration - Clear centralized login data
-    storage.remove(AppConfig.loginStatusKey);
-    storage.remove(AppConfig.userRoleKey);
+    // Use SecureStorageService for proper logout
+    final secureStorage = SecureStorageService();
+    secureStorage.clearAuthData();
     Get.offAllNamed(Routes.LOGIN);
   }
 }

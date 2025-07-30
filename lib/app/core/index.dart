@@ -22,6 +22,7 @@ export 'services/cart_service.dart';
 export 'services/api_service.dart';
 export 'services/theme_service.dart';
 export 'services/sheet_service.dart';
+export 'services/secure_storage_service.dart';
 
 // Theme
 export 'theme/app_colors.dart';

@@ -1,4 +1,3 @@
-
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +33,7 @@ Future<void> initServices() async {
 
   // Initialize core services in order of dependency
   Get.put(ErrorService(), permanent: true);
+  Get.put(SecureStorageService(), permanent: true);
   Get.put(ThemeService(), permanent: true);
   Get.put(CartService(), permanent: true);
 

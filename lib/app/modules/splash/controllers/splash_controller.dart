@@ -6,15 +6,19 @@ import 'package:get_storage/get_storage.dart';
 
 class SplashController extends GetxController {
   final storage = GetStorage();
+  final secureStorage = SecureStorageService();
 
   @override
   void onReady() {
-    // 💾 Storage Configuration - Using centralized AppConfig keys
+    // Check onboarding status
     final isBoarded = storage.read(AppConfig.onboardingStatusKey) ?? false;
-    final isLoggedIn = storage.read(AppConfig.loginStatusKey) ?? false;
-    final userRole = storage.read(AppConfig.userRoleKey) ?? 'user';
+
     if (isBoarded) {
-      if (isLoggedIn) {
+      // Check authentication status using SecureStorageService
+      final isLoggedIn = secureStorage.isLoggedIn;
+      final userRole = secureStorage.userRole;
+
+      if (isLoggedIn && secureStorage.isAuthenticated) {
         if (userRole == 'admin') {
           Get.offAllNamed(Routes.ADMIN_DASHBOARD);
         } else {
@@ -30,6 +34,3 @@ class SplashController extends GetxController {
     super.onReady();
   }
 }
-
-
-

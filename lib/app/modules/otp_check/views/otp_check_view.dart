@@ -65,11 +65,19 @@ class OtpCheckView extends GetView<OtpCheckController> {
             AppSpacing.spaceLarge,
             Form(key: controller.formKey, child: const OtpFieldsRow()),
             AppSpacing.spaceMedium,
-            SizedBox(
-              width: double.infinity,
-              child: AppButtons.primary(
-                onPressed: controller.verifyOtp,
-                text: AppStrings.otpCheckVerifyButton,
+            Obx(
+              () => SizedBox(
+                width: double.infinity,
+                child: AppButtons.primary(
+                  onPressed: controller.isVerifying.value
+                      ? () {} // Disabled state - empty callback
+                      : () => controller.verifyOtp(),
+                  text: controller.isVerifying.value
+                      ? 'Verifying...'
+                      : AppStrings.otpCheckVerifyButton,
+                  enabled: !controller.isVerifying.value,
+                  isLoading: controller.isVerifying.value,
+                ),
               ),
             ),
             AppSpacing.spaceLarge,

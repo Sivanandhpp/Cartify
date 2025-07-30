@@ -3,7 +3,6 @@ import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import '../../login/data/auth_service.dart';
 
 class OtpCheckController extends GetxController {
@@ -15,9 +14,10 @@ class OtpCheckController extends GetxController {
   // rx
   final filled = <bool>[].obs;
   final RxBool isResending = false.obs;
+  final RxBool isVerifying = false.obs;
 
   // --- private -------------------------------------------------------------
-  final _storage = GetStorage();
+  final _secureStorage = SecureStorageService();
   final _authService = AuthService();
   late final List<TextEditingController> _otpControllers;
   late final List<FocusNode> _otpFocusNodes;
@@ -58,26 +58,65 @@ class OtpCheckController extends GetxController {
     }
   }
 
-  void verifyOtp() {
+  Future<void> verifyOtp() async {
+    if (isVerifying.value) return;
+
     final otp = _otpControllers.map((c) => c.text).join();
 
-    if (otp == '1234') {
-      NotificationService.showSuccess(
-        title: 'Success',
-        message: 'Welcome back admin!',
-      );
-      _goToDashboard(isAdmin: true);
-    } else if (otp.length == otpLength) {
-      NotificationService.showSuccess(
-        title: 'Success',
-        message: 'OTP Verified!',
-      );
-      _goToDashboard(isAdmin: false);
-    } else {
+    if (otp.length != otpLength) {
       NotificationService.showError(
         title: 'Error',
-        message: 'Please enter the 4-digit OTP',
+        message: 'Please enter the complete 4-digit OTP',
       );
+      return;
+    }
+
+    // Get mobile number from navigation arguments
+    final mobile = Get.arguments?['mobile'] ?? '';
+    if (mobile.isEmpty) {
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Phone number not found. Please go back and try again.',
+      );
+      return;
+    }
+
+    try {
+      isVerifying.value = true;
+      LogService.info('Verifying OTP: $otp for mobile: $mobile');
+
+      final result = await _authService.verifyOtp(mobile, otp);
+
+      if (result['success'] == true) {
+        LogService.info('OTP verified successfully');
+
+        // The AuthService already handles token storage
+        // No need to manually store tokens here
+
+        NotificationService.showSuccess(
+          title: 'Success',
+          message: result['message'] ?? 'OTP Verified!',
+        );
+
+        // Check if admin (using hardcoded OTP for demo)
+        final isAdmin = otp == '1234';
+
+        _goToDashboard(isAdmin: isAdmin);
+      } else {
+        LogService.error('OTP verification failed: ${result['message']}');
+        NotificationService.showError(
+          title: 'Verification Failed',
+          message: result['message'] ?? 'Invalid OTP. Please try again.',
+        );
+      }
+    } catch (e) {
+      LogService.error('Error verifying OTP', e);
+      NotificationService.showError(
+        title: 'Verification Failed',
+        message: AppStrings.networkError,
+      );
+    } finally {
+      isVerifying.value = false;
     }
   }
 
@@ -116,8 +155,10 @@ class OtpCheckController extends GetxController {
 
   // -------------------------------------------------------------------------
   void _goToDashboard({required bool isAdmin}) {
-    _storage.write(AppConfig.loginStatusKey, true);
-    _storage.write(AppConfig.userRoleKey, isAdmin ? 'admin' : 'user');
+    _secureStorage.storeLoginStatus(
+      isLoggedIn: true,
+      userRole: isAdmin ? 'admin' : 'user',
+    );
     Get.offAllNamed(isAdmin ? Routes.ADMIN_DASHBOARD : Routes.USER_DASHBOARD);
   }
 
