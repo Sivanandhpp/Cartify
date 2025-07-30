@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/index.dart';
+import '../../../../../core/index.dart';
 import '../../controllers/login_controller.dart';
 
 class LoginForm extends GetView<LoginController> {

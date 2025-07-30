@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../core/services/log_service.dart';
-import '../../../core/services/secure_storage_service.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/config/api_endpoints.dart';
+import '../../../../core/services/log_service.dart';
+import '../../../../core/services/secure_storage_service.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/config/api_endpoints.dart';
 
 class AuthService {
   final SecureStorageService _secureStorage = SecureStorageService();

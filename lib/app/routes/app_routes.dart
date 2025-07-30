@@ -16,9 +16,8 @@ abstract class Routes {
 
 abstract class _Paths {
   _Paths._();
-
-  static const OTP_CHECK = '/otp-check';
   static const LOGIN = '/login';
+  static const OTP_CHECK = '/otp-check';
   static const USER_DASHBOARD = '/user-dashboard';
   static const ADMIN_DASHBOARD = '/admin-dashboard';
   static const SPLASH = '/splash';

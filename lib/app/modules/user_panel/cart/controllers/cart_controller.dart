@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../../../core/index.dart';
+import '../../../../core/index.dart';
 
 class CartController extends GetxController {
   final CartService _cartService = Get.find<CartService>();
