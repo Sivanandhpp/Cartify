@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
-import '../controllers/cart_controller.dart';
+import '../controllers/buyer_cart_controller.dart';
 
-class CartView extends GetView<CartController> {
-  const CartView({super.key});
+class BuyerCartView extends GetView<BuyerCartController> {
+  const BuyerCartView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -157,11 +157,11 @@ class CartView extends GetView<CartController> {
             ),
             _buildBillRow(
               'Handling Fee',
-              '₹${CartController.handlingFee.toStringAsFixed(2)}',
+              '₹${controller.handlingFee.toStringAsFixed(2)}',
             ),
             _buildBillRow(
               'Delivery Partner Fee',
-              '₹${CartController.deliveryPartnerFee.toStringAsFixed(2)}',
+              '₹${controller.deliveryPartnerFee.toStringAsFixed(2)}',
             ),
             _buildBillRow('GST', '₹${controller.gstAmount.toStringAsFixed(2)}'),
             if (controller.deliveryTip.value > 0)

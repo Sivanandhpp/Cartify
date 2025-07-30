@@ -14,8 +14,8 @@ import '../modules/buyer_panel/buyer_dashboard/bindings/buyer_dashboard_binding.
 import '../modules/buyer_panel/buyer_dashboard/views/buyer_dashboard_view.dart';
 import '../modules/buyer_panel/buyer_home/bindings/buyer_home_binding.dart';
 import '../modules/buyer_panel/buyer_home/views/buyer_home_view.dart';
-import '../modules/buyer_panel/cart/bindings/cart_binding.dart';
-import '../modules/buyer_panel/cart/views/cart_view.dart';
+import '../modules/buyer_panel/buyer_cart/bindings/buyer_cart_binding.dart';
+import '../modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
 import '../modules/buyer_panel/buyer_profile/bindings/buyer_profile_binding.dart';
 import '../modules/buyer_panel/buyer_profile/views/buyer_profile_view.dart';
 import '../modules/buyer_panel/buyer_wishlist/bindings/buyer_wishlist_binding.dart';
@@ -65,8 +65,8 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CART,
-      page: () => const CartView(),
-      binding: CartBinding(),
+      page: () => const BuyerCartView(),
+      binding: BuyerCartBinding(),
     ),
     GetPage(
       name: _Paths.BUYER_DASHBOARD,

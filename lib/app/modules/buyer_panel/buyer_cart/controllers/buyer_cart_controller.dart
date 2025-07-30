@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
 
-class CartController extends GetxController {
+class BuyerCartController extends GetxController {
   final CartService _cartService = Get.find<CartService>();
 
   final RxDouble deliveryTip = 0.0.obs;
@@ -20,16 +20,20 @@ class CartController extends GetxController {
   bool get isLoading => _cartService.isLoading;
 
   // Constants
-  static const double handlingFee = 9.80;
-  static const double deliveryPartnerFee = 30.0;
+  static const double _handlingFeeConstant = 9.80;
+  static const double _deliveryPartnerFeeConstant = 30.0;
   static const double gstRate = 0.18;
+
+  // Getters for constants (instance access)
+  double get handlingFee => _handlingFeeConstant;
+  double get deliveryPartnerFee => _deliveryPartnerFeeConstant;
 
   // Calculated values
   double get gstAmount => subtotal * gstRate;
   double get finalTotal =>
       subtotal +
-      handlingFee +
-      deliveryPartnerFee +
+      _handlingFeeConstant +
+      _deliveryPartnerFeeConstant +
       gstAmount +
       deliveryTip.value;
 
