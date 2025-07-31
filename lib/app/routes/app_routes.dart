@@ -19,6 +19,7 @@ abstract class Routes {
   static const BUYER_PROFILE = _Paths.BUYER_PROFILE;
   static const BUYER_WISHLIST = _Paths.BUYER_WISHLIST;
   static const SELLER_DASHBOARD = _Paths.SELLER_DASHBOARD;
+  static const TAB_BAR = _Paths.TAB_BAR;
 }
 
 abstract class _Paths {
@@ -37,4 +38,5 @@ abstract class _Paths {
   static const BUYER_PROFILE = '/buyer-profile';
   static const BUYER_WISHLIST = '/buyer-wishlist';
   static const SELLER_DASHBOARD = '/seller-dashboard';
+  static const TAB_BAR = '/tab-bar';
 }

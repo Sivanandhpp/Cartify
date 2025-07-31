@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/services/secure_storage_service.dart';
-import '../../tab_bar/widgets/ios_tab_bar.dart';
+import '../widgets/ios_tab_bar.dart';
 
-class SellerDashboardController extends GetxController {
+class TabBarController extends GetxController {
   final selectedIndex = 0.obs;
   final scrollController = ScrollController();
 
@@ -31,16 +30,10 @@ class SellerDashboardController extends GetxController {
       onTap: () => selectTab(2),
     ),
     TabBarItem(
-      icon: Icons.newspaper,
-      label: 'News',
+      icon: Icons.add_box_outlined,
+      label: 'Add Product',
       isSelected: selectedIndex.value == 3,
       onTap: () => selectTab(3),
-    ),
-    TabBarItem(
-      icon: Icons.search,
-      label: '', // Empty label for separated circular button
-      isSelected: selectedIndex.value == 4,
-      onTap: () => selectTab(4),
     ),
   ];
 
@@ -48,7 +41,7 @@ class SellerDashboardController extends GetxController {
   void onInit() {
     super.onInit();
     // Simulate an active event (remove this in production)
-    _simulateInitialEvent();
+    _simulateEvent();
   }
 
   @override
@@ -69,20 +62,20 @@ class SellerDashboardController extends GetxController {
     currentEvent.value = null;
   }
 
-  // Simulate an initial event for demonstration
-  void _simulateInitialEvent() {
-    // Example: Welcome message
+  // Simulate an event for demonstration
+  void _simulateEvent() {
+    // Example: New order notification
     setEvent(
       EventData(
-        title: 'Welcome Back!',
-        subtitle: 'Your store is ready to serve customers',
-        icon: Icons.store,
-        color: Colors.green,
+        title: 'New Order Received',
+        subtitle: 'Order #1234 - ₹1,299',
+        icon: Icons.notifications_active,
+        color: Colors.orange,
       ),
     );
 
-    // Auto-clear after 8 seconds (for demo)
-    Future.delayed(const Duration(seconds: 8), () {
+    // Auto-clear after 10 seconds (for demo)
+    Future.delayed(const Duration(seconds: 10), () {
       clearEvent();
     });
   }
@@ -119,23 +112,5 @@ class SellerDashboardController extends GetxController {
         color: Colors.blue,
       ),
     );
-  }
-
-  /// Logout method to clear authentication data and navigate to login
-  Future<void> logout() async {
-    try {
-      // Clear authentication data
-      final secureStorage = SecureStorageService();
-      await secureStorage.clearAuthData();
-
-      // Navigate to login screen
-      Get.offAllNamed('/login');
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to logout. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
   }
 }

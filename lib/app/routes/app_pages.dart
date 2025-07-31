@@ -26,6 +26,8 @@ import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_bindi
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/seller_panel/tab_bar/bindings/tab_bar_binding.dart';
+import '../modules/seller_panel/tab_bar/views/tab_bar_view.dart';
 
 // Routes barrel export file
 // Usage: import 'package:cartify/app/routes/app_pages.dart';
@@ -104,6 +106,11 @@ class AppPages {
       name: _Paths.SELLER_DASHBOARD,
       page: () => const SellerDashboardView(),
       binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.TAB_BAR,
+      page: () => const TabBarView(),
+      binding: TabBarBinding(),
     ),
   ];
 }
