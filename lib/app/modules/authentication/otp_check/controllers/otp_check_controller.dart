@@ -17,7 +17,6 @@ class OtpCheckController extends GetxController {
   final RxBool isVerifying = false.obs;
 
   // --- private -------------------------------------------------------------
-  final _secureStorage = SecureStorageService();
   final _authService = AuthService();
   late final List<TextEditingController> _otpControllers;
   late final List<FocusNode> _otpFocusNodes;
@@ -90,18 +89,14 @@ class OtpCheckController extends GetxController {
       if (result['success'] == true) {
         LogService.info('OTP verified successfully');
 
-        // The AuthService already handles token storage
-        // No need to manually store tokens here
-
         NotificationService.showSuccess(
           title: 'Success',
           message: result['message'] ?? 'OTP Verified!',
         );
 
-        // Check if admin (using hardcoded OTP for demo)
-        final isAdmin = otp == '1234';
-
-        _goToDashboard(isAdmin: isAdmin);
+        // Get user role and navigate accordingly
+        final userRole = _authService.getUserRole();
+        _navigateBasedOnRole(userRole);
       } else {
         LogService.error('OTP verification failed: ${result['message']}');
         NotificationService.showError(
@@ -154,12 +149,21 @@ class OtpCheckController extends GetxController {
   }
 
   // -------------------------------------------------------------------------
-  void _goToDashboard({required bool isAdmin}) {
-    _secureStorage.storeLoginStatus(
-      isLoggedIn: true,
-      userRole: isAdmin ? 'admin' : 'user',
-    );
-    Get.offAllNamed(isAdmin ? Routes.ADMIN_DASHBOARD : Routes.USER_DASHBOARD);
+  void _navigateBasedOnRole(String userRole) {
+    LogService.info('Navigating user based on role: $userRole');
+
+    switch (userRole) {
+      case 'admin':
+        Get.offAllNamed(Routes.ADMIN_DASHBOARD);
+        break;
+      case 'seller':
+        Get.offAllNamed(Routes.SELLER_DASHBOARD);
+        break;
+      case 'buyer':
+      default:
+        Get.offAllNamed(Routes.BUYER_DASHBOARD);
+        break;
+    }
   }
 
   void goToLogin() {

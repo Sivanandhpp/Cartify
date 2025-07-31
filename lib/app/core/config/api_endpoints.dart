@@ -1,13 +1,14 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
-  // Base URL for authentication API
-  static const String authBaseUrl = 'http://10.0.2.2:3000';
+  // Base URL for API
+  // static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'http://10.0.2.2:3000';
 
   // Authentication endpoints
-  static const String requestOtp = '$authBaseUrl/auth/request-otp';
-  static const String verifyOtp =
-      '$authBaseUrl/auth/verify-otp'; // Future endpoints can be added here
-  // static const String refreshToken = '$authBaseUrl/auth/refresh-token';
-  // static const String logout = '$authBaseUrl/auth/logout';
+  static const String requestOtp = '$baseUrl/auth/request-otp';
+  static const String verifyOtp = '$baseUrl/auth/verify-otp';
+
+  // User endpoints
+  static const String userProfile = '$baseUrl/user/profile';
 }

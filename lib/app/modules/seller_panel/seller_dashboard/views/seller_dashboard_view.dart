@@ -12,11 +12,35 @@ class SellerDashboardView extends GetView<SellerDashboardController> {
       appBar: AppBar(
         title: const Text('SellerDashboardView'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => controller.logout(),
+            tooltip: 'Logout',
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text(
-          'SellerDashboardView is working',
-          style: TextStyle(fontSize: 20),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'SellerDashboardView is working',
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () => controller.logout(),
+              icon: const Icon(Icons.logout),
+              label: const Text('Logout'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

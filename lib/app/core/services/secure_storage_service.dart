@@ -10,6 +10,7 @@ class SecureStorageService {
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
   static const String _userDataKey = 'user_data';
+  static const String _userProfileKey = 'user_profile';
 
   final GetStorage _storage = GetStorage();
 
@@ -82,12 +83,45 @@ class SecureStorageService {
     return token != null && token.isNotEmpty;
   }
 
+  /// Store user profile
+  Future<void> storeUserProfile(Map<String, dynamic> profile) async {
+    try {
+      await _storage.write(_userProfileKey, profile);
+      LogService.info('User profile stored securely');
+    } catch (e) {
+      LogService.error('Failed to store user profile', e);
+      throw Exception('Failed to store user profile');
+    }
+  }
+
+  /// Retrieve user profile
+  Map<String, dynamic>? getUserProfile() {
+    try {
+      return _storage.read<Map<String, dynamic>>(_userProfileKey);
+    } catch (e) {
+      LogService.error('Failed to retrieve user profile', e);
+      return null;
+    }
+  }
+
+  /// Get user role from profile
+  String getUserRoleFromProfile() {
+    try {
+      final profile = getUserProfile();
+      return profile?['role'] ?? 'buyer';
+    } catch (e) {
+      LogService.error('Failed to get user role from profile', e);
+      return 'buyer';
+    }
+  }
+
   /// Clear all stored authentication data
   Future<void> clearAuthData() async {
     try {
       await _storage.remove(_accessTokenKey);
       await _storage.remove(_refreshTokenKey);
       await _storage.remove(_userDataKey);
+      await _storage.remove(_userProfileKey);
       LogService.info('All authentication data cleared');
     } catch (e) {
       LogService.error('Failed to clear authentication data', e);

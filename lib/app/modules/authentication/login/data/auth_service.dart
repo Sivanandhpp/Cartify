@@ -107,29 +107,18 @@ class AuthService {
       if (response.statusCode == 200) {
         LogService.info('OTP verified successfully');
 
-        // Store tokens securely
+        // Store access token
         final accessToken = responseData['accessToken'];
-        final refreshToken = responseData['refreshToken'];
-
         if (accessToken != null) {
           await _secureStorage.storeAccessToken(accessToken);
-        }
 
-        if (refreshToken != null) {
-          await _secureStorage.storeRefreshToken(refreshToken);
-        }
-
-        // Store user data if provided
-        final userData = responseData['user'];
-        if (userData != null) {
-          await _secureStorage.storeUserData(userData);
+          // Fetch and store user profile
+          await _fetchUserProfile(accessToken);
         }
 
         return {
           'success': true,
           'accessToken': accessToken,
-          'refreshToken': refreshToken,
-          'user': userData,
           'message': 'OTP verified successfully',
         };
       } else {
@@ -146,6 +135,52 @@ class AuthService {
       LogService.error('Error verifying OTP', e);
       return {'success': false, 'message': AppStrings.networkError};
     }
+  }
+
+  /// Fetch user profile from API
+  Future<void> _fetchUserProfile(String accessToken) async {
+    try {
+      LogService.info('Fetching user profile');
+
+      final response = await http
+          .get(
+            Uri.parse(ApiEndpoints.userProfile),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+            },
+          )
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              throw Exception('Request timeout while fetching user profile');
+            },
+          );
+
+      LogService.apiResponse(
+        'GET',
+        ApiEndpoints.userProfile,
+        response.statusCode,
+        response.body,
+      );
+
+      if (response.statusCode == 200) {
+        final profileData = json.decode(response.body);
+        await _secureStorage.storeUserProfile(profileData);
+        LogService.info('User profile stored successfully');
+      } else {
+        LogService.error(
+          'Failed to fetch user profile: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      LogService.error('Error fetching user profile', e);
+    }
+  }
+
+  /// Get user role for routing
+  String getUserRole() {
+    return _secureStorage.getUserRoleFromProfile();
   }
 
   /// Logout user and clear all stored data

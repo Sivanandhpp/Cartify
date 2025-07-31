@@ -14,16 +14,10 @@ class SplashController extends GetxController {
     final isBoarded = storage.read(AppConfig.onboardingStatusKey) ?? false;
 
     if (isBoarded) {
-      // Check authentication status using SecureStorageService
-      final isLoggedIn = secureStorage.isLoggedIn;
-      final userRole = secureStorage.userRole;
-
-      if (isLoggedIn && secureStorage.isAuthenticated) {
-        if (userRole == 'admin') {
-          Get.offAllNamed(Routes.ADMIN_DASHBOARD);
-        } else {
-          Get.offAllNamed(Routes.BUYER_DASHBOARD);
-        }
+      // Check authentication status
+      if (secureStorage.isAuthenticated) {
+        final userRole = secureStorage.getUserRoleFromProfile();
+        _navigateBasedOnRole(userRole);
       } else {
         Get.offAllNamed(Routes.LOGIN);
       }
@@ -32,5 +26,22 @@ class SplashController extends GetxController {
     }
 
     super.onReady();
+  }
+
+  void _navigateBasedOnRole(String userRole) {
+    LogService.info('Navigating user based on role: $userRole');
+
+    switch (userRole) {
+      case 'admin':
+        Get.offAllNamed(Routes.ADMIN_DASHBOARD);
+        break;
+      case 'seller':
+        Get.offAllNamed(Routes.SELLER_DASHBOARD);
+        break;
+      case 'buyer':
+      default:
+        Get.offAllNamed(Routes.BUYER_DASHBOARD);
+        break;
+    }
   }
 }
