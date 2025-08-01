@@ -2,185 +2,135 @@ import 'package:get_storage/get_storage.dart';
 import '../config/app_config.dart';
 import 'log_service.dart';
 
-/// Secure storage service for handling sensitive data like tokens
+/// Production-level secure storage service for authentication and user data
 ///
-/// This service provides methods to securely store and retrieve
-/// authentication tokens and other sensitive user data.
+/// Handles all secure storage operations including tokens, user profiles,
+/// and authentication state management with comprehensive error handling.
 class SecureStorageService {
+  // Storage keys for different data types
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
-  static const String _userDataKey = 'user_data';
   static const String _userProfileKey = 'user_profile';
 
-  final GetStorage _storage = GetStorage();
+  // Singleton pattern for consistent storage instance
+  static final GetStorage _storage = GetStorage();
+
+  // ============================================================================
+  // TOKEN MANAGEMENT
+  // ============================================================================
 
   /// Store access token securely
   Future<void> storeAccessToken(String token) async {
-    try {
-      await _storage.write(_accessTokenKey, token);
-      LogService.info('Access token stored securely');
-    } catch (e) {
-      LogService.error('Failed to store access token', e);
-      throw Exception('Failed to store access token');
-    }
+    await _safeWrite(_accessTokenKey, token, 'Access token');
   }
 
-  /// Retrieve access token
+  /// Get current access token
   String? getAccessToken() {
-    try {
-      return _storage.read<String>(_accessTokenKey);
-    } catch (e) {
-      LogService.error('Failed to retrieve access token', e);
-      return null;
-    }
+    return _safeRead<String>(_accessTokenKey);
   }
 
   /// Store refresh token securely
   Future<void> storeRefreshToken(String token) async {
-    try {
-      await _storage.write(_refreshTokenKey, token);
-      LogService.info('Refresh token stored securely');
-    } catch (e) {
-      LogService.error('Failed to store refresh token', e);
-      throw Exception('Failed to store refresh token');
-    }
+    await _safeWrite(_refreshTokenKey, token, 'Refresh token');
   }
 
-  /// Retrieve refresh token
+  /// Get current refresh token
   String? getRefreshToken() {
-    try {
-      return _storage.read<String>(_refreshTokenKey);
-    } catch (e) {
-      LogService.error('Failed to retrieve refresh token', e);
-      return null;
-    }
+    return _safeRead<String>(_refreshTokenKey);
   }
 
-  /// Store user data
-  Future<void> storeUserData(Map<String, dynamic> userData) async {
-    try {
-      await _storage.write(_userDataKey, userData);
-      LogService.info('User data stored securely');
-    } catch (e) {
-      LogService.error('Failed to store user data', e);
-      throw Exception('Failed to store user data');
-    }
+  /// Get authorization header for API requests
+  String? getAuthorizationHeader() {
+    final token = getAccessToken();
+    return token?.isNotEmpty == true ? 'Bearer $token' : null;
   }
 
-  /// Retrieve user data
-  Map<String, dynamic>? getUserData() {
-    try {
-      return _storage.read<Map<String, dynamic>>(_userDataKey);
-    } catch (e) {
-      LogService.error('Failed to retrieve user data', e);
-      return null;
-    }
+  // ============================================================================
+  // USER PROFILE MANAGEMENT
+  // ============================================================================
+
+  /// Store complete user profile data
+  Future<void> storeUserProfile(Map<String, dynamic> profile) async {
+    await _safeWrite(_userProfileKey, profile, 'User profile');
   }
 
-  /// Check if user is authenticated (has valid access token)
+  /// Get stored user profile
+  Map<String, dynamic>? getUserProfile() {
+    return _safeRead<Map<String, dynamic>>(_userProfileKey);
+  }
+
+  /// Get user role from stored profile (with fallback)
+  String getUserRoleFromProfile() {
+    final profile = getUserProfile();
+    return profile?['role']?.toString() ?? 'buyer';
+  }
+
+  // ============================================================================
+  // AUTHENTICATION STATE
+  // ============================================================================
+
+  /// Check if user has valid authentication token
   bool get isAuthenticated {
     final token = getAccessToken();
-    return token != null && token.isNotEmpty;
+    return token?.isNotEmpty == true;
   }
 
-  /// Store user profile
-  Future<void> storeUserProfile(Map<String, dynamic> profile) async {
-    try {
-      await _storage.write(_userProfileKey, profile);
-      LogService.info('User profile stored securely');
-    } catch (e) {
-      LogService.error('Failed to store user profile', e);
-      throw Exception('Failed to store user profile');
-    }
-  }
+  // ============================================================================
+  // DATA CLEANUP
+  // ============================================================================
 
-  /// Retrieve user profile
-  Map<String, dynamic>? getUserProfile() {
-    try {
-      return _storage.read<Map<String, dynamic>>(_userProfileKey);
-    } catch (e) {
-      LogService.error('Failed to retrieve user profile', e);
-      return null;
-    }
-  }
-
-  /// Get user role from profile
-  String getUserRoleFromProfile() {
-    try {
-      final profile = getUserProfile();
-      return profile?['role'] ?? 'buyer';
-    } catch (e) {
-      LogService.error('Failed to get user role from profile', e);
-      return 'buyer';
-    }
-  }
-
-  /// Clear all stored authentication data
+  /// Clear all authentication-related data (for logout)
   Future<void> clearAuthData() async {
     try {
-      await _storage.remove(_accessTokenKey);
-      await _storage.remove(_refreshTokenKey);
-      await _storage.remove(_userDataKey);
-      await _storage.remove(_userProfileKey);
-      LogService.info('All authentication data cleared');
+      final operations = [
+        _storage.remove(_accessTokenKey),
+        _storage.remove(_refreshTokenKey),
+        _storage.remove(_userProfileKey),
+        _storage.remove(AppConfig.loginStatusKey),
+        _storage.remove(AppConfig.userRoleKey),
+      ];
+
+      await Future.wait(operations);
+      LogService.info('Authentication data cleared successfully');
     } catch (e) {
       LogService.error('Failed to clear authentication data', e);
-      throw Exception('Failed to clear authentication data');
+      rethrow;
     }
   }
 
-  /// Clear all storage data (for logout)
+  /// Clear all storage data (complete reset)
   Future<void> clearAll() async {
     try {
       await _storage.erase();
       LogService.info('All storage data cleared');
     } catch (e) {
       LogService.error('Failed to clear all storage data', e);
-      throw Exception('Failed to clear all storage data');
+      rethrow;
     }
   }
 
-  /// Get authorization header for API requests
-  String? getAuthorizationHeader() {
-    final token = getAccessToken();
-    if (token != null && token.isNotEmpty) {
-      return 'Bearer $token';
-    }
-    return null;
-  }
+  // ============================================================================
+  // PRIVATE UTILITY METHODS
+  // ============================================================================
 
-  /// Store login status and user role
-  Future<void> storeLoginStatus({
-    required bool isLoggedIn,
-    required String userRole,
-  }) async {
+  /// Safe write operation with error handling
+  Future<void> _safeWrite(String key, dynamic value, String dataType) async {
     try {
-      await _storage.write(AppConfig.loginStatusKey, isLoggedIn);
-      await _storage.write(AppConfig.userRoleKey, userRole);
-      LogService.info('Login status stored: $userRole');
+      await _storage.write(key, value);
+      LogService.info('$dataType stored successfully');
     } catch (e) {
-      LogService.error('Failed to store login status', e);
-      throw Exception('Failed to store login status');
+      LogService.error('Failed to store $dataType', e);
+      throw Exception('Failed to store $dataType');
     }
   }
 
-  /// Get login status
-  bool get isLoggedIn {
+  /// Safe read operation with error handling
+  T? _safeRead<T>(String key) {
     try {
-      return _storage.read<bool>(AppConfig.loginStatusKey) ?? false;
+      return _storage.read<T>(key);
     } catch (e) {
-      LogService.error('Failed to retrieve login status', e);
-      return false;
-    }
-  }
-
-  /// Get user role
-  String get userRole {
-    try {
-      return _storage.read<String>(AppConfig.userRoleKey) ?? 'user';
-    } catch (e) {
-      LogService.error('Failed to retrieve user role', e);
-      return 'user';
+      LogService.error('Failed to read data for key: $key', e);
+      return null;
     }
   }
 }

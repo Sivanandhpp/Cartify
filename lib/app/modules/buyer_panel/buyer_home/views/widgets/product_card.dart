@@ -3,6 +3,8 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../common/product_sheet/product_sheet.dart';
+
 /// Reusable product card widget for displaying API products
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.product});
@@ -16,7 +18,13 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         LogService.info('Product card tapped: ${product.name}');
-        SheetService.showProductSheet(product: product);
+         Get.bottomSheet(
+      ProductSheetWidget(product: product),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+      ignoreSafeArea: false,
+    );
       },
       child: Container(
         width: 130,
