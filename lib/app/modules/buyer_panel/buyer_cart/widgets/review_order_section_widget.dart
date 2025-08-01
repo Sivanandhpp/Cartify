@@ -11,8 +11,8 @@ class ReviewOrderSectionWidget extends StatelessWidget {
   final String deliveryType;
   final List<CartItem> cartItems;
   final int itemCount;
-  final Function(String itemId)? onIncrementQuantity;
-  final Function(String itemId)? onDecrementQuantity;
+  final Function(String productId)? onIncrementQuantity;
+  final Function(String productId)? onDecrementQuantity;
 
   const ReviewOrderSectionWidget({
     super.key,
@@ -102,8 +102,8 @@ class ReviewOrderSectionWidget extends StatelessWidget {
           ...cartItems.map(
             (item) => CartItemCardWidget(
               item: item,
-              onIncrementQuantity: () => onIncrementQuantity?.call(item.id),
-              onDecrementQuantity: () => onDecrementQuantity?.call(item.id),
+              onIncrementQuantity: () => onIncrementQuantity?.call(item.productId),
+              onDecrementQuantity: () => onDecrementQuantity?.call(item.productId),
             ),
           ),
         ],

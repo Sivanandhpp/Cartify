@@ -10,7 +10,6 @@ class BuyerCartController extends GetxController {
   // Getters
   List<CartItem> get cartItems => _cartService.cartItems;
   double get subtotal => _cartService.subtotal;
-  double get total => _cartService.total;
   double get totalSavings => cartItems.fold(
     0.0,
     (sum, item) => sum + (item.hasDiscount ? item.totalDiscount : 0.0),
@@ -44,12 +43,12 @@ class BuyerCartController extends GetxController {
   }
 
   // Cart operations
-  void incrementQuantity(String cartItemId) {
-    _cartService.incrementQuantity(cartItemId);
+  Future<void> incrementQuantity(String productId) async {
+    await _cartService.incrementQuantity(productId);
   }
 
-  void decrementQuantity(String cartItemId) {
-    _cartService.decrementQuantity(cartItemId);
+  Future<void> decrementQuantity(String productId) async {
+    await _cartService.decrementQuantity(productId);
   }
 
   void removeItem(String cartItemId) {

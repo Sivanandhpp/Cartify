@@ -126,6 +126,33 @@ class CartItem {
     );
   }
 
+  /// Create cart item from API response JSON
+  factory CartItem.fromApiJson(Map<String, dynamic> json) {
+    final product = json['product'] as Map<String, dynamic>?;
+
+    return CartItem(
+      id: json['id'] as String,
+      productId: json['product_id'] as String,
+      productName: product?['name'] as String? ?? 'Unknown Product',
+      productImage:
+          product?['images'] != null && (product!['images'] as List).isNotEmpty
+          ? (product['images'] as List).first as String
+          : '',
+      price: product != null
+          ? double.parse(product['price'] as String? ?? '0.0')
+          : 0.0,
+      discountPrice: null, // API doesn't provide discount in this format
+      quantity: json['quantity'] as int,
+      addedAt: DateTime.parse(
+        json['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : null,
+      metadata: {'cartId': json['cart_id'], 'product': product},
+    );
+  }
+
   /// Create cart item from product
   factory CartItem.fromProduct(
     String cartItemId,
@@ -164,7 +191,3 @@ class CartItem {
   @override
   int get hashCode => Object.hash(id, productId);
 }
-
-
-
-
