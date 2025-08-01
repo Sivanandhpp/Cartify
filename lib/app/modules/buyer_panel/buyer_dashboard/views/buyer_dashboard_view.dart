@@ -37,45 +37,20 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
               BuyerProfileView(),
             ],
           ),
-
-          // Bottom components that stay above pages
+          // Cart tracking widget with dynamic positioning
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Bottom navigation bar with scroll-based visibility
-                Obx(
-                  () => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    transform: Matrix4.translationValues(
-                      0,
-                      controller.isNavBarVisible.value ? 0 : 100,
-                      0,
-                    ),
-                    child: buildBottomNavBar(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Cart tracking widget with dynamic positioning
-          Obx(
-            () => Positioned(
-              left: 0,
-              right: 0,
-              bottom: controller.isNavBarVisible.value ? 80 : 0,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                child: const CartTrackingWidget(),
-              ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              child: const CartTrackingWidget(),
             ),
           ),
         ],
       ),
+      // Bottom navigation bar
+      bottomNavigationBar: buildBottomNavBar(),
     );
   }
 }
