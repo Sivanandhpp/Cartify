@@ -74,7 +74,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.BUYER_DASHBOARD,
-      page: () => const BuyerDashboardView(),
+      page: () => BuyerDashboardView(),
       binding: BuyerDashboardBinding(),
     ),
     GetPage(
