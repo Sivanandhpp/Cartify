@@ -4,14 +4,7 @@ import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Local imports (relative)
-import '../data/auth_service.dart';
-
 class LoginController extends GetxController {
-  LoginController(this._authService);
-
-  final AuthService _authService;
-
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
   final RxBool isLoading = false.obs;
@@ -58,7 +51,7 @@ class LoginController extends GetxController {
     LogService.info('Sending OTP to: ${phoneController.text}');
 
     try {
-      final result = await _authService.sendOtp(phoneController.text);
+      final result = await AuthApiService.sendOtp(phoneController.text);
 
       if (result['success'] == true) {
         LogService.info('OTP sent successfully');

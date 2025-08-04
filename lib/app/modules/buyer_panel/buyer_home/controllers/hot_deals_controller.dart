@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import '../../../../core/models/product_model.dart';
-import '../../../../core/services/api_service.dart';
+import '../../../../core/services/api_services/index.dart';
 import '../../../../core/services/log_service.dart';
 
 /// Controller for managing hot deals data and state
@@ -30,7 +30,9 @@ class HotDealsController extends GetxController {
 
       LogService.info('Fetching hot deals products...');
 
-      final fetchedProducts = await ApiService.fetchHotDealsProducts(limit: 10);
+      final fetchedProducts = await ProductsApiService.fetchHotDealsProducts(
+        limit: 10,
+      );
       products.assignAll(fetchedProducts);
 
       LogService.info(

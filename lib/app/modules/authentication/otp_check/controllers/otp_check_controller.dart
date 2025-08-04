@@ -3,7 +3,6 @@ import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../login/data/auth_service.dart';
 
 class OtpCheckController extends GetxController {
   // --- public --------------------------------------------------------------
@@ -17,7 +16,6 @@ class OtpCheckController extends GetxController {
   final RxBool isVerifying = false.obs;
 
   // --- private -------------------------------------------------------------
-  final _authService = AuthService();
   late final List<TextEditingController> _otpControllers;
   late final List<FocusNode> _otpFocusNodes;
   late final List<FocusNode> _rawKeyboardNodes;
@@ -84,7 +82,7 @@ class OtpCheckController extends GetxController {
       isVerifying.value = true;
       LogService.info('Verifying OTP: $otp for mobile: $mobile');
 
-      final result = await _authService.verifyOtp(mobile, otp);
+      final result = await AuthApiService.verifyOtp(mobile, otp);
 
       if (result['success'] == true) {
         LogService.info('OTP verified successfully');
@@ -95,7 +93,7 @@ class OtpCheckController extends GetxController {
         );
 
         // Get user role and navigate accordingly
-        final userRole = _authService.getUserRole();
+        final userRole = AuthApiService.getUserRole();
         _navigateBasedOnRole(userRole);
       } else {
         LogService.error('OTP verification failed: ${result['message']}');
@@ -122,7 +120,7 @@ class OtpCheckController extends GetxController {
       isResending.value = true;
       LogService.info('Resending OTP to: $mobile');
 
-      final result = await _authService.sendOtp(mobile);
+      final result = await AuthApiService.sendOtp(mobile);
 
       if (result['success'] == true) {
         NotificationService.showSuccess(

@@ -98,7 +98,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
                               : AppStrings.otpCheckResendButton,
                           style: AppTextStyles.labelLarge(
                             controller.isResending.value
-                                ? AppColors.primary.withOpacity(0.5)
+                                ? AppColors.primary.withValues(alpha: 0.5)
                                 : AppColors.primary,
                           ),
                         ),
