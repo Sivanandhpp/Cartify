@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/index.dart'; // For AppColors and CartItem
-import '../../../widgets/index.dart';
+import '../../../../../core/index.dart';
+import 'quantity_selector_widget.dart'; // For AppColors and CartItem
 
 class ExpandedCartView extends StatelessWidget {
   final List<CartItem> cartItems;
