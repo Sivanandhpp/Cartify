@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class BuyerDashboardController extends GetxController {
+  // Services
   final storage = GetStorage();
   final CartService _cartService = Get.find<CartService>();
 
@@ -13,14 +14,18 @@ class BuyerDashboardController extends GetxController {
   final selectedNavIndex = 0.obs;
   late final PageController pageController;
 
-  // Cart reactive getter
-  int get cartItemCount => _cartService.itemCount;
+  // Loading states
+  final RxBool isLoading = false.obs;
 
-  // Wishlist items
-  final RxList<Product> wishlistItems = <Product>[].obs;
+  // Cart data
+  final Rx<CartModel?> _cart = Rx<CartModel?>(null);
+  int get cartItemCount {
+    if (_cart.value?.items == null) return 0;
+    return _cart.value!.items.fold(0, (sum, item) => sum + item.quantity);
+  }
 
-  // User profile data
-  final RxMap<String, dynamic> userProfile = <String, dynamic>{}.obs;
+  // Wishlist items - using ProductModel
+  final RxList<ProductModel> wishlistItems = <ProductModel>[].obs;
 
   @override
   void onInit() {
@@ -29,58 +34,38 @@ class BuyerDashboardController extends GetxController {
     // Initialize page controller
     pageController = PageController(initialPage: 0);
 
-    _loadUserProfile();
     _loadWishlistItems();
+    _loadCartData();
   }
 
-  // Load user profile data
-  void _loadUserProfile() {
-    userProfile.value = {
-      'name': 'John Doe',
-      'email': 'john.doe@example.com',
-      'phone': '+91 9876543210',
-      'avatar': 'https://via.placeholder.com/100',
-      'totalOrders': 25,
-      'totalSpent': 45650.75,
-      'loyaltyPoints': 1250,
-      'memberSince': '2023-01-15',
-    };
+  // Load cart data
+  Future<void> _loadCartData() async {
+    try {
+      final cartData = await _cartService.getCart();
+      _cart.value = cartData;
+    } catch (e) {
+      LogService.error('Error loading cart: $e');
+    }
   }
 
-  // Load wishlist items
+  // Load wishlist items - For demo purposes
   void _loadWishlistItems() {
     wishlistItems.value = [
-      const Product(
+      ProductModel(
         id: 'wish_1',
         name: 'Premium Whiskey',
-        brand: 'Highland Reserve',
-        category: 'Spirits',
-        subCategory: 'Whiskey',
-        volume: '750ml',
-        alcoholContentABV: 40.0,
-        priceINR: 4999.0,
-        offerPercentage: 20,
-        offerPrice: 3999.0,
-        rating: 4.5,
-        reviewCount: 150,
         description: 'Premium aged whiskey with rich flavor profile',
-        imageUrl: AppImages.product1,
+        price: 4999.0,
+        stock: 50,
+        imageUrls: [AppImages.product1],
       ),
-      const Product(
+      ProductModel(
         id: 'wish_2',
         name: 'Craft Beer Pack',
-        brand: 'BrewMaster',
-        category: 'Beer',
-        subCategory: 'Craft Beer',
-        volume: '330ml x 6',
-        alcoholContentABV: 5.2,
-        priceINR: 899.0,
-        offerPercentage: 15,
-        offerPrice: 764.0,
-        rating: 4.7,
-        reviewCount: 320,
-        description: 'Premium craft beer variety pack with unique flavors',
-        imageUrl: AppImages.product2,
+        description: 'Premium craft beer collection pack',
+        price: 899.0,
+        stock: 100,
+        imageUrls: [AppImages.product2],
       ),
     ];
   }
@@ -102,7 +87,7 @@ class BuyerDashboardController extends GetxController {
   }
 
   // Method to add/remove item from wishlist
-  void toggleWishlist(Product product) {
+  void toggleWishlist(ProductModel product) {
     final existingIndex = wishlistItems.indexWhere(
       (item) => item.id == product.id,
     );
@@ -125,7 +110,6 @@ class BuyerDashboardController extends GetxController {
   bool isInWishlist(String productId) {
     return wishlistItems.any((item) => item.id == productId);
   }
-
 
   @override
   void onClose() {

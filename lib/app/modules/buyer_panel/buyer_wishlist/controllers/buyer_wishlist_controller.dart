@@ -3,12 +3,18 @@ import 'package:cartify/app/core/index.dart';
 import 'package:get/get.dart';
 
 class BuyerWishlistController extends GetxController {
+  // Services
+  final CartService _cartService = Get.find<CartService>();
+
   // Navigation bar visibility control
   final isNavBarVisible = true.obs;
   double _lastScrollOffset = 0.0;
 
-  // Wishlist items
-  final RxList<Product> wishlistItems = <Product>[].obs;
+  // Loading state
+  final RxBool isLoading = false.obs;
+
+  // Wishlist items - For now using local storage, in production would use proper wishlist service
+  final RxList<ProductModel> wishlistItems = <ProductModel>[].obs;
 
   @override
   void onInit() {
@@ -18,38 +24,32 @@ class BuyerWishlistController extends GetxController {
 
   // Load wishlist items - in production this would come from API
   void _loadWishlistItems() {
+    // For demo purposes, creating sample ProductModel items
+    // In production, this would fetch from wishlist API
     wishlistItems.value = [
-      Product(
+      ProductModel(
         id: 'wish_1',
         name: 'Premium Whiskey',
-        brand: 'Highland Reserve',
-        category: 'Spirits',
-        subCategory: 'Whiskey',
-        volume: '750ml',
-        alcoholContentABV: 40.0,
-        priceINR: 4999.0,
-        offerPercentage: 20,
-        offerPrice: 3999.0,
-        rating: 4.5,
-        reviewCount: 150,
         description: 'Premium aged whiskey with rich flavor profile',
-        imageUrl: AppImages.product1,
+        price: 4999.0,
+        stock: 50,
+        imageUrls: [AppImages.product1],
       ),
-      Product(
+      ProductModel(
         id: 'wish_2',
         name: 'Craft Beer Pack',
-        brand: 'BrewMaster',
-        category: 'Beer',
-        subCategory: 'Craft Beer',
-        volume: '330ml x 6',
-        alcoholContentABV: 5.2,
-        priceINR: 899.0,
-        offerPercentage: 15,
-        offerPrice: 764.0,
-        rating: 4.7,
-        reviewCount: 320,
-        description: 'Premium craft beer variety pack with unique flavors',
-        imageUrl: AppImages.product2,
+        description: 'Premium craft beer collection pack',
+        price: 899.0,
+        stock: 100,
+        imageUrls: [AppImages.product2],
+      ),
+      ProductModel(
+        id: 'wish_3',
+        name: 'Red Wine Collection',
+        description: 'Finest red wine from premium vineyards',
+        price: 2499.0,
+        stock: 75,
+        imageUrls: [AppImages.product3],
       ),
     ];
   }
@@ -74,29 +74,67 @@ class BuyerWishlistController extends GetxController {
     _lastScrollOffset = offset;
   }
 
-  // Method to add/remove item from wishlist
-  void toggleWishlist(Product product) {
-    final existingIndex = wishlistItems.indexWhere(
-      (item) => item.id == product.id,
-    );
-    if (existingIndex != -1) {
-      wishlistItems.removeAt(existingIndex);
-      NotificationService.showInfo(
+  // Toggle wishlist status
+  void toggleWishlist(ProductModel product) {
+    if (wishlistItems.any((item) => item.id == product.id)) {
+      // Remove from wishlist
+      wishlistItems.removeWhere((item) => item.id == product.id);
+      LogService.info('Removed ${product.name} from wishlist');
+      NotificationService.showSuccess(
         title: 'Removed from Wishlist',
-        message: '${product.name} removed from your wishlist',
+        message: '${product.name} has been removed from your wishlist',
       );
     } else {
+      // Add to wishlist
       wishlistItems.add(product);
+      LogService.info('Added ${product.name} to wishlist');
       NotificationService.showSuccess(
         title: 'Added to Wishlist',
-        message: '${product.name} added to your wishlist',
+        message: '${product.name} has been added to your wishlist',
       );
     }
   }
 
-  // Check if product is in wishlist
-  bool isInWishlist(String productId) {
+  // Check if product is in wishlist by ProductModel
+  bool isInWishlist(ProductModel product) {
+    return wishlistItems.any((item) => item.id == product.id);
+  }
+
+  // Check if product is in wishlist by ID
+  bool isInWishlistById(String productId) {
     return wishlistItems.any((item) => item.id == productId);
+  }
+
+  // Remove from wishlist
+  void removeFromWishlist(ProductModel product) {
+    wishlistItems.removeWhere((item) => item.id == product.id);
+    LogService.info('Removed ${product.name} from wishlist');
+    NotificationService.showSuccess(
+      title: 'Removed from Wishlist',
+      message: '${product.name} has been removed from your wishlist',
+    );
+  }
+
+  // Add to cart from wishlist
+  Future<void> addToCartFromWishlist(ProductModel product) async {
+    try {
+      // Create AddItemToCartDto
+      final addItemDto = AddItemToCartDto(productId: product.id, quantity: 1);
+
+      await _cartService.addItemToCart(addItemDto);
+
+      LogService.info('Added ${product.name} to cart from wishlist');
+      NotificationService.showSuccess(
+        title: 'Added to Cart',
+        message: '${product.name} has been added to your cart',
+      );
+    } catch (e) {
+      LogService.error('Failed to add ${product.name} to cart: $e');
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to add item to cart',
+      );
+    }
   }
 
   // Clear all wishlist items
@@ -106,13 +144,6 @@ class BuyerWishlistController extends GetxController {
       title: 'Wishlist Cleared',
       message: 'All items removed from your wishlist',
     );
-  }
-
-  // Add to cart from wishlist
-  void addToCartFromWishlist(Product product) {
-    final cartService = Get.find<CartService>();
-    cartService.addToCart(product);
-    LogService.info('Added ${product.name} to cart from wishlist');
   }
 
   // Navigate to home for shopping

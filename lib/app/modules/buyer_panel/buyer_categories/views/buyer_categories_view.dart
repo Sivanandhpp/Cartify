@@ -93,7 +93,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
     );
   }
 
-  Widget _buildCategoryCard(CategoryModel category, int index) {
+  Widget _buildCategoryCard(UICategoryModel category, int index) {
     final colors = [
       AppColors.primary,
       Colors.orange,

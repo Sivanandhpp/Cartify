@@ -5,14 +5,22 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class BuyerProfileController extends GetxController {
+  // Services
+  final UserService _userService = Get.find<UserService>();
   final storage = GetStorage();
 
   // Navigation bar visibility control
   final isNavBarVisible = true.obs;
   double _lastScrollOffset = 0.0;
 
+  // Loading state
+  final RxBool isLoading = false.obs;
+
   // User profile data
-  final RxMap<String, dynamic> userProfile = <String, dynamic>{}.obs;
+  final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
+
+  // Getter for compatibility with view
+  UserModel? get userProfile => currentUser.value;
 
   @override
   void onInit() {
@@ -20,18 +28,21 @@ class BuyerProfileController extends GetxController {
     _loadUserProfile();
   }
 
-  // Load user profile data - in production this would come from API
-  void _loadUserProfile() {
-    userProfile.value = {
-      'name': 'John Doe',
-      'email': 'john.doe@example.com',
-      'phone': '+91 9876543210',
-      'avatar': 'https://via.placeholder.com/100',
-      'totalOrders': 25,
-      'totalSpent': 45650.75,
-      'loyaltyPoints': 1250,
-      'memberSince': '2023-01-15',
-    };
+  // Load user profile data from API
+  Future<void> _loadUserProfile() async {
+    try {
+      isLoading.value = true;
+      final user = await _userService.getUserProfile();
+      currentUser.value = user;
+    } catch (e) {
+      LogService.error('Failed to load user profile: $e');
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to load profile data',
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // Method to handle scroll changes for nav bar visibility

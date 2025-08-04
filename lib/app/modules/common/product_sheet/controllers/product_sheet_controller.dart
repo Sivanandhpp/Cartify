@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/models/product_model.dart';
+import 'package:cartify/app/core/index.dart';
 
 class ProductSheetController extends GetxController {
   static ProductSheetController get to => Get.find();
@@ -45,12 +45,12 @@ class ProductSheetController extends GetxController {
   }
 
   /// Get product images with fallback
-  List<String> getProductImages(Product product) {
+  List<String> getProductImages(ProductModel product) {
     List<String> images = [];
 
     // Add API product images if available
-    if (product.imageList.isNotEmpty) {
-      images.addAll(product.imageList);
+    if (product.imageUrls.isNotEmpty) {
+      images.addAll(product.imageUrls);
     }
 
     // Add fallback placeholder images if no API images

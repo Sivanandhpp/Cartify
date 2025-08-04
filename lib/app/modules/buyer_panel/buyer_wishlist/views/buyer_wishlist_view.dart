@@ -129,7 +129,7 @@ class BuyerWishlistView extends GetView<BuyerWishlistController> {
     );
   }
 
-  Widget _buildWishlistItem(Product product) {
+  Widget _buildWishlistItem(ProductModel product) {
     return IntrinsicHeight(
       child: Container(
         decoration: BoxDecoration(
@@ -159,7 +159,12 @@ class BuyerWishlistView extends GetView<BuyerWishlistController> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(product.imageUrl),
+                          image: product.imageUrls.isNotEmpty
+                              ? NetworkImage(product.imageUrls.first)
+                              : const AssetImage(
+                                      'assets/images/placeholders/product_placeholder.png',
+                                    )
+                                    as ImageProvider,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -189,29 +194,7 @@ class BuyerWishlistView extends GetView<BuyerWishlistController> {
                         ),
                       ),
                     ),
-                    if (product.hasDiscount)
-                      Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            '${product.discountPercentage.toInt()}% OFF',
-                            style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+                    // Discount badge removed - not supported in core ProductModel
                   ],
                 ),
               ),
@@ -236,9 +219,11 @@ class BuyerWishlistView extends GetView<BuyerWishlistController> {
                     ),
                     const SizedBox(height: 2),
 
-                    // Brand name
+                    // Description (since brand not available in core model)
                     Text(
-                      product.brand,
+                      product.description.length > 30
+                          ? '${product.description.substring(0, 30)}...'
+                          : product.description,
                       style: TextStyle(
                         fontSize: 11,
                         color: AppColors.grey.withOpacity(0.8),
@@ -248,45 +233,20 @@ class BuyerWishlistView extends GetView<BuyerWishlistController> {
                     // Push price and button to bottom
                     const Spacer(),
 
-                    // Price row
+                    // Price row (simplified - no discount in core model)
                     Row(
                       children: [
-                        if (product.hasDiscount) ...[
-                          Flexible(
-                            child: Text(
-                              product.formattedDiscountPrice,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                        Flexible(
+                          child: Text(
+                            '₹${product.price.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(width: 4),
-                          Flexible(
-                            child: Text(
-                              product.formattedPrice,
-                              style: TextStyle(
-                                fontSize: 11,
-                                decoration: TextDecoration.lineThrough,
-                                color: AppColors.grey.withOpacity(0.6),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ] else
-                          Flexible(
-                            child: Text(
-                              product.formattedPrice,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                        ),
                       ],
                     ),
 

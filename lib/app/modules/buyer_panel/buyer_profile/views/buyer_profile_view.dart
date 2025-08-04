@@ -64,8 +64,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                     CircleAvatar(
                       radius: 40,
                       backgroundImage: NetworkImage(
-                        controller.userProfile['avatar'] ??
-                            AppImages.userPlaceholder,
+                        controller.userProfile?.email ?? 'user@example.com',
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -74,7 +73,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            controller.userProfile['name'] ?? 'User Name',
+                            controller.userProfile?.name ?? 'User Name',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -82,8 +81,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            controller.userProfile['email'] ??
-                                'user@example.com',
+                            controller.userProfile?.email ?? 'user@example.com',
                             style: TextStyle(
                               fontSize: 14,
                               color: AppColors.grey.withOpacity(0.8),
@@ -91,7 +89,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            controller.userProfile['phone'] ?? '+91 9876543210',
+                            controller.userProfile?.email ?? '+91 9876543210',
                             style: TextStyle(
                               fontSize: 14,
                               color: AppColors.grey.withOpacity(0.8),
@@ -126,8 +124,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                     Expanded(
                       child: _buildStatCard(
                         'Orders',
-                        controller.userProfile['totalOrders']?.toString() ??
-                            '0',
+                        '0', // Core UserModel doesn't have order stats
                         Icons.receipt_long,
                         AppColors.primary,
                       ),
@@ -136,7 +133,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                     Expanded(
                       child: _buildStatCard(
                         'Spent',
-                        '₹${controller.userProfile['totalSpent']?.toStringAsFixed(0) ?? '0'}',
+                        '₹0', // Core UserModel doesn't have spending stats
                         Icons.account_balance_wallet,
                         Colors.green,
                       ),
@@ -145,8 +142,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
                     Expanded(
                       child: _buildStatCard(
                         'Points',
-                        controller.userProfile['loyaltyPoints']?.toString() ??
-                            '0',
+                        '0', // Core UserModel doesn't have loyalty points
                         Icons.star,
                         Colors.orange,
                       ),

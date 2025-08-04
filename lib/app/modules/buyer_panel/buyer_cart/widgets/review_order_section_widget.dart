@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/index.dart';
-import 'cart_item_card_widget.dart';
 
 /// Production-level reusable review order section widget
 ///
@@ -11,8 +10,8 @@ class ReviewOrderSectionWidget extends StatelessWidget {
   final String deliveryType;
   final List<CartItem> cartItems;
   final int itemCount;
-  final Function(String productId)? onIncrementQuantity;
-  final Function(String productId)? onDecrementQuantity;
+  final Function(String itemId)? onIncrementQuantity;
+  final Function(String itemId)? onDecrementQuantity;
 
   const ReviewOrderSectionWidget({
     super.key,
@@ -98,12 +97,72 @@ class ReviewOrderSectionWidget extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Cart items
+          // Cart items list
           ...cartItems.map(
-            (item) => CartItemCardWidget(
-              item: item,
-              onIncrementQuantity: () => onIncrementQuantity?.call(item.productId),
-              onDecrementQuantity: () => onDecrementQuantity?.call(item.productId),
+            (item) => Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  // Product image
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: item.product.imageUrls.isNotEmpty
+                          ? DecorationImage(
+                              image: NetworkImage(item.product.imageUrls.first),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Product details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.product.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '₹${item.product.price}',
+                          style: const TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Quantity controls
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove),
+                        onPressed: () => onDecrementQuantity?.call(item.id),
+                      ),
+                      Text('${item.quantity}'),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () => onIncrementQuantity?.call(item.id),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

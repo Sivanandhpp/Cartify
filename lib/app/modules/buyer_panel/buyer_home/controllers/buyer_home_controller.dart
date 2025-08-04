@@ -3,43 +3,53 @@ import 'package:cartify/app/core/index.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Local imports
+// Local imports - using aliases to avoid conflicts
 import '../models/category_model.dart';
 import '../models/deal_model.dart';
 
 class BuyerHomeController extends GetxController {
-  // Cart service
+  // Services
   final CartService _cartService = Get.find<CartService>();
 
   // Navigation bar visibility control
   final isNavBarVisible = true.obs;
   double _lastScrollOffset = 0.0;
 
-  // Cart reactive getter
-  int get cartItemCount => _cartService.itemCount;
+  // Loading states
+  final RxBool isLoading = false.obs;
+  final RxBool isLoadingProducts = false.obs;
+
+  // Cart data
+  final Rx<CartModel?> _cart = Rx<CartModel?>(null);
+  int get cartItemCount {
+    if (_cart.value?.items == null) return 0;
+    return _cart.value!.items.fold(0, (sum, item) => sum + item.quantity);
+  }
 
   // Data for UI sections
-  late final List<CategoryModel> categories;
-  late final List<DealModel> deals;
+  final RxList<UICategoryModel> categories = <UICategoryModel>[].obs;
+  final RxList<DealModel> deals = <DealModel>[].obs;
+  final RxList<ProductModel> products = <ProductModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     _loadData();
+    _loadCartData();
   }
 
   // Initialize all the data for the home screen
   void _loadData() {
-    categories = [
-      CategoryModel(label: 'All', icon: Icons.grid_view),
-      CategoryModel(label: 'Maxxsaver', icon: Icons.local_offer),
-      CategoryModel(label: 'Fresh', icon: Icons.eco),
-      CategoryModel(label: 'Monsoon', icon: Icons.umbrella),
-      CategoryModel(label: 'Gadgets', icon: Icons.phone_iphone),
-      CategoryModel(label: 'Home', icon: Icons.home_work),
-    ];
+    categories.assignAll([
+      UICategoryModel(label: 'All', icon: Icons.grid_view),
+      UICategoryModel(label: 'Maxxsaver', icon: Icons.local_offer),
+      UICategoryModel(label: 'Fresh', icon: Icons.eco),
+      UICategoryModel(label: 'Monsoon', icon: Icons.umbrella),
+      UICategoryModel(label: 'Gadgets', icon: Icons.phone_iphone),
+      UICategoryModel(label: 'Home', icon: Icons.home_work),
+    ]);
 
-    deals = [
+    deals.assignAll([
       DealModel(
         title: 'UP TO\n80%\nOFF',
         subtitle: 'WOW DEALS',
@@ -64,7 +74,7 @@ class BuyerHomeController extends GetxController {
         color: AppColors.white,
         imageUrl: AppImages.product3,
       ),
-    ];
+    ]);
   }
 
   // Method to handle scroll changes for nav bar visibility
@@ -85,5 +95,49 @@ class BuyerHomeController extends GetxController {
     }
 
     _lastScrollOffset = offset;
+  }
+
+  // Cart operations
+  Future<void> _loadCartData() async {
+    try {
+      final cartData = await _cartService.getCart();
+      _cart.value = cartData;
+    } catch (e) {
+      print('Error loading cart: $e');
+    }
+  }
+
+  // Navigation methods
+  void navigateToCategory(UICategoryModel category) {
+    Get.toNamed('/buyer/products', arguments: {'category': category.label});
+  }
+
+  void navigateToProduct(ProductModel product) {
+    Get.toNamed('/buyer/product-detail', arguments: {'product': product});
+  }
+
+  void navigateToCart() {
+    Get.toNamed('/buyer/cart');
+  }
+
+  void navigateToProfile() {
+    Get.toNamed('/buyer/profile');
+  }
+
+  void navigateToOrders() {
+    Get.toNamed('/buyer/orders');
+  }
+
+  void navigateToSearch() {
+    Get.toNamed('/buyer/search');
+  }
+
+  void navigateToNotifications() {
+    Get.toNamed('/buyer/notifications');
+  }
+
+  // Refresh functionality
+  Future<void> refreshData() async {
+    await Future.wait([_loadCartData()]);
   }
 }

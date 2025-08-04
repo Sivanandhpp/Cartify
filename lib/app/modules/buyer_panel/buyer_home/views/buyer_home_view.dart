@@ -121,7 +121,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
     });
   }
 
-  Widget _buildCategorySection(List<CategoryModel> categories) {
+  Widget _buildCategorySection(List<UICategoryModel> categories) {
     return SliverToBoxAdapter(
       child: Container(
         decoration: const BoxDecoration(color: AppColors.primary),

@@ -6,17 +6,25 @@ class BuyerCartController extends GetxController {
 
   final RxDouble deliveryTip = 0.0.obs;
   final RxBool isProcessingPayment = false.obs;
+  final RxBool isLoading = false.obs;
+
+  // Cart data
+  final Rx<CartModel?> _cart = Rx<CartModel?>(null);
 
   // Getters
-  List<CartItem> get cartItems => _cartService.cartItems;
-  double get subtotal => _cartService.subtotal;
+  List<CartItem> get cartItems => _cart.value?.items ?? [];
+  double get subtotal => _cart.value?.totalPrice ?? 0.0;
   double get totalSavings => cartItems.fold(
     0.0,
-    (sum, item) => sum + (item.hasDiscount ? item.totalDiscount : 0.0),
+    (sum, item) =>
+        sum +
+        (item.product.price * item.quantity -
+            (item.product.price *
+                item.quantity)), // Assuming no discount logic for now
   );
-  int get itemCount => _cartService.itemCount;
-  bool get isEmpty => _cartService.isEmpty;
-  bool get isLoading => _cartService.isLoading;
+  int get itemCount => cartItems.fold(0, (sum, item) => sum + item.quantity);
+  bool get isEmpty => cartItems.isEmpty;
+  bool get isLoadingCart => isLoading.value;
 
   // Constants
   static const double _handlingFeeConstant = 9.80;
@@ -40,23 +48,113 @@ class BuyerCartController extends GetxController {
   void onInit() {
     super.onInit();
     deliveryTip.value = 0.0;
+    _loadCart();
+  }
+
+  /// Loads the current cart from the API
+  Future<void> _loadCart() async {
+    try {
+      isLoading.value = true;
+      final cart = await _cartService.getCart();
+      _cart.value = cart;
+    } catch (e) {
+      LogService.error('Failed to load cart', e);
+      ErrorService.showError('Failed to load cart items');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // Cart operations
-  Future<void> incrementQuantity(String productId) async {
-    await _cartService.incrementQuantity(productId);
+  Future<void> incrementQuantity(String cartItemId) async {
+    try {
+      final currentItem = cartItems.firstWhere((item) => item.id == cartItemId);
+      final newQuantity = currentItem.quantity + 1;
+
+      final updatedCart = await _cartService.updateCartItemQuantity(
+        cartItemId,
+        UpdateCartItemDto(quantity: newQuantity),
+      );
+
+      if (updatedCart != null) {
+        _cart.value = updatedCart;
+      }
+    } catch (e) {
+      LogService.error('Failed to increment quantity', e);
+      ErrorService.showError('Failed to update item quantity');
+    }
   }
 
-  Future<void> decrementQuantity(String productId) async {
-    await _cartService.decrementQuantity(productId);
+  Future<void> decrementQuantity(String cartItemId) async {
+    try {
+      final currentItem = cartItems.firstWhere((item) => item.id == cartItemId);
+
+      if (currentItem.quantity <= 1) {
+        // Remove item if quantity would become 0
+        await removeItem(cartItemId);
+        return;
+      }
+
+      final newQuantity = currentItem.quantity - 1;
+      final updatedCart = await _cartService.updateCartItemQuantity(
+        cartItemId,
+        UpdateCartItemDto(quantity: newQuantity),
+      );
+
+      if (updatedCart != null) {
+        _cart.value = updatedCart;
+      }
+    } catch (e) {
+      LogService.error('Failed to decrement quantity', e);
+      ErrorService.showError('Failed to update item quantity');
+    }
   }
 
-  void removeItem(String cartItemId) {
-    _cartService.removeFromCart(cartItemId);
+  Future<void> removeItem(String cartItemId) async {
+    try {
+      final updatedCart = await _cartService.removeItemFromCart(cartItemId);
+      if (updatedCart != null) {
+        _cart.value = updatedCart;
+      }
+    } catch (e) {
+      LogService.error('Failed to remove item', e);
+      ErrorService.showError('Failed to remove item from cart');
+    }
   }
 
-  void clearCart() {
-    _cartService.clearCart();
+  Future<void> clearCart() async {
+    try {
+      final success = await _cartService.clearCart();
+      if (success) {
+        _cart.value = null;
+      }
+    } catch (e) {
+      LogService.error('Failed to clear cart', e);
+      ErrorService.showError('Failed to clear cart');
+    }
+  }
+
+  /// Adds a product to the cart
+  Future<void> addToCart(String productId, {int quantity = 1}) async {
+    try {
+      final dto = AddItemToCartDto(productId: productId, quantity: quantity);
+      final updatedCart = await _cartService.addItemToCart(dto);
+
+      if (updatedCart != null) {
+        _cart.value = updatedCart;
+        ErrorService.showSuccess('Item added to cart');
+      }
+    } catch (e) {
+      LogService.error('Failed to add item to cart', e);
+      ErrorService.showError('Failed to add item to cart');
+    }
+  }
+
+  /// Gets the quantity of a specific product in the cart
+  int getQuantity(String productId) {
+    return cartItems
+        .where((item) => item.product.id == productId)
+        .fold(0, (sum, item) => sum + item.quantity);
   }
 
   // Tip management
@@ -67,37 +165,27 @@ class BuyerCartController extends GetxController {
   // Payment processing
   Future<void> processPayment() async {
     if (isEmpty) {
-      NotificationService.showError(
-        title: 'Empty Cart',
-        message: 'Please add items to your cart before proceeding',
-      );
+      ErrorService.showError('Please add items to your cart before proceeding');
       return;
     }
 
     try {
       isProcessingPayment.value = true;
-      NotificationService.showLoading(
-        title: 'Processing Payment',
-        message: 'Please wait while we process your order...',
-      );
 
+      // TODO: Implement actual order placement using OrderService
+      // For now, simulate payment processing
       await Future.delayed(const Duration(seconds: 3));
 
-      NotificationService.dismiss();
-      clearCart();
+      await clearCart();
 
-      NotificationService.showSuccess(
-        title: 'Order Placed Successfully',
-        message: 'Your order has been placed and will be delivered soon!',
+      ErrorService.showSuccess(
+        'Your order has been placed and will be delivered soon!',
       );
-
       Get.back();
     } catch (e) {
-      NotificationService.dismiss();
-      NotificationService.showError(
-        title: 'Payment Failed',
-        message:
-            'There was an error processing your payment. Please try again.',
+      LogService.error('Payment processing failed', e);
+      ErrorService.showError(
+        'There was an error processing your payment. Please try again.',
       );
     } finally {
       isProcessingPayment.value = false;

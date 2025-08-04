@@ -7,13 +7,11 @@ import 'package:get/get.dart';
 import 'controllers/product_sheet_controller.dart';
 import 'widgets/expandable_details_section.dart';
 import 'widgets/product_image_carousel.dart';
-import 'widgets/product_info_section.dart';
-import 'widgets/seller_details_section.dart';
 
 class ProductSheetWidget extends StatelessWidget {
   const ProductSheetWidget({super.key, this.product});
 
-  final Product? product;
+  final ProductModel? product;
 
   @override
   Widget build(BuildContext context) {
@@ -50,26 +48,92 @@ class ProductSheetWidget extends StatelessWidget {
                     () => ProductImageCarousel(
                       images: controller.getProductImages(product!),
                       currentImageIndex: controller.currentImageIndex.value,
-                      totalImages: product!.numberOfImages,
+                      totalImages: product!.imageUrls.length,
                       pageController: controller.imagePageController,
                       onPageChanged: controller.onImagePageChanged,
                     ),
                   ),
 
-                  // Product Information Section
+                  // Product Information Section (inline)
                   if (product != null)
-                    ProductInfoSection(
-                      product: product!,
-                      onAddToCart: controller.addToCart,
-                      onRemoveFromCart: controller.removeFromCart,
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product!.name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '₹${product!.price.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            product!.description,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () => controller.addToCart(),
+                                  child: const Text('Add to Cart'),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () => controller.removeFromCart(),
+                                  child: const Text('Remove'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
 
                   // Expandable Details Section
                   if (product != null)
                     ExpandableDetailsSection(product: product!),
 
-                  // Seller Details Section
-                  if (product != null) SellerDetailsSection(product: product!),
+                  // Seller Details Section (inline)
+                  if (product != null)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Product Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text('Stock: ${product!.stock} items'),
+                          const SizedBox(height: 4),
+                          Text('Product ID: ${product!.id}'),
+                        ],
+                      ),
+                    ),
 
                   // Bottom Padding
                   const SliverToBoxAdapter(child: SizedBox(height: 100)),

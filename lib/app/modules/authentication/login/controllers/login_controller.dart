@@ -1,16 +1,13 @@
-// Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Local imports (relative)
-import '../data/auth_service.dart';
-
 class LoginController extends GetxController {
-  LoginController(this._authService);
+  /// Injects the [AuthenticationService] to handle authentication logic.
+  LoginController(this._authenticationService);
 
-  final AuthService _authService;
+  final AuthenticationService _authenticationService;
 
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
@@ -31,6 +28,7 @@ class LoginController extends GetxController {
   }
 
   /* ---------- validation ---------- */
+  /// Validates the phone number input field.
   String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
       return AppStrings.loginErrEmpty;
@@ -42,12 +40,17 @@ class LoginController extends GetxController {
   }
 
   /* ---------- actions ---------- */
+  /// Triggered when the "Send OTP" button is pressed.
   void onSendOtpPressed() {
     if (isLoading.value) return;
-    sendOtp();
+    _sendOtp();
   }
 
-  Future<void> sendOtp() async {
+  /// Legacy method name for backward compatibility with existing UI.
+  Future<void> sendOtp() => _sendOtp();
+
+  /// Validates the form and calls the authentication service to request an OTP.
+  Future<void> _sendOtp() async {
     if (!formKey.currentState!.validate()) {
       LogService.warning('Form validation failed');
       ErrorService.showError(AppStrings.otpsendError);
@@ -55,25 +58,24 @@ class LoginController extends GetxController {
     }
 
     isLoading.value = true;
-    LogService.info('Sending OTP to: ${phoneController.text}');
+    final phoneNumber = phoneController.text;
+    LogService.info('Requesting OTP for: $phoneNumber');
 
     try {
-      final result = await _authService.sendOtp(phoneController.text);
+      final requestDto = RequestOtpDto(phoneNumber: phoneNumber);
+      final success = await _authenticationService.requestOtp(requestDto);
 
-      if (result['success'] == true) {
-        LogService.info('OTP sent successfully');
-        ErrorService.showSuccess(result['message']);
+      if (success) {
+        LogService.info('OTP requested successfully for $phoneNumber');
+        ErrorService.showSuccess('OTP has been sent successfully.');
 
-        Get.toNamed(
-          Routes.OTP_CHECK,
-          arguments: {'mobile': phoneController.text},
-        );
+        Get.toNamed(Routes.OTP_CHECK, arguments: {'mobile': phoneNumber});
       } else {
-        LogService.error('Failed to send OTP: ${result['message']}');
-        ErrorService.showError(result['message']);
+        LogService.error('Failed to request OTP for $phoneNumber');
+        ErrorService.showError('Failed to send OTP. Please try again.');
       }
     } catch (error) {
-      LogService.error('Failed to send OTP', error);
+      LogService.error('An unexpected error occurred while sending OTP', error);
       ErrorService.showError(AppStrings.otpsendError);
     } finally {
       isLoading.value = false;

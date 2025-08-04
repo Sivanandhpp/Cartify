@@ -91,7 +91,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
                       child: GestureDetector(
                         onTap: controller.isResending.value
                             ? null
-                            : () => controller.resendOtp(mobile),
+                            : () => controller.resendOtp(),
                         child: Text(
                           controller.isResending.value
                               ? 'Resending...'
