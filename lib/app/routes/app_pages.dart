@@ -24,10 +24,10 @@ import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
-import '../modules/splash/bindings/splash_binding.dart';
-import '../modules/splash/views/splash_view.dart';
 import '../modules/seller_panel/tab_bar/bindings/tab_bar_binding.dart';
 import '../modules/seller_panel/tab_bar/views/tab_bar_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 
 // Routes barrel export file
 // Usage: import 'package:cartify/app/routes/app_pages.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/index.dart';
+import '../../widgets/index.dart';
 
 /// Production-level reusable cart item card widget
 ///
@@ -64,49 +65,10 @@ class CartItemCardWidget extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.lightPrimary),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: onDecrementQuantity,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              child: const Icon(
-                                Icons.remove,
-                                size: 16,
-                                color: AppColors.lightPrimary,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              '${item.quantity}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.lightPrimary,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: onIncrementQuantity,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              child: const Icon(
-                                Icons.add,
-                                size: 16,
-                                color: AppColors.lightPrimary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    QuantitySelectorWidget(
+                      quantity: item.quantity,
+                      onIncrement: onIncrementQuantity,
+                      onDecrement: onDecrementQuantity,
                     ),
                     const Spacer(),
                     Column(
