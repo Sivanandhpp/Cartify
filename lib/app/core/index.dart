@@ -37,10 +37,15 @@ export 'models/user/create_address_dto.dart';
 
 // Dashboard
 export 'models/dashboard/dashboard_model.dart';
+export 'models/dashboard/banner_model.dart';
+
+// Onboarding
+export 'models/onboarding/onboarding_model.dart';
+export 'models/onboarding/onboarding_data.dart';
 
 // Product & Catalog
-// export 'models/product/product_model.dart';
-// export 'models/product/category_model.dart';
+export 'models/product/product_model.dart';
+export 'models/product/category_model.dart';
 
 // Cart
 export 'models/cart/cart_model.dart';
@@ -66,6 +71,7 @@ export 'services/api_client.dart';
 // Feature-specific Services
 export 'services/authentication/authentication_service.dart';
 export 'services/user/user_service.dart';
+export 'services/user/user_controller.dart';
 export 'services/dashboard/dashboard_service.dart';
 export 'services/product/product_service.dart';
 export 'services/cart/cart_service.dart';

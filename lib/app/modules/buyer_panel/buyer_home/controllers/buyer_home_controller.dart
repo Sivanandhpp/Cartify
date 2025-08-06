@@ -1,15 +1,7 @@
 // Core imports (absolute)
 // import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/models/dashboard/banner_model.dart';
-import 'package:cartify/app/core/models/dashboard/dashboard_model.dart';
-import 'package:cartify/app/core/models/dashboard/product_model.dart' show ProductModel;
-import 'package:cartify/app/core/services/cart/cart_service.dart';
-import 'package:cartify/app/core/services/dashboard/dashboard_service.dart';
-import 'package:cartify/app/core/services/log_service.dart';
-import 'package:flutter/material.dart';
+import 'package:cartify/app/core/index.dart';
 import 'package:get/get.dart';
-
-import '../../../../core/models/dashboard/category_model.dart';
 
 class BuyerHomeController extends GetxController {
   // Services
