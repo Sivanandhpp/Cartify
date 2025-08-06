@@ -1,6 +1,6 @@
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/views/widgets/quantity_selector_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/index.dart';
-import '../../widgets/index.dart';
 
 /// Production-level reusable cart item card widget
 ///

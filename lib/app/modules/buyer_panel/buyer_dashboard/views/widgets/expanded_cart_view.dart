@@ -1,6 +1,6 @@
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/views/widgets/quantity_selector_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/index.dart'; // For AppColors and CartItem
-import '../../../widgets/index.dart';
 
 class ExpandedCartView extends StatelessWidget {
   final List<CartItem> cartItems;
