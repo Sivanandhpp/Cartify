@@ -35,7 +35,9 @@ Future<void> initServices() async {
   Get.put(ErrorService(), permanent: true);
   Get.put(SecureStorageService(), permanent: true);
   Get.put(ThemeService(), permanent: true);
-  Get.put(CartService(), permanent: true);
-
+  Get.put(ApiService());
+  Get.put<AuthApiService>(AuthApiService());
+  Get.put<AuthStorageService>(AuthStorageService());
+  Get.put<UserApiService>(UserApiService());
   LogService.info('Services initialized successfully');
 }

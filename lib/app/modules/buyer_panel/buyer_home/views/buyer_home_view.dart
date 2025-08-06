@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 
 // Local imports
 import '../controllers/buyer_home_controller.dart';
-import '../controllers/hot_deals_controller.dart';
 import '../models/category_model.dart';
 import '../models/deal_model.dart';
 import 'widgets/horizontal_product_list.dart';
@@ -24,14 +23,14 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
       child: CustomScrollView(
         slivers: [
           _buildHomeAppBar(),
-          _buildCategorySection(controller.categories),
+          // _buildCategorySection(controller.categories),
           SliverToBoxAdapter(
             child: Image.asset(AppImages.promoBanner, fit: BoxFit.fitWidth),
           ),
-          _buildDealCardsSection(controller.deals),
+          // _buildDealCardsSection(controller.deals),
           const SliverToBoxAdapter(child: AppSpacing.spaceLarge),
           _buildExpiryBannerSection(),
-          _buildHotDealsSection(),
+          // _buildHotDealsSection(),
           const SliverToBoxAdapter(child: SizedBox(height: 180)),
         ],
       ),
@@ -288,21 +287,21 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
     );
   }
 
-  Widget _buildHotDealsSection() {
-    final HotDealsController hotDealsController =
-        Get.find<HotDealsController>();
-    return Obx(() {
-      return HorizontalProductListWidget(
-        title: 'Hot deals',
-        products: hotDealsController.products.take(10).toList(),
-        isLoading: hotDealsController.isLoading.value,
-        hasError: hotDealsController.hasError.value,
-        errorMessage: hotDealsController.errorMessage.value,
-        onSeeAllPressed: () {
-          LogService.info('See All button pressed in Hot Deals');
-        },
-        onRetryPressed: () => hotDealsController.refreshHotDeals(),
-      );
-    });
-  }
+  // Widget _buildHotDealsSection() {
+  //   final HotDealsController hotDealsController =
+  //       Get.find<HotDealsController>();
+  //   return Obx(() {
+  //     return HorizontalProductListWidget(
+  //       title: 'Hot deals',
+  //       products: hotDealsController.products.take(10).toList(),
+  //       isLoading: hotDealsController.isLoading.value,
+  //       hasError: hotDealsController.hasError.value,
+  //       errorMessage: hotDealsController.errorMessage.value,
+  //       onSeeAllPressed: () {
+  //         LogService.info('See All button pressed in Hot Deals');
+  //       },
+  //       onRetryPressed: () => hotDealsController.refreshHotDeals(),
+  //     );
+  //   });
+  // }
 }

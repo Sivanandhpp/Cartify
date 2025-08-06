@@ -2,21 +2,27 @@ import 'package:get/get.dart';
 import '../../../../core/index.dart';
 
 class BuyerCartController extends GetxController {
-  final CartService _cartService = Get.find<CartService>();
+  // Use new core services
+  final CartApiService _cartApiService = Get.find<CartApiService>();
 
+  // Observable state
   final RxDouble deliveryTip = 0.0.obs;
   final RxBool isProcessingPayment = false.obs;
+  final RxBool isLoading = false.obs;
+  final RxList<CartItem> cartItems = <CartItem>[].obs;
 
-  // Getters
-  List<CartItem> get cartItems => _cartService.cartItems;
-  double get subtotal => _cartService.subtotal;
+  // Getters from cart services
+  int get itemCount => cartItems.length;
+  bool get isEmpty => cartItems.isEmpty;
+
+  // Calculated values
+  double get subtotal =>
+      cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
   double get totalSavings => cartItems.fold(
     0.0,
-    (sum, item) => sum + (item.hasDiscount ? item.totalDiscount : 0.0),
+    (sum, item) =>
+        sum + 0.0, // No discount info available in current Product model
   );
-  int get itemCount => _cartService.itemCount;
-  bool get isEmpty => _cartService.isEmpty;
-  bool get isLoading => _cartService.isLoading;
 
   // Constants
   static const double _handlingFeeConstant = 9.80;
@@ -40,23 +46,83 @@ class BuyerCartController extends GetxController {
   void onInit() {
     super.onInit();
     deliveryTip.value = 0.0;
+    _loadCartData();
   }
 
-  // Cart operations
-  Future<void> incrementQuantity(String productId) async {
-    await _cartService.incrementQuantity(productId);
+  /// Load cart data from API and cache
+  Future<void> _loadCartData() async {
+    try {
+      isLoading.value = true;
+
+      // Fetch fresh data from API
+      final Cart? apiCart = await _cartApiService.getCart();
+      if (apiCart != null && apiCart.items.isNotEmpty) {
+        cartItems.value = apiCart.items;
+      }
+    } catch (e) {
+      LogService.error('Error loading cart data: $e');
+      ErrorService.showError('Failed to load cart');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  Future<void> decrementQuantity(String productId) async {
-    await _cartService.decrementQuantity(productId);
+  // Cart operations using new services
+  Future<void> incrementQuantity(String cartItemId) async {
+    try {
+      // Find the current item to get its quantity
+      final currentItem = cartItems.firstWhere((item) => item.id == cartItemId);
+      await _cartApiService.updateCartItemQuantity(
+        cartItemId,
+        currentItem.quantity + 1,
+      );
+      await _loadCartData(); // Refresh cart data
+    } catch (e) {
+      LogService.error('Error incrementing quantity: $e');
+      ErrorService.showError('Failed to update cart');
+    }
   }
 
-  void removeItem(String cartItemId) {
-    _cartService.removeFromCart(cartItemId);
+  Future<void> decrementQuantity(String cartItemId) async {
+    try {
+      // Find the current item to get its quantity
+      final currentItem = cartItems.firstWhere((item) => item.id == cartItemId);
+      if (currentItem.quantity > 1) {
+        await _cartApiService.updateCartItemQuantity(
+          cartItemId,
+          currentItem.quantity - 1,
+        );
+      } else {
+        await removeItem(cartItemId);
+        return;
+      }
+      await _loadCartData(); // Refresh cart data
+    } catch (e) {
+      LogService.error('Error decrementing quantity: $e');
+      ErrorService.showError('Failed to update cart');
+    }
   }
 
-  void clearCart() {
-    _cartService.clearCart();
+  Future<void> removeItem(String cartItemId) async {
+    try {
+      await _cartApiService.removeItemFromCart(cartItemId);
+      await _loadCartData(); // Refresh cart data
+      ErrorService.showSuccess('Item removed from cart');
+    } catch (e) {
+      LogService.error('Error removing item: $e');
+      ErrorService.showError('Failed to remove item');
+    }
+  }
+
+  Future<void> clearCart() async {
+    try {
+      await _cartApiService.clearCart();
+      cartItems.clear();
+      ErrorService.showSuccess('Cart cleared');
+    } catch (e) {
+      LogService.error('Error clearing cart: $e');
+      ErrorService.showError('Failed to clear cart');
+    }
   }
 
   // Tip management

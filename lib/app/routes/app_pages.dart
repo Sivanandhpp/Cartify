@@ -97,11 +97,11 @@ class AppPages {
       page: () => const BuyerProfileView(),
       binding: BuyerProfileBinding(),
     ),
-    GetPage(
-      name: _Paths.BUYER_WISHLIST,
-      page: () => const BuyerWishlistView(),
-      binding: BuyerWishlistBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.BUYER_WISHLIST,
+    //   page: () => const BuyerWishlistView(),
+    //   binding: BuyerWishlistBinding(),
+    // ),
     GetPage(
       name: _Paths.SELLER_DASHBOARD,
       page: () => const SellerDashboardView(),

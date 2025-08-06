@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // Local imports (relative)
-import '../data/auth_service.dart';
 
 class LoginController extends GetxController {
-  LoginController(this._authService);
-
-  final AuthService _authService;
+  // Use new authentication services
+  final AuthApiService _authApiService = Get.find<AuthApiService>();
+  final AuthStorageService _authStorageService = Get.find<AuthStorageService>();
 
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
@@ -21,6 +20,7 @@ class LoginController extends GetxController {
   void onInit() {
     super.onInit();
     LogService.info('LoginController initialized');
+    _checkAuthenticationStatus();
   }
 
   @override
@@ -28,6 +28,36 @@ class LoginController extends GetxController {
     phoneController.dispose();
     LogService.info('LoginController disposed');
     super.onClose();
+  }
+
+  /* ---------- authentication status ---------- */
+  /// Check if user is already authenticated and redirect if needed
+  void _checkAuthenticationStatus() {
+    if (_authStorageService.isLoggedIn) {
+      LogService.info('User already authenticated, redirecting to dashboard');
+      _navigateBasedOnUserRole();
+    }
+  }
+
+  /// Navigate user based on their role
+  void _navigateBasedOnUserRole() {
+    final user = _authStorageService.currentUser;
+    if (user != null) {
+      switch (user.role.toUpperCase()) {
+        case 'ADMIN':
+          Get.offAllNamed(Routes.ADMIN_DASHBOARD);
+          break;
+        case 'SELLER':
+          Get.offAllNamed(Routes.SELLER_DASHBOARD);
+          break;
+        case 'BUYER':
+        default:
+          Get.offAllNamed(Routes.BUYER_DASHBOARD);
+          break;
+      }
+    } else {
+      Get.offAllNamed(Routes.BUYER_DASHBOARD);
+    }
   }
 
   /* ---------- validation ---------- */
@@ -58,19 +88,21 @@ class LoginController extends GetxController {
     LogService.info('Sending OTP to: ${phoneController.text}');
 
     try {
-      final result = await _authService.sendOtp(phoneController.text);
+      final success = await _authApiService.requestOtp(phoneController.text);
 
-      if (result['success'] == true) {
+      if (success) {
         LogService.info('OTP sent successfully');
-        ErrorService.showSuccess(result['message']);
+        ErrorService.showSuccess(
+          'OTP sent successfully to ${phoneController.text}',
+        );
 
         Get.toNamed(
           Routes.OTP_CHECK,
           arguments: {'mobile': phoneController.text},
         );
       } else {
-        LogService.error('Failed to send OTP: ${result['message']}');
-        ErrorService.showError(result['message']);
+        LogService.error('Failed to send OTP');
+        ErrorService.showError('Failed to send OTP. Please try again.');
       }
     } catch (error) {
       LogService.error('Failed to send OTP', error);

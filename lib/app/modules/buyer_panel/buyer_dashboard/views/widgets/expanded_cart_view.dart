@@ -298,8 +298,8 @@ class _ExpandedCartItem extends StatelessWidget {
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: item.productImage.isNotEmpty
-                  ? Image.network(item.productImage, fit: BoxFit.cover)
+              child: item.product.imageUrls.isNotEmpty
+                  ? Image.network(item.product.imageUrls.first, fit: BoxFit.cover)
                   : Icon(Icons.image_outlined, color: Colors.grey[400]),
             ),
           ),
@@ -309,7 +309,7 @@ class _ExpandedCartItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.productName,
+                  item.product.name,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -321,33 +321,33 @@ class _ExpandedCartItem extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    if (item.discountPrice != null) ...[
-                      Text(
-                        '₹${item.discountPrice!.toStringAsFixed(0)}',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '₹${item.price.toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontSize: 11,
-                          decoration: TextDecoration.lineThrough,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ] else
-                      Text(
-                        '₹${item.price.toStringAsFixed(0)}',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                    // if (item.discountPrice != null) ...[
+                    //   Text(
+                    //     '₹${item.discountPrice!.toStringAsFixed(0)}',
+                    //     style: const TextStyle(
+                    //       fontSize: 13,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Colors.black,
+                    //     ),
+                    //   ),
+                    //   const SizedBox(width: 4),
+                    //   Text(
+                    //     '₹${item.price.toStringAsFixed(0)}',
+                    //     style: TextStyle(
+                    //       fontSize: 11,
+                    //       decoration: TextDecoration.lineThrough,
+                    //       color: Colors.grey[600],
+                    //     ),
+                    //   ),
+                    // ] else
+                    //   Text(
+                    //     '₹${item.price.toStringAsFixed(0)}',
+                    //     style: const TextStyle(
+                    //       fontSize: 13,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Colors.black,
+                    //     ),
+                    //   ),
                   ],
                 ),
               ],

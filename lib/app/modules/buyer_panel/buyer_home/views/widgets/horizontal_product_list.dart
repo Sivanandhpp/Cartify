@@ -141,7 +141,7 @@ class HorizontalProductListWidget extends StatelessWidget {
         padding: const EdgeInsets.only(left: 16.0),
         itemBuilder: (BuildContext context, int index) {
           final Product product = products[index];
-          return ProductCard(product: product);
+          // return ProductCard(product: product);
         },
       ),
     );

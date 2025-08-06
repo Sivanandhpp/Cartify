@@ -3,9 +3,12 @@ import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../login/data/auth_service.dart';
 
 class OtpCheckController extends GetxController {
+  // Use new authentication services
+  final AuthApiService _authApiService = Get.find<AuthApiService>();
+  final AuthStorageService _authStorageService = Get.find<AuthStorageService>();
+  final UserApiService _userApiService = Get.find<UserApiService>();
   // --- public --------------------------------------------------------------
   final formKey = GlobalKey<FormState>();
   final scrollController = ScrollController();
@@ -17,7 +20,6 @@ class OtpCheckController extends GetxController {
   final RxBool isVerifying = false.obs;
 
   // --- private -------------------------------------------------------------
-  final _authService = AuthService();
   late final List<TextEditingController> _otpControllers;
   late final List<FocusNode> _otpFocusNodes;
   late final List<FocusNode> _rawKeyboardNodes;
@@ -84,24 +86,33 @@ class OtpCheckController extends GetxController {
       isVerifying.value = true;
       LogService.info('Verifying OTP: $otp for mobile: $mobile');
 
-      final result = await _authService.verifyOtp(mobile, otp);
+      // Verify OTP using new authentication API
+      final authTokens = await _authApiService.verifyOtp(mobile, otp);
 
-      if (result['success'] == true) {
+      if (authTokens != null) {
         LogService.info('OTP verified successfully');
+
+        // Save authentication tokens
+        await _authStorageService.saveAuthTokens(authTokens);
+
+        // Fetch and save user profile
+        final userProfile = await _userApiService.getUserProfile();
+        if (userProfile != null) {
+          await _authStorageService.saveUserProfile(userProfile);
+        }
 
         NotificationService.showSuccess(
           title: 'Success',
-          message: result['message'] ?? 'OTP Verified!',
+          message: 'OTP Verified Successfully!',
         );
 
-        // Get user role and navigate accordingly
-        final userRole = _authService.getUserRole();
-        _navigateBasedOnRole(userRole);
+        // Navigate based on user role
+        _navigateBasedOnRole();
       } else {
-        LogService.error('OTP verification failed: ${result['message']}');
+        LogService.error('OTP verification failed');
         NotificationService.showError(
           title: 'Verification Failed',
-          message: result['message'] ?? 'Invalid OTP. Please try again.',
+          message: 'Invalid OTP. Please try again.',
         );
       }
     } catch (e) {
@@ -122,20 +133,20 @@ class OtpCheckController extends GetxController {
       isResending.value = true;
       LogService.info('Resending OTP to: $mobile');
 
-      final result = await _authService.sendOtp(mobile);
+      final success = await _authApiService.requestOtp(mobile);
 
-      if (result['success'] == true) {
+      if (success) {
         NotificationService.showSuccess(
           title: 'OTP Resent',
-          message: result['message'],
+          message: 'OTP sent successfully to $mobile',
         );
         LogService.info('OTP resent successfully to: $mobile');
       } else {
         NotificationService.showError(
           title: 'Resend Failed',
-          message: result['message'],
+          message: 'Failed to resend OTP. Please try again.',
         );
-        LogService.error('Failed to resend OTP: ${result['message']}');
+        LogService.error('Failed to resend OTP');
       }
     } catch (e) {
       LogService.error('Error resending OTP', e);
@@ -149,17 +160,20 @@ class OtpCheckController extends GetxController {
   }
 
   // -------------------------------------------------------------------------
-  void _navigateBasedOnRole(String userRole) {
+  void _navigateBasedOnRole() {
+    final user = _authStorageService.currentUser;
+    final userRole = user?.role ?? 'BUYER';
+
     LogService.info('Navigating user based on role: $userRole');
 
-    switch (userRole) {
-      case 'admin':
+    switch (userRole.toUpperCase()) {
+      case 'ADMIN':
         Get.offAllNamed(Routes.ADMIN_DASHBOARD);
         break;
-      case 'seller':
+      case 'SELLER':
         Get.offAllNamed(Routes.SELLER_DASHBOARD);
         break;
-      case 'buyer':
+      case 'BUYER':
       default:
         Get.offAllNamed(Routes.BUYER_DASHBOARD);
         break;

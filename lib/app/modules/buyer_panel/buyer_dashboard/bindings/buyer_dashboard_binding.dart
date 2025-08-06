@@ -17,7 +17,7 @@ class BuyerDashboardBinding extends Bindings {
     // Initialize all page dependencies
     BuyerHomeBinding().dependencies();
     BuyerCategoriesBinding().dependencies();
-    BuyerWishlistBinding().dependencies();
+    // BuyerWishlistBinding().dependencies();
     BuyerOffersBinding().dependencies();
     BuyerProfileBinding().dependencies();
   }

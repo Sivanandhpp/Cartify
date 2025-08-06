@@ -1,158 +1,324 @@
-import 'dart:convert';
-import 'package:cartify/app/core/index.dart';
-import 'package:http/http.dart' as http;
+/// HTTP API Service for Cartify
+/// Handles all HTTP requests using Dio with proper error handling,
+/// authentication, and request/response interceptors
 
-/// Enhanced service for handling both public and authenticated API requests
-class ApiService {
-  static const String _baseUrl =
-      'https://api.jsonbin.io/v3/b/6881d8637b4b8670d8a6726c/latest';
-  static const String _apiKey =
-      r'$2a$10$zDMIipp.oXBVa5aRBh4LMeQAqKpixzSSkrLcNVBWNRlxL1.cPdZMG';
+import 'package:dio/dio.dart';
+import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 
-  static final SecureStorageService _secureStorage = SecureStorageService();
+import '../config/api_endpoints.dart';
+import 'log_service.dart';
+import 'error_service.dart';
+import 'secure_storage_service.dart';
 
-  /// Get headers for authenticated requests
-  static Map<String, String> _getAuthHeaders() {
-    final headers = <String, String>{'Content-Type': 'application/json'};
+/// HTTP API service using Dio
+class ApiService extends GetxService {
+  late final Dio _dio;
+  final SecureStorageService _storageService = SecureStorageService();
 
-    final authHeader = _secureStorage.getAuthorizationHeader();
-    if (authHeader != null) {
-      headers['Authorization'] = authHeader;
-    }
-
-    return headers;
+  /// Initialize API service with Dio configuration
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    await _initializeDio();
   }
 
-  /// Make authenticated GET request
-  static Future<http.Response> authenticatedGet(String url) async {
-    final headers = _getAuthHeaders();
-    LogService.apiRequest('GET', url, headers);
-
-    final response = await http.get(Uri.parse(url), headers: headers);
-    LogService.apiResponse('GET', url, response.statusCode, response.body);
-
-    return response;
-  }
-
-  /// Make authenticated POST request
-  static Future<http.Response> authenticatedPost(
-    String url,
-    Map<String, dynamic> body,
-  ) async {
-    final headers = _getAuthHeaders();
-    final jsonBody = json.encode(body);
-
-    LogService.apiRequest('POST', url, headers, jsonBody);
-
-    final response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: jsonBody,
+  /// Initialize Dio with base configuration and interceptors
+  Future<void> _initializeDio() async {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: ApiEndpoints.baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
     );
 
-    LogService.apiResponse('POST', url, response.statusCode, response.body);
-
-    return response;
+    // Add interceptors
+    _dio.interceptors.add(_createAuthInterceptor());
+    _dio.interceptors.add(_createLoggingInterceptor());
+    _dio.interceptors.add(_createErrorInterceptor());
   }
 
-  /// Make authenticated PUT request
-  static Future<http.Response> authenticatedPut(
-    String url,
-    Map<String, dynamic> body,
-  ) async {
-    final headers = _getAuthHeaders();
-    final jsonBody = json.encode(body);
+  /// Create authentication interceptor for automatic token handling
+  Interceptor _createAuthInterceptor() {
+    return InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        // Skip auth for public endpoints
+        if (_isPublicEndpoint(options.path)) {
+          return handler.next(options);
+        }
 
-    LogService.apiRequest('PUT', url, headers, jsonBody);
+        // Add access token for protected routes
+        final accessToken = _storageService.getAccessToken();
+        if (accessToken != null) {
+          options.headers['Authorization'] = 'Bearer $accessToken';
+        }
 
-    final response = await http.put(
-      Uri.parse(url),
-      headers: headers,
-      body: jsonBody,
+        handler.next(options);
+      },
+      onError: (error, handler) async {
+        // Handle token refresh on 401 error
+        if (error.response?.statusCode == 401) {
+          final refreshed = await _refreshTokenIfNeeded();
+          if (refreshed) {
+            // Retry the original request with new token
+            final newToken = _storageService.getAccessToken();
+            error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+
+            try {
+              final response = await _dio.fetch(error.requestOptions);
+              return handler.resolve(response);
+            } catch (e) {
+              return handler.next(error);
+            }
+          }
+        }
+        handler.next(error);
+      },
     );
-
-    LogService.apiResponse('PUT', url, response.statusCode, response.body);
-
-    return response;
   }
 
-  /// Make authenticated DELETE request
-  static Future<http.Response> authenticatedDelete(String url) async {
-    final headers = _getAuthHeaders();
-    LogService.apiRequest('DELETE', url, headers);
-
-    final response = await http.delete(Uri.parse(url), headers: headers);
-    LogService.apiResponse('DELETE', url, response.statusCode, response.body);
-
-    return response;
+  /// Create logging interceptor for debugging
+  Interceptor _createLoggingInterceptor() {
+    return InterceptorsWrapper(
+      onRequest: (options, handler) {
+        LogService.debug('API Request: ${options.method} ${options.path}');
+        LogService.debug('Headers: ${options.headers}');
+        if (options.data != null) {
+          LogService.debug('Body: ${options.data}');
+        }
+        handler.next(options);
+      },
+      onResponse: (response, handler) {
+        LogService.debug(
+          'API Response: ${response.statusCode} ${response.requestOptions.path}',
+        );
+        handler.next(response);
+      },
+      onError: (error, handler) {
+        LogService.error('API Error: ${error.message}');
+        if (error.response != null) {
+          LogService.error('Error Response: ${error.response?.data}');
+        }
+        handler.next(error);
+      },
+    );
   }
 
-  /// Fetch products from the API (existing functionality)
-  static Future<List<Product>> fetchProducts() async {
+  /// Create error interceptor for centralized error handling
+  Interceptor _createErrorInterceptor() {
+    return InterceptorsWrapper(
+      onError: (error, handler) {
+        ErrorService.instance.handleApiError(
+          error.message ?? 'Unknown API error',
+          endpoint: error.requestOptions.path,
+          statusCode: error.response?.statusCode,
+          response: error.response?.data,
+        );
+        handler.next(error);
+      },
+    );
+  }
+
+  /// Check if endpoint is public (doesn't require authentication)
+  bool _isPublicEndpoint(String path) {
+    final publicPaths = [
+      '/auth/request-otp',
+      '/auth/verify-otp',
+      '/dashboard',
+      '/categories',
+      '/products',
+    ];
+
+    return publicPaths.any((publicPath) => path.startsWith(publicPath));
+  }
+
+  /// Refresh access token using refresh token
+  Future<bool> _refreshTokenIfNeeded() async {
     try {
-      LogService.apiRequest('GET', _baseUrl);
+      final refreshToken = _storageService.getRefreshToken();
+      if (refreshToken == null) {
+        LogService.warning('No refresh token available');
+        return false;
+      }
 
-      final url = Uri.parse(_baseUrl);
-      final headers = {
-        'X-Master-Key': _apiKey,
-        'Content-Type': 'application/json',
-      };
-
-      final response = await http.get(url, headers: headers);
-
-      LogService.apiResponse('GET', _baseUrl, response.statusCode);
+      final response = await _dio.get(
+        '/auth/refresh',
+        options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
+      );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        // The actual content is inside the "record" field
-        final productsJson = data['record']['beverageProducts'] as List;
-
-        final products = productsJson
-            .map((json) => Product.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        LogService.info('✅ Successfully fetched ${products.length} products');
-        return products;
-      } else {
-        final errorMessage =
-            'Failed to fetch data. Status code: ${response.statusCode}';
-        LogService.error(errorMessage);
-        ErrorService().handleApiError(
-          errorMessage,
-          endpoint: _baseUrl,
-          statusCode: response.statusCode,
-          response: response.body,
-        );
-        throw Exception(errorMessage);
+        final data = response.data;
+        await _storageService.storeAccessToken(data['accessToken']);
+        await _storageService.storeRefreshToken(data['refreshToken']);
+        LogService.info('Token refreshed successfully');
+        return true;
       }
     } catch (e) {
-      LogService.error('An error occurred while fetching products: $e');
-      ErrorService().handleApiError(e.toString(), endpoint: _baseUrl);
+      LogService.error('Failed to refresh token: $e');
+      // Clear stored tokens on refresh failure
+      await _storageService.clearAuthData();
+    }
+    return false;
+  }
+
+  /// Make GET request
+  Future<Response<T>> get<T>(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      return await _dio.get<T>(
+        path,
+        queryParameters: queryParameters,
+        options: options,
+      );
+    } on DioException catch (e) {
+      LogService.error('GET request failed: $path - $e');
       rethrow;
     }
   }
 
-  /// Fetch limited products for hot deals section (existing functionality)
-  static Future<List<Product>> fetchHotDealsProducts({int limit = 10}) async {
+  /// Make POST request
+  Future<Response<T>> post<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
     try {
-      final allProducts = await fetchProducts();
-
-      // Filter products with offers and take limited count
-      final hotDealsProducts = allProducts
-          .where((product) => product.offerPercentage > 0)
-          .take(limit)
-          .toList();
-
-      LogService.info(
-        '✅ Filtered ${hotDealsProducts.length} hot deals products',
+      return await _dio.post<T>(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
       );
-      return hotDealsProducts;
-    } catch (e) {
-      LogService.error(
-        'An error occurred while fetching hot deals products: $e',
-      );
+    } on DioException catch (e) {
+      LogService.error('POST request failed: $path - $e');
       rethrow;
     }
+  }
+
+  /// Make PATCH request
+  Future<Response<T>> patch<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      return await _dio.patch<T>(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      );
+    } on DioException catch (e) {
+      LogService.error('PATCH request failed: $path - $e');
+      rethrow;
+    }
+  }
+
+  /// Make DELETE request
+  Future<Response<T>> delete<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      return await _dio.delete<T>(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+      );
+    } on DioException catch (e) {
+      LogService.error('DELETE request failed: $path - $e');
+      rethrow;
+    }
+  }
+
+  /// Upload file using multipart/form-data
+  Future<Response<T>> uploadFile<T>(
+    String path,
+    String filePath, {
+    String fieldName = 'file',
+    Map<String, dynamic>? additionalData,
+    Options? options,
+  }) async {
+    try {
+      final formData = FormData();
+
+      // Add file
+      formData.files.add(
+        MapEntry(fieldName, await MultipartFile.fromFile(filePath)),
+      );
+
+      // Add additional data if provided
+      if (additionalData != null) {
+        additionalData.forEach((key, value) {
+          formData.fields.add(MapEntry(key, value.toString()));
+        });
+      }
+
+      return await _dio.post<T>(path, data: formData, options: options);
+    } on DioException catch (e) {
+      LogService.error('File upload failed: $path - $e');
+      rethrow;
+    }
+  }
+
+  /// Upload multiple files
+  Future<Response<T>> uploadFiles<T>(
+    String path,
+    List<String> filePaths, {
+    String fieldName = 'files',
+    Map<String, dynamic>? additionalData,
+    Options? options,
+  }) async {
+    try {
+      final formData = FormData();
+
+      // Add files
+      for (final filePath in filePaths) {
+        formData.files.add(
+          MapEntry(fieldName, await MultipartFile.fromFile(filePath)),
+        );
+      }
+
+      // Add additional data if provided
+      if (additionalData != null) {
+        additionalData.forEach((key, value) {
+          formData.fields.add(MapEntry(key, value.toString()));
+        });
+      }
+
+      return await _dio.post<T>(path, data: formData, options: options);
+    } on DioException catch (e) {
+      LogService.error('Files upload failed: $path - $e');
+      rethrow;
+    }
+  }
+
+  /// Check if user is authenticated
+  Future<bool> isAuthenticated() async {
+    final accessToken = _storageService.getAccessToken();
+    return accessToken != null;
+  }
+
+  /// Get current access token
+  Future<String?> getAccessToken() async {
+    return _storageService.getAccessToken();
+  }
+
+  /// Clear all authentication data
+  Future<void> clearAuth() async {
+    await _storageService.clearAuthData();
   }
 }

@@ -99,13 +99,13 @@ class ReviewOrderSectionWidget extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Cart items
-          ...cartItems.map(
-            (item) => CartItemCardWidget(
-              item: item,
-              onIncrementQuantity: () => onIncrementQuantity?.call(item.productId),
-              onDecrementQuantity: () => onDecrementQuantity?.call(item.productId),
-            ),
-          ),
+          // ...cartItems.map(
+          //   (item) => CartItemCardWidget(
+          //     item: item,
+          //     onIncrementQuantity: () => onIncrementQuantity?.call(item.productId),
+          //     onDecrementQuantity: () => onDecrementQuantity?.call(item.productId),
+          //   ),
+          // ),
         ],
       ),
     );

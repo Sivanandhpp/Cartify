@@ -3,24 +3,40 @@ import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class BuyerDashboardController extends GetxController {
-  final storage = GetStorage();
-  final CartService _cartService = Get.find<CartService>();
+  // Use new services from core
+  final AuthStorageService _authStorageService = Get.find<AuthStorageService>();
+  final CartApiService _cartApiService = Get.find<CartApiService>();
+  final CartStorageService _cartStorageService = Get.find<CartStorageService>();
+  final ProductStorageService _productStorageService =
+      Get.find<ProductStorageService>();
+  final DashboardApiService _dashboardApiService =
+      Get.find<DashboardApiService>();
+  final DashboardStorageService _dashboardStorageService =
+      Get.find<DashboardStorageService>();
 
   // State for Bottom Navigation Bar
   final selectedNavIndex = 0.obs;
   late final PageController pageController;
 
+  // Observable state
+  final RxBool isLoading = false.obs;
+  final RxBool isRefreshing = false.obs;
+
   // Cart reactive getter
-  int get cartItemCount => _cartService.itemCount;
+  int get cartItemCount => _cartStorageService.currentCart?.items.length ?? 0;
 
-  // Wishlist items
-  final RxList<Product> wishlistItems = <Product>[].obs;
+  // Wishlist items from storage
+  List<Product> get wishlistItems =>
+      _productStorageService.getWishlistProducts();
 
-  // User profile data
-  final RxMap<String, dynamic> userProfile = <String, dynamic>{}.obs;
+  // User profile data from auth storage
+  UserProfile? get userProfile => _authStorageService.currentUser;
+
+  // Dashboard data
+  final RxList<DashboardSection> dashboardSections = <DashboardSection>[].obs;
+  final RxList<Product> featuredProducts = <Product>[].obs;
 
   @override
   void onInit() {
@@ -29,60 +45,84 @@ class BuyerDashboardController extends GetxController {
     // Initialize page controller
     pageController = PageController(initialPage: 0);
 
-    _loadUserProfile();
-    _loadWishlistItems();
+    // Load initial data
+    _loadDashboardData();
+    _loadFeaturedProducts();
   }
 
-  // Load user profile data
-  void _loadUserProfile() {
-    userProfile.value = {
-      'name': 'John Doe',
-      'email': 'john.doe@example.com',
-      'phone': '+91 9876543210',
-      'avatar': 'https://via.placeholder.com/100',
-      'totalOrders': 25,
-      'totalSpent': 45650.75,
-      'loyaltyPoints': 1250,
-      'memberSince': '2023-01-15',
-    };
+  /// Load dashboard data from API or cache
+  Future<void> _loadDashboardData() async {
+    try {
+      isLoading.value = true;
+
+      // Try to get cached data first
+      final cachedSections = _dashboardStorageService.dashboardSections;
+      if (cachedSections.isNotEmpty) {
+        dashboardSections.value = cachedSections;
+      }
+
+      // Fetch fresh data from API
+      final sections = await _dashboardApiService.getDashboardData();
+      if (sections.isNotEmpty) {
+        dashboardSections.value = sections;
+        await _dashboardStorageService.saveDashboardData(sections);
+      }
+    } catch (e) {
+      LogService.error('Error loading dashboard data: $e');
+      ErrorService.showError('Failed to load dashboard data');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Load wishlist items
-  void _loadWishlistItems() {
-    wishlistItems.value = [
-      const Product(
-        id: 'wish_1',
-        name: 'Premium Whiskey',
-        brand: 'Highland Reserve',
-        category: 'Spirits',
-        subCategory: 'Whiskey',
-        volume: '750ml',
-        alcoholContentABV: 40.0,
-        priceINR: 4999.0,
-        offerPercentage: 20,
-        offerPrice: 3999.0,
-        rating: 4.5,
-        reviewCount: 150,
-        description: 'Premium aged whiskey with rich flavor profile',
-        imageUrl: AppImages.product1,
-      ),
-      const Product(
-        id: 'wish_2',
-        name: 'Craft Beer Pack',
-        brand: 'BrewMaster',
-        category: 'Beer',
-        subCategory: 'Craft Beer',
-        volume: '330ml x 6',
-        alcoholContentABV: 5.2,
-        priceINR: 899.0,
-        offerPercentage: 15,
-        offerPrice: 764.0,
-        rating: 4.7,
-        reviewCount: 320,
-        description: 'Premium craft beer variety pack with unique flavors',
-        imageUrl: AppImages.product2,
-      ),
-    ];
+  /// Load featured products
+  Future<void> _loadFeaturedProducts() async {
+    try {
+      // Try cached data first
+      final cachedProducts = _productStorageService.getCachedFeaturedProducts();
+      if (cachedProducts.isNotEmpty) {
+        featuredProducts.value = cachedProducts;
+      }
+
+      // Fetch fresh data from API
+      final ProductApiService productApiService = Get.find<ProductApiService>();
+      final products = await productApiService.getFeaturedProducts();
+      if (products.isNotEmpty) {
+        featuredProducts.value = products;
+        await _productStorageService.saveFeaturedProducts(products);
+      }
+    } catch (e) {
+      LogService.error('Error loading featured products: $e');
+    }
+  }
+
+  /// Refresh dashboard data
+  Future<void> refreshDashboard() async {
+    try {
+      isRefreshing.value = true;
+
+      // Refresh dashboard sections
+      final sections = await _dashboardApiService.getDashboardData();
+      if (sections.isNotEmpty) {
+        dashboardSections.value = sections;
+        await _dashboardStorageService.saveDashboardData(sections);
+      }
+
+      // Refresh featured products
+      final ProductApiService productApiService = Get.find<ProductApiService>();
+      final products = await productApiService.getFeaturedProducts();
+      if (products.isNotEmpty) {
+        featuredProducts.value = products;
+        await _productStorageService.saveFeaturedProducts(products);
+      }
+
+      ErrorService.showSuccess('Dashboard refreshed successfully');
+    } catch (e) {
+      LogService.error('Error refreshing dashboard: $e');
+      ErrorService.showError('Failed to refresh dashboard');
+    } finally {
+      isRefreshing.value = false;
+    }
   }
 
   void onNavItemTapped(int index) {
@@ -101,31 +141,91 @@ class BuyerDashboardController extends GetxController {
     }
   }
 
-  // Method to add/remove item from wishlist
-  void toggleWishlist(Product product) {
-    final existingIndex = wishlistItems.indexWhere(
-      (item) => item.id == product.id,
-    );
-    if (existingIndex != -1) {
-      wishlistItems.removeAt(existingIndex);
-      NotificationService.showInfo(
-        title: 'Removed from Wishlist',
-        message: '${product.name} removed from your wishlist',
+  /// Add/remove item from wishlist using product storage service
+  Future<void> toggleWishlist(Product product) async {
+    try {
+      final isCurrentlyInWishlist = _productStorageService.isInWishlist(
+        product.id,
       );
-    } else {
-      wishlistItems.add(product);
-      NotificationService.showSuccess(
-        title: 'Added to Wishlist',
-        message: '${product.name} added to your wishlist',
-      );
+
+      if (isCurrentlyInWishlist) {
+        await _productStorageService.removeFromWishlist(product.id);
+        NotificationService.showInfo(
+          title: 'Removed from Wishlist',
+          message: '${product.name} removed from your wishlist',
+        );
+      } else {
+        await _productStorageService.addToWishlist(product);
+        NotificationService.showSuccess(
+          title: 'Added to Wishlist',
+          message: '${product.name} added to your wishlist',
+        );
+      }
+    } catch (e) {
+      LogService.error('Error toggling wishlist: $e');
+      ErrorService.showError('Failed to update wishlist');
     }
   }
 
-  // Check if product is in wishlist
+  /// Check if product is in wishlist
   bool isInWishlist(String productId) {
-    return wishlistItems.any((item) => item.id == productId);
+    return _productStorageService.isInWishlist(productId);
   }
 
+  /// Add product to cart
+  Future<void> addToCart(Product product, {int quantity = 1}) async {
+    try {
+      final cartItem = await _cartApiService.addItemToCart(
+        product.id,
+        quantity,
+      );
+      if (cartItem != null) {
+        // Refresh cart data by fetching latest cart
+        await _cartApiService.getCart();
+
+        NotificationService.showSuccess(
+          title: 'Added to Cart',
+          message: '${product.name} added to your cart',
+        );
+      }
+    } catch (e) {
+      LogService.error('Error adding to cart: $e');
+      ErrorService.showError('Failed to add item to cart');
+    }
+  }
+
+  /// Navigate to product details
+  void navigateToProduct(String productId) {
+    // Using existing routes or fallback routes
+    Get.toNamed('/product-details', arguments: {'productId': productId});
+  }
+
+  /// Navigate to category products
+  void navigateToCategory(String categoryId) {
+    Get.toNamed('/category-products', arguments: {'categoryId': categoryId});
+  }
+
+  /// Navigate to search
+  void navigateToSearch({String? query}) {
+    Get.toNamed('/search', arguments: query != null ? {'query': query} : null);
+  }
+
+  /// Navigate to cart
+  void navigateToCart() {
+    Get.toNamed(Routes.CART);
+  }
+
+  /// Navigate to orders
+  void navigateToOrders() {
+    // Use available route or fallback
+    Get.toNamed('/orders');
+  }
+
+  /// Navigate to profile
+  void navigateToProfile() {
+    // Use available route or fallback
+    Get.toNamed('/profile');
+  }
 
   @override
   void onClose() {
@@ -133,10 +233,25 @@ class BuyerDashboardController extends GetxController {
     super.onClose();
   }
 
-  void logOut() {
-    // Use SecureStorageService for proper logout
-    final secureStorage = SecureStorageService();
-    secureStorage.clearAuthData();
-    Get.offAllNamed(Routes.LOGIN);
+  /// Logout user and clear all data
+  Future<void> logOut() async {
+    try {
+      LogService.info('Logging out user');
+
+      // Clear authentication data
+      await _authStorageService.clearAuthData();
+
+      // Navigate to login
+      Get.offAllNamed(Routes.LOGIN);
+
+      NotificationService.showSuccess(
+        title: 'Logged Out',
+        message: 'You have been logged out successfully',
+      );
+    } catch (e) {
+      LogService.error('Error during logout: $e');
+      // Still navigate to login even if there's an error
+      Get.offAllNamed(Routes.LOGIN);
+    }
   }
 }

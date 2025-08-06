@@ -35,7 +35,7 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
             children: const [
               BuyerHomeView(),
               BuyerCategoriesView(),
-              BuyerWishlistView(),
+              // BuyerWishlistView(),
               BuyerOffersView(),
               BuyerProfileView(),
             ],
