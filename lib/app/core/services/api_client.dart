@@ -13,7 +13,7 @@ class ApiClient {
 
   // The base URL for the API. For Android emulators, this is typically http://10.0.2.2:3000.
   // For physical devices, it would be the local IP of the machine running the backend.
-  static const String _baseUrl = "http://10.0.2.2:3000";
+  static const String _baseUrl = 'http://10.0.2.2:3000';
 
   factory ApiClient(FlutterSecureStorage secureStorage) {
     final dio = Dio(BaseOptions(baseUrl: _baseUrl));

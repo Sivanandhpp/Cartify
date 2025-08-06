@@ -1,16 +1,8 @@
-class OnboardingPageData {
-  final String image;
-  final String title;
-  final String subtitle;
-  const OnboardingPageData({
-    required this.image,
-    required this.title,
-    required this.subtitle,
-  });
-}
 
 // Hard‑coded sample pages.
-const List<OnboardingPageData> kOnboardingPages = [
+import 'package:cartify/app/core/models/onboarding/onboarding_model.dart';
+
+const List<OnboardingPageData> onboardingPages = [
   OnboardingPageData(
     image: 'assets/images/onboarding1.jpg',
     title: 'Shop Your Favorites',
@@ -30,7 +22,4 @@ const List<OnboardingPageData> kOnboardingPages = [
         'Track orders live, get doorstep delivery,\nand return items hassle-free.',
   ),
 ];
-
-
-
 

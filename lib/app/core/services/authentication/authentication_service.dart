@@ -1,10 +1,14 @@
 // lib/app/core/services/authentication/authentication_service.dart
 
+import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/core/models/authentication/request_otp_dto.dart';
 import 'package:cartify/app/core/models/authentication/verify_otp_dto.dart';
 import 'package:cartify/app/core/services/api_client.dart';
+import 'package:cartify/app/core/services/user/user_controller.dart';
+import 'package:cartify/app/core/services/user/user_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 
 /// A service for handling user authentication.
 ///
@@ -14,6 +18,7 @@ class AuthenticationService {
   final FlutterSecureStorage _secureStorage;
 
   AuthenticationService(this._apiClient, this._secureStorage);
+  UserController userController = Get.find<UserController>();
 
   /// Requests an OTP for the given phone number.
   ///
@@ -44,6 +49,16 @@ class AuthenticationService {
           key: 'jwt_token',
           value: response.data['accessToken'],
         );
+        // Fetch and store user profile
+        final userProfile = await UserService(_apiClient).getUserProfile();
+        if (userProfile != null) {
+          userController.updateUser(userProfile);
+        } else {
+          // Handle null user profile, e.g., throw or log error
+          LogService.error('Error: User profile is null after OTP verification.');
+          return false;
+        }
+
         return true;
       }
       return false;

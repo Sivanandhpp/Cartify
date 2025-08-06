@@ -1,8 +1,11 @@
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/core/services/user/user_controller.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,11 +34,30 @@ void main() async {
 Future<void> initServices() async {
   LogService.info('Initializing services...');
 
+  Get.put(UserController());
+
   // Initialize core services in order of dependency
   Get.put(ErrorService(), permanent: true);
-  Get.put(SecureStorageService(), permanent: true);
+  Get.put(StorageService(), permanent: true);
   Get.put(ThemeService(), permanent: true);
-  Get.put(CartService(), permanent: true);
+
+  // Initialize FlutterSecureStorage for ApiClient
+  final secureStorage = const FlutterSecureStorage();
+
+  // Initialize ApiClient with FlutterSecureStorage
+  Get.put(ApiClient(secureStorage), permanent: true);
+
+  // Initialize services that depend on ApiClient
+  Get.put(
+    AuthenticationService(Get.find<ApiClient>(), secureStorage),
+    permanent: true,
+  );
+  Get.put(CartService(Get.find<ApiClient>()), permanent: true);
+  Get.put(ProductService(Get.find<ApiClient>()), permanent: true);
+  Get.put(OrderService(Get.find<ApiClient>()), permanent: true);
+  Get.put(UserService(Get.find<ApiClient>()), permanent: true);
+  Get.put(ReviewService(Get.find<ApiClient>()), permanent: true);
+  Get.put(DashboardService(Get.find<ApiClient>()), permanent: true);
 
   LogService.info('Services initialized successfully');
 }

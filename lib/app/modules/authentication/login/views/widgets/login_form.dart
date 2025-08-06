@@ -17,7 +17,7 @@ class LoginForm extends GetView<LoginController> {
             keyboardType: TextInputType.phone,
             maxLength: 10,
             validator: controller.validatePhone,
-            onFieldSubmitted: (_) => controller.sendOtp(),
+            onFieldSubmitted: (_) => controller.onSendOtpPressed(),
             style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
             decoration: InputDecoration(
               prefixIcon: const Icon(

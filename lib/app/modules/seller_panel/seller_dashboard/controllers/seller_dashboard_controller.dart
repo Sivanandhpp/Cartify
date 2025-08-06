@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/services/secure_storage_service.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../tab_bar/widgets/ios_tab_bar.dart';
 
 class SellerDashboardController extends GetxController {
@@ -125,8 +125,8 @@ class SellerDashboardController extends GetxController {
   Future<void> logout() async {
     try {
       // Clear authentication data
-      final secureStorage = SecureStorageService();
-      await secureStorage.clearAuthData();
+      final storageService = StorageService();
+      await storageService.clearAuthData();
 
       // Navigate to login screen
       Get.offAllNamed('/login');

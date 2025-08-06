@@ -1,20 +1,17 @@
 // Core imports (absolute)
+import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/core/models/onboarding/onboarding_data.dart';
+import 'package:cartify/app/core/models/onboarding/onboarding_model.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../data/onboarding_page_data.dart';
-import '../data/onboarding_storage_service.dart';
-import '../../../core/constants/app_strings.dart';
 
 class OnboardingController extends GetxController {
-  OnboardingController(this._storageService);
-
-  final OnboardingStorageService _storageService;
 
   late final PageController pageController;
   final RxInt pageIndex = 0.obs;
 
-  final List<OnboardingPageData> pages = kOnboardingPages;
+  final List<OnboardingPageData> pages = onboardingPages;
 
   String get primaryButtonLabel => pageIndex.value < pages.length - 1
       ? AppStrings.onBoardingButtonInitial
@@ -47,7 +44,7 @@ class OnboardingController extends GetxController {
   );
 
   Future<void> finishOnboarding() async {
-    await _storageService.markBoarded();
+    await StorageService().markBoarded();
     Get.offAllNamed(Routes.LOGIN);
   }
 }

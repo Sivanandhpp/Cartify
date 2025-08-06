@@ -97,9 +97,9 @@ class BuyerProfileController extends GetxController {
 
   // Logout
   void logOut() {
-    // Use SecureStorageService for proper logout
-    final secureStorage = SecureStorageService();
-    secureStorage.clearAuthData();
+    // Use StorageService for proper logout
+    final storageService = StorageService();
+    storageService.clearAuthData();
     Get.offAllNamed(Routes.LOGIN);
   }
 }

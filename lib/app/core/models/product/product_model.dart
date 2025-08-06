@@ -1,59 +1,77 @@
 // lib/app/core/models/product/product_model.dart
+import 'dart:convert';
 
-/// Represents a product in the catalog.
+import 'category_model.dart';
+
+/// Product model tailored for the current API response.
+/// Works both for product details and dashboard product list responses.
 class ProductModel {
   final String id;
   final String name;
-  final String description;
+  final String? description;
+
+  /// Price as double (parsed from string or number)
   final double price;
-  final int stock;
-  final List<String> imageUrls;
+
+  /// Quantity available (server key: stock_quantity)
+  final int stockQuantity;
+
+  /// Example: 'g', 'kg', 'ml', 'L', 'pcs'
+  final String? measureUnitCode;
+
+  /// Example: "250.00" (parsed to double)
+  final double? measureAmount;
+
+  /// API field `images` may be null, a list, or a single URL
+  final List<String> images;
+
+  /// Arbitrary attributes (size, color, origin, etc.)
+  final Map<String, dynamic>? attributes;
+
+  /// Average rating parsed to double (string in API)
+  final double averageRating;
+
+  final String? categoryId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  /// Nested category object if response includes it
+  final CategoryModel? category;
 
   ProductModel({
     required this.id,
     required this.name,
-    required this.description,
+    this.description,
     required this.price,
-    required this.stock,
-    required this.imageUrls,
-  });
+    required this.stockQuantity,
+    this.measureUnitCode,
+    this.measureAmount,
+    List<String>? images,
+    this.attributes,
+    required this.averageRating,
+    this.categoryId,
+    this.createdAt,
+    this.updatedAt,
+    this.category,
+  }) : images = images ?? [];
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
-      price: _parsePrice(json['price']),
-      stock: _parseStock(json['stock']),
-      imageUrls: _parseImageUrls(json['image_urls']),
+      description: json['description']?.toString(),
+      price: _parseDouble(json['price']),
+      stockQuantity: _parseInt(json['stock_quantity'] ?? json['stock']),
+      measureUnitCode: json['measureUnitCode']?.toString(),
+      measureAmount: _parseDouble(json['measureAmount']),
+      images: _parseImages(json['images'] ?? json['image_urls']),
+      attributes: _parseAttributes(json['attributes']),
+      averageRating: _parseDouble(json['average_rating']) ?? 0.0,
+      categoryId: json['category_id']?.toString(),
+      createdAt: _parseDateTime(json['created_at']),
+      updatedAt: _parseDateTime(json['updated_at']),
+      category: json['category'] is Map ? CategoryModel.fromJson(Map<String, dynamic>.from(json['category'])) : null,
     );
-  }
-
-  static double _parsePrice(dynamic price) {
-    if (price is num) return price.toDouble();
-    if (price is String) {
-      return double.tryParse(price) ?? 0.0;
-    }
-    return 0.0;
-  }
-
-  static int _parseStock(dynamic stock) {
-    if (stock is int) return stock;
-    if (stock is String) {
-      return int.tryParse(stock) ?? 0;
-    }
-    if (stock is double) return stock.round();
-    return 0;
-  }
-
-  static List<String> _parseImageUrls(dynamic imageUrls) {
-    if (imageUrls is List) {
-      return imageUrls.map((url) => url?.toString() ?? '').toList();
-    }
-    if (imageUrls is String) {
-      return [imageUrls];
-    }
-    return [];
   }
 
   Map<String, dynamic> toJson() {
@@ -61,9 +79,82 @@ class ProductModel {
       'id': id,
       'name': name,
       'description': description,
-      'price': price,
-      'stock': stock,
-      'image_urls': imageUrls,
+      'price': price.toStringAsFixed(2),
+      'stock_quantity': stockQuantity,
+      'measureUnitCode': measureUnitCode,
+      'measureAmount': measureAmount?.toString(),
+      'images': images,
+      'attributes': attributes,
+      'average_rating': averageRating.toStringAsFixed(2),
+      'category_id': categoryId,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+      'category': category?.toJson(),
     };
+  }
+
+  /// Human-friendly measure like "250 g" or "0.25 kg"
+  String get displayMeasure {
+    if (measureAmount == null || measureUnitCode == null) return '';
+    // Remove trailing zeros for nicer display
+    final amountStr = measureAmount == (measureAmount?.roundToDouble())
+        ? measureAmount!.toInt().toString()
+        : measureAmount!.toString();
+    return '$amountStr ${measureUnitCode!}';
+  }
+
+  /// Price formatted for UI (example, returns string; adapt to currency formatter)
+  String get displayPrice => price.toStringAsFixed(2);
+
+  // -----------------------
+  // Parsing helpers
+  // -----------------------
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? (double.tryParse(value)?.toInt() ?? 0);
+    return 0;
+  }
+
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    try {
+      return DateTime.parse(value.toString());
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static List<String> _parseImages(dynamic images) {
+    if (images == null) return [];
+    if (images is List) {
+      return images.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
+    }
+    // single string URL
+    if (images is String) return [images];
+    return [];
+  }
+
+  static Map<String, dynamic>? _parseAttributes(dynamic value) {
+    if (value == null) return null;
+    if (value is Map) return Map<String, dynamic>.from(value);
+    // try parsing if it's a JSON string
+    if (value is String) {
+      try {
+        final parsed = value.isNotEmpty ? Map<String, dynamic>.from(jsonDecode(value)) : null;
+        return parsed;
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
   }
 }

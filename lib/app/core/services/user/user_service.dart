@@ -1,11 +1,7 @@
 // lib/app/core/services/user/user_service.dart
 
 import 'dart:io';
-import 'package:cartify/app/core/models/user/address_model.dart';
-import 'package:cartify/app/core/models/user/create_address_dto.dart';
-import 'package:cartify/app/core/models/user/update_user_dto.dart';
-import 'package:cartify/app/core/models/user/user_model.dart';
-import 'package:cartify/app/core/services/api_client.dart';
+import 'package:cartify/app/core/index.dart';
 import 'package:dio/dio.dart';
 
 /// Service for managing user profile and addresses.
@@ -20,7 +16,7 @@ class UserService {
       final response = await _apiClient.dio.get('/user/profile');
       return UserModel.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error getting user profile: ${e.response?.data}');
+      LogService.error('Error getting user profile', e.response?.data);
       return null;
     }
   }
@@ -34,7 +30,7 @@ class UserService {
       );
       return UserModel.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error updating user profile: ${e.response?.data}');
+      LogService.error('Error updating user profile', e.response?.data);
       return null;
     }
   }
@@ -44,7 +40,7 @@ class UserService {
     try {
       String fileName = image.path.split('/').last;
       FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(image.path, filename: fileName),
+        'file': await MultipartFile.fromFile(image.path, filename: fileName),
       });
 
       final response = await _apiClient.dio.post(
@@ -53,7 +49,7 @@ class UserService {
       );
       return UserModel.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error uploading profile picture: ${e.response?.data}');
+      LogService.error('Error uploading profile picture', e.response?.data);
       return null;
     }
   }
@@ -66,7 +62,8 @@ class UserService {
           .map((addr) => Address.fromJson(addr))
           .toList();
     } on DioException catch (e) {
-      print('Error getting addresses: ${e.response?.data}');
+      LogService.error('Error getting addresses', e.response?.data);
+
       return [];
     }
   }
@@ -80,7 +77,7 @@ class UserService {
       );
       return Address.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error adding address: ${e.response?.data}');
+      LogService.error('Error adding address', e.response?.data);
       return null;
     }
   }
@@ -94,7 +91,7 @@ class UserService {
       );
       return Address.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error updating address: ${e.response?.data}');
+      LogService.error('Error updating address', e.response?.data);
       return null;
     }
   }
@@ -105,7 +102,7 @@ class UserService {
       await _apiClient.dio.delete('/address/$addressId');
       return true;
     } on DioException catch (e) {
-      print('Error deleting address: ${e.response?.data}');
+      LogService.error('Error deleting address', e.response?.data);
       return false;
     }
   }

@@ -8,6 +8,7 @@ class LoginController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
   final RxBool isLoading = false.obs;
+   final AuthenticationService _authService = Get.find<AuthenticationService>();
 
   /* ---------- lifecycle ---------- */
   @override
@@ -37,39 +38,26 @@ class LoginController extends GetxController {
   /* ---------- actions ---------- */
   void onSendOtpPressed() {
     if (isLoading.value) return;
-    sendOtp();
+    sendOtp(phoneController.text);
   }
 
-  Future<void> sendOtp() async {
-    if (!formKey.currentState!.validate()) {
-      LogService.warning('Form validation failed');
-      ErrorService.showError(AppStrings.otpsendError);
-      return;
-    }
 
-    isLoading.value = true;
-    LogService.info('Sending OTP to: ${phoneController.text}');
-
+  
+  // Send OTP
+  Future<void> sendOtp(String phoneNumber) async {
     try {
-      final result = await AuthApiService.sendOtp(phoneController.text);
-
-      if (result['success'] == true) {
-        LogService.info('OTP sent successfully');
-        ErrorService.showSuccess(result['message']);
-
-        Get.toNamed(
-          Routes.OTP_CHECK,
-          arguments: {'mobile': phoneController.text},
-        );
+      final dto = RequestOtpDto(phoneNumber: phoneNumber);
+      final success = await _authService.requestOtp(dto);
+      
+      if (success) {
+        Get.toNamed(Routes.OTP_CHECK, arguments: {
+          'phoneNumber': phoneNumber
+        });
       } else {
-        LogService.error('Failed to send OTP: ${result['message']}');
-        ErrorService.showError(result['message']);
+        ErrorService.showError('Failed to send OTP');
       }
-    } catch (error) {
-      LogService.error('Failed to send OTP', error);
-      ErrorService.showError(AppStrings.otpsendError);
-    } finally {
-      isLoading.value = false;
+    } catch (e) {
+      ErrorService.showError('Network error occurred');
     }
   }
 }
