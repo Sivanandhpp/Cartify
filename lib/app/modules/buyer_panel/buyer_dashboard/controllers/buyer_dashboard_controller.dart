@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-class SellerDashboardController extends GetxController {
-  //TODO: Implement SellerDashboardController
+class BuyerDashboardController extends GetxController {
+  //TODO: Implement BuyerDashboardController
 
   final count = 0.obs;
   @override

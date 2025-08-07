@@ -10,7 +10,3 @@ class AdminDashboardBinding extends Bindings {
     );
   }
 }
-
-
-
-

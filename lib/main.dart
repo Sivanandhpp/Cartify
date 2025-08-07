@@ -1,11 +1,9 @@
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/services/user/user_controller.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +32,7 @@ void main() async {
 Future<void> initServices() async {
   LogService.info('Initializing services...');
 
-  Get.put(UserController());
+  Get.put(UserController(), permanent: true);
 
   // Initialize core services in order of dependency
   Get.put(ErrorService(), permanent: true);

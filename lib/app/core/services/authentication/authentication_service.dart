@@ -1,11 +1,6 @@
 // lib/app/core/services/authentication/authentication_service.dart
 
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/models/authentication/request_otp_dto.dart';
-import 'package:cartify/app/core/models/authentication/verify_otp_dto.dart';
-import 'package:cartify/app/core/services/api_client.dart';
-import 'package:cartify/app/core/services/user/user_controller.dart';
-import 'package:cartify/app/core/services/user/user_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
