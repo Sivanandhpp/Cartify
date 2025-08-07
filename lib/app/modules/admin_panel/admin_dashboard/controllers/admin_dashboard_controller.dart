@@ -1,23 +1,9 @@
+import 'package:cartify/app/core/index.dart';
 import 'package:get/get.dart';
 
 class AdminDashboardController extends GetxController {
-  //TODO: Implement AdminDashboardController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+   logout() async {
+    final AuthenticationService authService = Get.find<AuthenticationService>();
+    await authService.logout();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

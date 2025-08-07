@@ -1,23 +1,10 @@
 import 'package:get/get.dart';
 
+import '../../../../core/index.dart';
+
 class SellerDashboardController extends GetxController {
-  //TODO: Implement SellerDashboardController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+   logout() async {
+    final AuthenticationService authService = Get.find<AuthenticationService>();
+    await authService.logout();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

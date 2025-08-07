@@ -13,10 +13,20 @@ class SellerDashboardView extends GetView<SellerDashboardController> {
         title: const Text('SellerDashboardView'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text(
-          'SellerDashboardView is working',
-          style: TextStyle(fontSize: 20),
+      body: Center(
+        child: Column(
+          children: [
+            const Text(
+              'SellerDashboardView is working',
+              style: TextStyle(fontSize: 20),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                controller.logout();
+              },
+              child: const Text('Logout'),
+            ),
+          ],
         ),
       ),
     );

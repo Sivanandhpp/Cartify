@@ -12,7 +12,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
 
   @override
   Widget build(BuildContext context) {
-    final mobile = Get.arguments?['mobile'] ?? '';
+    final phoneNumber = Get.arguments?['phoneNumber'] ?? '';
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +46,7 @@ class OtpCheckView extends GetView<OtpCheckController> {
             ),
             Text.rich(
               TextSpan(
-                text: '${AppStrings.loginCountryCode} $mobile',
+                text: phoneNumber,
                 style: AppTextStyles.bodyLarge(AppColors.lightOnBackground),
                 children: [
                   WidgetSpan(
@@ -82,31 +82,41 @@ class OtpCheckView extends GetView<OtpCheckController> {
             ),
             AppSpacing.spaceLarge,
             Obx(
-              () => Text.rich(
-                TextSpan(
-                  text: AppStrings.otpCheckResendText,
-                  style: AppTextStyles.labelLarge(AppColors.lightOnBackground),
-                  children: [
-                    WidgetSpan(
-                      child: GestureDetector(
-                        onTap: controller.isResending.value
-                            ? null
-                            : () => controller.resendOtp(mobile),
-                        child: Text(
-                          controller.isResending.value
-                              ? 'Resending...'
-                              : AppStrings.otpCheckResendButton,
-                          style: AppTextStyles.labelLarge(
-                            controller.isResending.value
-                                ? AppColors.primary.withValues(alpha: 0.5)
-                                : AppColors.primary,
-                          ),
+              () => controller.canResend.value
+                  ? Text.rich(
+                      TextSpan(
+                        text: AppStrings.otpCheckResendText,
+                        style: AppTextStyles.labelLarge(
+                          AppColors.lightOnBackground,
                         ),
+                        children: [
+                          WidgetSpan(
+                            child: GestureDetector(
+                              onTap: controller.isResending.value
+                                  ? null
+                                  : () => controller.resendOtp(phoneNumber),
+                              child: Text(
+                                controller.isResending.value
+                                    ? 'Resending...'
+                                    : AppStrings.otpCheckResendButton,
+                                style: AppTextStyles.labelLarge(
+                                  controller.isResending.value
+                                      ? AppColors.primary.withValues(alpha: 0.5)
+                                      : AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+                    )
+                  : Text(
+                      'OTP sent. Try again in ${controller.formattedCountdown}',
+                      style: AppTextStyles.labelLarge(
+                        AppColors.lightOnBackground,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),

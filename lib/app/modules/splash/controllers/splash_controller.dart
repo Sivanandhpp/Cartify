@@ -1,11 +1,13 @@
 // Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/services/user/user_controller.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
   final storageService = StorageService();
+  // Use existing UserController from dependency injection
+  final userController = Get.find<UserController>();
+  final AuthenticationService authService = Get.find<AuthenticationService>();
 
   @override
   void onReady() {
@@ -17,14 +19,11 @@ class SplashController extends GetxController {
     try {
       // Check onboarding status
       if (storageService.isBoarded) {
+        final isLoggedIn = await authService.isLoggedIn();
+        // Load user data from storage (now async)
+        final user = await userController.getUserFromStorage();
         // Check authentication status
-        if (storageService.isAuthenticated) {
-          // Use existing UserController from dependency injection
-          final userController = Get.find<UserController>();
-
-          // Load user data from storage (now async)
-          await userController.getUserFromStorage();
-
+        if (user != null && isLoggedIn) {
           // Get user role with proper null handling
           final userRole = userController.user?.role ?? 'buyer';
           LogService.info('User loaded with role: $userRole');

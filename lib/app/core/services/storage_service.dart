@@ -23,6 +23,10 @@ class StorageService {
     return _safeRead<UserModel>(AppConfig.userProfileKey);
   }
 
+  Future<void> clearUserProfile() async {
+    await _safeWrite(AppConfig.userProfileKey, null, 'User profile cleared');
+  }
+
   bool get isBoarded => _safeRead<bool>(AppConfig.onboardingStatusKey) ?? false;
   Future<void> markBoarded() =>
       _safeWrite(AppConfig.onboardingStatusKey, true, 'Onboarding status');

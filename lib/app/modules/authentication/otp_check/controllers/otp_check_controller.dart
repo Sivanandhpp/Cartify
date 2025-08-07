@@ -1,6 +1,7 @@
 // Core imports (absolute)
+import 'dart:async';
+
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/services/user/user_controller.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,11 @@ class OtpCheckController extends GetxController {
   final filled = <bool>[].obs;
   final RxBool isResending = false.obs;
   final RxBool isVerifying = false.obs;
+  final RxInt resendCountdown = 0.obs;
+  final RxBool canResend = true.obs;
+
+  // Timer for countdown
+  Timer? _countdownTimer;
 
   // --- Private ---------------------------------------------------------------
   late final List<TextEditingController> _otpControllers;
@@ -113,6 +119,8 @@ class OtpCheckController extends GetxController {
         _navigateBasedOnRole(userRole);
       } else {
         LogService.error('OTP verification failed');
+        // Clear OTP fields when verification fails
+        clearOtpFields();
         NotificationService.showError(
           title: 'Verification Failed',
           message: 'Invalid OTP. Please try again.',
@@ -120,6 +128,8 @@ class OtpCheckController extends GetxController {
       }
     } catch (e) {
       LogService.error('Error verifying OTP', e);
+      // Clear OTP fields when there's an error
+      clearOtpFields();
       NotificationService.showError(
         title: 'Verification Failed',
         message: AppStrings.networkError,
@@ -149,7 +159,7 @@ class OtpCheckController extends GetxController {
 
   /// Requests a new OTP for the given mobile number.
   Future<void> resendOtp(String mobile) async {
-    if (isResending.value) return;
+    if (isResending.value || !canResend.value) return;
 
     try {
       isResending.value = true;
@@ -167,6 +177,9 @@ class OtpCheckController extends GetxController {
 
         // Clear current OTP fields
         clearOtpFields();
+
+        // Start countdown timer
+        _startCountdownTimer();
       } else {
         NotificationService.showError(
           title: 'Resend Failed',
@@ -185,16 +198,35 @@ class OtpCheckController extends GetxController {
     }
   }
 
+  /// Starts the 5-minute countdown timer for resend restriction.
+  void _startCountdownTimer() {
+    canResend.value = false;
+    resendCountdown.value = 300; // 5 minutes in seconds
+
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendCountdown.value > 0) {
+        resendCountdown.value--;
+      } else {
+        canResend.value = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  /// Formats the countdown time to MM:SS format.
+  String get formattedCountdown {
+    final minutes = resendCountdown.value ~/ 60;
+    final seconds = resendCountdown.value % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   /* ---------- Actions ---------- */
   /// Called when the verify OTP button is pressed.
   void onVerifyOtpPressed() {
-     // --- Validation ---
+    // --- Validation ---
     final validationError = validateOtpInput();
     if (validationError != null) {
-      NotificationService.showError(
-        title: 'Error',
-        message: validationError,
-      );
+      NotificationService.showError(title: 'Error', message: validationError);
       return;
     }
     verifyOtp();
@@ -222,6 +254,7 @@ class OtpCheckController extends GetxController {
   @override
   void onClose() {
     scrollController.dispose();
+    _countdownTimer?.cancel();
     for (final n in [..._otpFocusNodes, ..._rawKeyboardNodes]) {
       n.dispose();
     }

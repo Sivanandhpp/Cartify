@@ -8,7 +8,8 @@ class LoginController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
   final RxBool isLoading = false.obs;
-   final AuthenticationService _authService = Get.find<AuthenticationService>();
+  final AuthenticationService _authService = Get.find<AuthenticationService>();
+  final loginCountryCode = AppStrings.loginCountryCode;
 
   /* ---------- lifecycle ---------- */
   @override
@@ -38,21 +39,19 @@ class LoginController extends GetxController {
   /* ---------- actions ---------- */
   void onSendOtpPressed() {
     if (isLoading.value) return;
-    sendOtp(phoneController.text);
+    if (!formKey.currentState!.validate()) return;
+    final loginPhoneNumber = loginCountryCode + phoneController.text;
+    sendOtp(loginPhoneNumber);
   }
 
-
-  
   // Send OTP
   Future<void> sendOtp(String phoneNumber) async {
     try {
       final dto = RequestOtpDto(phoneNumber: phoneNumber);
       final success = await _authService.requestOtp(dto);
-      
+
       if (success) {
-        Get.toNamed(Routes.OTP_CHECK, arguments: {
-          'phoneNumber': phoneNumber
-        });
+        Get.toNamed(Routes.OTP_CHECK, arguments: {'phoneNumber': phoneNumber});
       } else {
         ErrorService.showError('Failed to send OTP');
       }

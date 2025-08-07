@@ -12,24 +12,31 @@ class UserController extends GetxController {
   UserModel? get user => _user.value;
 
   void updateUser(UserModel user) {
-    _user.value = user;
-    StorageService().storeUserProfile(user);
+    try {
+      _user.value = user;
+      StorageService().storeUserProfile(user);
+    } catch (e) {
+      LogService.error('Failed to update user in storage', e);
+    }
   }
 
-  Future<void> getUserFromStorage() async {
+  Future<UserModel?> getUserFromStorage() async {
     try {
       _user.value = StorageService().getUserProfile();
       LogService.info(
         'User profile loaded from storage: ${_user.value?.name ?? 'Unknown'}',
       );
+      
     } catch (e) {
       LogService.error('Failed to load user from storage', e);
       _user.value = null;
     }
+  return _user.value;
   }
 
   // Method to clear user data on logout
-  void logout() {
+  void clearUser() {
     _user.value = null;
+    StorageService().clearUserProfile();
   }
 }

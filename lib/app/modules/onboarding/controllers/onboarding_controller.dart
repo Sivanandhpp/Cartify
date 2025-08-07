@@ -1,7 +1,5 @@
 // Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/models/onboarding/onboarding_data.dart';
-import 'package:cartify/app/core/models/onboarding/onboarding_model.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
