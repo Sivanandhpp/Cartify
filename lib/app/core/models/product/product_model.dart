@@ -66,7 +66,7 @@ class ProductModel {
       measureAmount: _parseDouble(json['measureAmount']),
       images: _parseImages(json['images'] ?? json['image_urls']),
       attributes: _parseAttributes(json['attributes']),
-      averageRating: _parseDouble(json['average_rating']) ?? 0.0,
+      averageRating: _parseDouble(json['average_rating']),
       categoryId: json['category_id']?.toString(),
       createdAt: _parseDateTime(json['created_at']),
       updatedAt: _parseDateTime(json['updated_at']),
