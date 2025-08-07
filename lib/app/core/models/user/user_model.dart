@@ -34,4 +34,17 @@ class UserModel {
       createdAt: DateTime.parse(json['created_at']),
     );
   }
+
+  /// Converts a [UserModel] instance to a JSON object.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'phone_number': phoneNumber,
+      'name': name,
+      'email': email,
+      'role': role,
+      'profile_photo_url': profilePhotoUrl,
+      'created_at': createdAt.toIso8601String(),
+    };
+  }
 }

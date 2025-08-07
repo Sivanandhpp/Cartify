@@ -25,7 +25,10 @@ class AppIdentity {
       'A production-ready ecommerce Flutter application';
 
   // 🌐 URLs and endpoints (Auto-generated)
-  static String get baseUrl => 'https://$packageName.$companyDomain.com';
+  // The base URL for the API. For Android emulators, this is typically http://10.0.2.2:3000.
+  // For physical devices, it would be the local IP of the machine running the backend.
+  // For production, these will be auto-generated based on package name and company domain.
+  static String get baseUrl => 'http://10.0.2.2:3000';
   static String get apiUrl => '$baseUrl/api';
   static String get webBaseUrl => 'https://$packageName.com';
   static String get privacyPolicyUrl => '$webBaseUrl/privacy';
@@ -48,20 +51,4 @@ class AppIdentity {
   // 🎨 Branding
   static const String slogan = 'Shop Smart, Shop Easy';
   static String get copyright => '© 2025 $displayName. All rights reserved.';
-
-  // 🔍 Debug information
-  static Map<String, String> get debugInfo => {
-    'packageName': packageName,
-    'displayName': displayName,
-    'bundleId': bundleId,
-    'version': version,
-    'buildNumber': buildNumber,
-    'companyName': companyName,
-    'webBaseUrl': webBaseUrl,
-  };
 }
-
-
-
-
-

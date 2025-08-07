@@ -25,9 +25,8 @@ class SplashController extends GetxController {
         // Check authentication status
         if (user != null && isLoggedIn) {
           // Get user role with proper null handling
-          final userRole = userController.user?.role ?? 'buyer';
-          LogService.info('User loaded with role: $userRole');
-          _navigateBasedOnRole(userRole);
+          LogService.info('User loaded with role: ${user.role}');
+          _navigateBasedOnRole(user.role);
         } else {
           LogService.info('User not authenticated, navigating to login');
           Get.offAllNamed(Routes.LOGIN);

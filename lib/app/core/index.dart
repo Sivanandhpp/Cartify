@@ -9,7 +9,6 @@
 export 'config/app_identity.dart';
 export 'config/app_config.dart';
 export 'config/app_environment.dart';
-export 'config/api_endpoints.dart';
 
 // =================================================================================================
 //                                        CONSTANTS

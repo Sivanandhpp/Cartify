@@ -15,12 +15,13 @@ class StorageService {
 
   /// Store complete user profile data
   Future<void> storeUserProfile(UserModel user) async {
-    await _safeWrite(AppConfig.userProfileKey, user, 'User profile');
+    await _safeWrite(AppConfig.userProfileKey, user.toJson(), 'User profile');
   }
 
   /// Get stored user profile
   UserModel? getUserProfile() {
-    return _safeRead<UserModel>(AppConfig.userProfileKey);
+    final userjson = _safeRead<Map<String, dynamic>>(AppConfig.userProfileKey);
+    return userjson != null ? UserModel.fromJson(userjson) : null;
   }
 
   Future<void> clearUserProfile() async {

@@ -13,10 +13,7 @@ import 'package:get/get.dart';
 class ApiClient {
   final Dio _dio;
   final FlutterSecureStorage _secureStorage;
-  final AuthenticationService authService = Get.find<AuthenticationService>();
 
-  // The base URL for the API. For Android emulators, this is typically http://10.0.2.2:3000.
-  // For physical devices, it would be the local IP of the machine running the backend.
   static const String _baseUrl = 'http://10.0.2.2:3000';
 
   factory ApiClient(FlutterSecureStorage secureStorage) {
@@ -40,6 +37,9 @@ class ApiClient {
         onError: (DioException e, handler) async {
           // Don't handle 401 errors for authentication endpoints
           // as they should be handled by the calling service
+          final AuthenticationService authService =
+              Get.find<AuthenticationService>();
+
           final authenticationEndpoints = [
             '/auth/request-otp',
             '/auth/verify-otp',
