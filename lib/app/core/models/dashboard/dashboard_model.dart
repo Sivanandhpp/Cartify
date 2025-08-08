@@ -1,9 +1,5 @@
 // lib/app/core/models/dashboard/dashboard_model.dart
-
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/models/dashboard/banner_model.dart';
-import 'package:cartify/app/core/models/product/category_model.dart';
-import 'package:cartify/app/core/models/product/product_model.dart';
 
 /// Represents the entire dashboard structure.
 class DashboardModel {

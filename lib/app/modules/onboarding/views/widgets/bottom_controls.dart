@@ -23,6 +23,7 @@ class BottomControls extends StatelessWidget {
             padding: AppSpacing.paddingMedium,
             child: AppButton(
               text: controller.primaryButtonLabel,
+              icon: Icons.arrow_forward,
               onPressed: controller.handlePrimaryButtonTap,
             ),
           ),
@@ -31,7 +32,3 @@ class BottomControls extends StatelessWidget {
     );
   }
 }
-
-
-
-

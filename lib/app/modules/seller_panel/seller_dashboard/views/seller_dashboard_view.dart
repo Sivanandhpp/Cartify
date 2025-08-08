@@ -1,3 +1,5 @@
+import 'package:cartify/app/modules/seller_panel/seller_dashboard/views/widgets/bottom_nav_bar.dart';
+import 'package:cartify/app/modules/seller_panel/seller_home/views/seller_home_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -9,26 +11,31 @@ class SellerDashboardView extends GetView<SellerDashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SellerDashboardView'),
-        centerTitle: true,
+      body: PageView(
+        controller: controller.pageController,
+        onPageChanged: (index) {
+          controller.selectedNavIndex.value = index;
+        },
+        physics: const ClampingScrollPhysics(),
+        children: const [
+          SellerHomeView(),
+          // SellerCategoriesView(),
+          // SellerWishlistView(),
+          // SellerOffersView(),
+          // SellerProfileView(),
+        ],
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const Text(
-              'SellerDashboardView is working',
-              style: TextStyle(fontSize: 20),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                controller.logout();
-              },
-              child: const Text('Logout'),
-            ),
-          ],
-        ),
-      ),
+      // floating action button right above the bottom navigation bar
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Container(
+      //   padding: const EdgeInsets.all(16),
+      //   color: AppColors.primaryBrand,
+      //   width: double.infinity,
+      //   height: 60,
+      //   child: const Column(children: [Text("1 item")]),
+      // ),
+
+      bottomNavigationBar: buildBottomNavBar(),
     );
   }
 }
