@@ -13,7 +13,6 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: PageView(
         controller: controller.pageController,
         onPageChanged: (index) {
@@ -28,7 +27,16 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
           BuyerProfileView(),
         ],
       ),
-      
+      // floating action button right above the bottom navigation bar
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Container(
+      //   padding: const EdgeInsets.all(16),
+      //   color: AppColors.primaryBrand,
+      //   width: double.infinity,
+      //   height: 60,
+      //   child: const Column(children: [Text("1 item")]),
+      // ),
+
       bottomNavigationBar: buildBottomNavBar(),
     );
   }

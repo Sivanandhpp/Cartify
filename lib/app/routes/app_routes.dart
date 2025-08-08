@@ -11,11 +11,6 @@ abstract class Routes {
   static const SELLER_DASHBOARD = _Paths.SELLER_DASHBOARD;
   static const BUYER_DASHBOARD = _Paths.BUYER_DASHBOARD;
   static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
-  static const BUYER_HOME = _Paths.BUYER_HOME;
-  static const BUYER_CATEGORIES = _Paths.BUYER_CATEGORIES;
-  static const BUYER_WISHLIST = _Paths.BUYER_WISHLIST;
-  static const BUYER_OFFERS = _Paths.BUYER_OFFERS;
-  static const BUYER_PROFILE = _Paths.BUYER_PROFILE;
 }
 
 abstract class _Paths {
@@ -27,9 +22,4 @@ abstract class _Paths {
   static const SELLER_DASHBOARD = '/seller-dashboard';
   static const BUYER_DASHBOARD = '/buyer-dashboard';
   static const ADMIN_DASHBOARD = '/admin-dashboard';
-  static const BUYER_HOME = '/buyer-home';
-  static const BUYER_CATEGORIES = '/buyer-categories';
-  static const BUYER_WISHLIST = '/buyer-wishlist';
-  static const BUYER_OFFERS = '/buyer-offers';
-  static const BUYER_PROFILE = '/buyer-profile';
 }

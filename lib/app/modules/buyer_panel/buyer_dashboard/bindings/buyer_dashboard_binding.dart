@@ -1,5 +1,9 @@
+import 'package:cartify/app/modules/buyer_panel/buyer_categories/controllers/buyer_categories_controller.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_home/controllers/buyer_home_controller.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_offers/controllers/buyer_offers_controller.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/controllers/buyer_profile_controller.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_wishlist/controllers/buyer_wishlist_controller.dart';
 import 'package:get/get.dart';
-
 import '../controllers/buyer_dashboard_controller.dart';
 
 class BuyerDashboardBinding extends Bindings {
@@ -7,6 +11,21 @@ class BuyerDashboardBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<BuyerDashboardController>(
       () => BuyerDashboardController(),
+    );
+     Get.lazyPut<BuyerHomeController>(
+      () => BuyerHomeController(),
+    );
+     Get.lazyPut<BuyerCategoriesController>(
+      () => BuyerCategoriesController(),
+    );
+     Get.lazyPut<BuyerOffersController>(
+      () => BuyerOffersController(),
+    );
+    Get.lazyPut<BuyerWishlistController>(
+      () => BuyerWishlistController(),
+    );
+    Get.lazyPut<BuyerProfileController>(
+      () => BuyerProfileController(),
     );
   }
 }

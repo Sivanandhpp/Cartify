@@ -68,19 +68,13 @@ class LoginForm extends GetView<LoginController> {
             ),
           ),
           AppSpacing.spaceMedium,
-          SizedBox(
-            width: double.infinity,
-            child: AppButtons.primary(
-              text: AppStrings.sendOtp,
-              icon: Icons.arrow_forward,
-              onPressed: controller.onSendOtpPressed,
-            ),
+          AppButton(
+            text: AppStrings.sendOtp,
+            icon: Icons.arrow_forward,
+            onPressed: controller.onSendOtpPressed,
           ),
         ],
       ),
     );
   }
 }
-
-
-

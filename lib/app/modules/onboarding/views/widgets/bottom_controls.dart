@@ -21,7 +21,7 @@ class BottomControls extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: AppSpacing.paddingMedium,
-            child: AppButtons.primary(
+            child: AppButton(
               text: controller.primaryButtonLabel,
               onPressed: controller.handlePrimaryButtonTap,
             ),
