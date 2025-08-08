@@ -10,7 +10,6 @@ import '../modules/buyer_panel/buyer_dashboard/bindings/buyer_dashboard_binding.
 import '../modules/buyer_panel/buyer_dashboard/views/buyer_dashboard_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
-import '../modules/seller_panel/seller_home/views/seller_home_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
