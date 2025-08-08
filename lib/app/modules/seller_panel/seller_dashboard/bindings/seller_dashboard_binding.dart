@@ -12,5 +12,6 @@ class SellerDashboardBinding extends Bindings {
      Get.lazyPut<SellerHomeController>(
       () => SellerHomeController(),
     );
+  
   }
 }
