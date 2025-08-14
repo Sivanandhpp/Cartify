@@ -4,8 +4,8 @@ import 'package:shimmer/shimmer.dart';
 
 /// Centralized image loader for both network & asset images with shimmer loading,
 /// consistent error UI, and optional rounded corners.
-class AppImages {
-  AppImages._();
+class AppImage {
+  AppImage._();
 
   /// Cached network image with shimmer loading and error widget. Border radius supported.
   static Widget network({

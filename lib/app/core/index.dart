@@ -103,4 +103,5 @@ export 'utils/app_regex.dart';
 //                                         WIDGETS
 // =================================================================================================
 // Purpose: Common and reusable UI components.
-export 'widgets/app_buttons.dart';
+export 'widgets/app_button.dart';
+export 'widgets/app_image.dart';

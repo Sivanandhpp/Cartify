@@ -55,7 +55,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         color: Colors.grey[100],
                       ),
-                      child: AppImages.network(
+                      child: AppImage.network(
                         url: product.images.first,
                         width: double.infinity,
                         height: double.infinity,
