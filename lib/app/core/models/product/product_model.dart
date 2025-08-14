@@ -70,7 +70,9 @@ class ProductModel {
       categoryId: json['category_id']?.toString(),
       createdAt: _parseDateTime(json['created_at']),
       updatedAt: _parseDateTime(json['updated_at']),
-      category: json['category'] is Map ? CategoryModel.fromJson(Map<String, dynamic>.from(json['category'])) : null,
+      category: json['category'] is Map
+          ? CategoryModel.fromJson(Map<String, dynamic>.from(json['category']))
+          : null,
     );
   }
 
@@ -120,7 +122,8 @@ class ProductModel {
     if (value == null) return 0;
     if (value is int) return value;
     if (value is num) return value.toInt();
-    if (value is String) return int.tryParse(value) ?? (double.tryParse(value)?.toInt() ?? 0);
+    if (value is String)
+      return int.tryParse(value) ?? (double.tryParse(value)?.toInt() ?? 0);
     return 0;
   }
 
@@ -135,12 +138,52 @@ class ProductModel {
 
   static List<String> _parseImages(dynamic images) {
     if (images == null) return [];
+
+    // Handle List of images
     if (images is List) {
-      return images.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
+      return images
+          .map((e) => _cleanImageUrl(e?.toString() ?? ''))
+          .where((s) => s.isNotEmpty)
+          .toList();
     }
-    // single string URL
-    if (images is String) return [images];
+
+    // Handle single string URL
+    if (images is String) {
+      final cleanUrl = _cleanImageUrl(images);
+      return cleanUrl.isNotEmpty ? [cleanUrl] : [];
+    }
+
+    // Handle Set or other collection types that might be stringified with {}
+    if (images is Set) {
+      return images
+          .map((e) => _cleanImageUrl(e?.toString() ?? ''))
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+
     return [];
+  }
+
+  /// Helper method to clean image URLs by removing curly braces and trimming
+  static String _cleanImageUrl(String url) {
+    if (url.isEmpty) return '';
+
+    // Remove curly braces, square brackets, and extra whitespace
+    String cleanUrl = url
+        .replaceAll(RegExp(r'[{}[\]]'), '') // Remove {}, []
+        .trim(); // Remove leading/trailing whitespace
+
+    // Handle comma-separated URLs (take the first one if multiple)
+    if (cleanUrl.contains(',')) {
+      cleanUrl = cleanUrl.split(',').first.trim();
+    }
+
+    // Validate that it looks like a URL
+    if (cleanUrl.startsWith('http') || cleanUrl.startsWith('https')) {
+      return cleanUrl;
+    }
+
+    return '';
   }
 
   static Map<String, dynamic>? _parseAttributes(dynamic value) {
@@ -149,7 +192,9 @@ class ProductModel {
     // try parsing if it's a JSON string
     if (value is String) {
       try {
-        final parsed = value.isNotEmpty ? Map<String, dynamic>.from(jsonDecode(value)) : null;
+        final parsed = value.isNotEmpty
+            ? Map<String, dynamic>.from(jsonDecode(value))
+            : null;
         return parsed;
       } catch (_) {
         return null;

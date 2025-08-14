@@ -51,7 +51,7 @@ class AppImages {
       width: width,
       height: height,
       fit: fit,
-      
+
       errorBuilder: (context, error, stackTrace) =>
           _errorOrDefault(null, width, height),
     );
