@@ -14,12 +14,11 @@ class SellerHomeView extends GetView<SellerHomeController> {
       body: CustomScrollView(
         slivers: [
           // App Bar
-          const SliverAppBar(
-            expandedHeight: 100,
+          SliverAppBar(
             floating: false,
             pinned: true,
             backgroundColor: CupertinoColors.systemBlue,
-            flexibleSpace: FlexibleSpaceBar(
+            flexibleSpace: const FlexibleSpaceBar(
               title: Text(
                 'Seller Dashboard',
                 style: TextStyle(
@@ -31,7 +30,13 @@ class SellerHomeView extends GetView<SellerHomeController> {
               titlePadding: EdgeInsets.only(left: 16, bottom: 16),
             ),
             actions: [
-              Padding(
+              IconButton(
+                icon: const Icon(CupertinoIcons.settings, color: Colors.white),
+                onPressed: () {
+                  controller.logout();
+                },
+              ),
+              const Padding(
                 padding: EdgeInsets.only(right: 16),
                 child: Icon(CupertinoIcons.bell, color: Colors.white),
               ),
@@ -45,10 +50,6 @@ class SellerHomeView extends GetView<SellerHomeController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Welcome Section
-                  _buildWelcomeSection(),
-                  const SizedBox(height: 20),
-
                   // Stats Cards
                   _buildStatsSection(),
                   const SizedBox(height: 20),
@@ -65,78 +66,10 @@ class SellerHomeView extends GetView<SellerHomeController> {
     );
   }
 
-  Widget _buildWelcomeSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 25,
-            backgroundColor: CupertinoColors.systemBlue.withOpacity(0.1),
-            child: const Icon(
-              CupertinoIcons.person_fill,
-              color: CupertinoColors.systemBlue,
-              size: 25,
-            ),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Welcome back!',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Ready to manage your store?',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: controller.navigateToProfile,
-            child: Icon(
-              CupertinoIcons.chevron_right,
-              color: Colors.grey[400],
-              size: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildStatsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Overview',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 12),
         Row(
           children: [
             Expanded(

@@ -31,8 +31,5 @@ class SellerDashboardController extends GetxController {
     super.onClose();
   }
 
-  logout() async {
-    final AuthenticationService authService = Get.find<AuthenticationService>();
-    await authService.logout();
-  }
+ 
 }

@@ -1,3 +1,5 @@
+import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/core/services/authentication/authentication_service.dart';
 import 'package:get/get.dart';
 
 class SellerHomeController extends GetxController {
@@ -45,19 +47,9 @@ class SellerHomeController extends GetxController {
     // Navigate to view orders page
     Get.snackbar('Navigation', 'Navigate to View Orders');
   }
-
-  void navigateToAnalytics() {
-    // Navigate to analytics page
-    Get.snackbar('Navigation', 'Navigate to Analytics');
-  }
-
-  void navigateToSettings() {
-    // Navigate to settings page
-    Get.snackbar('Navigation', 'Navigate to Settings');
-  }
-
-  void navigateToProfile() {
-    // Navigate to profile page
-    Get.snackbar('Navigation', 'Navigate to Profile');
+ logout() async {
+  LogService.warning('User logged out');
+    final AuthenticationService authService = Get.find<AuthenticationService>();
+    await authService.logout();
   }
 }
