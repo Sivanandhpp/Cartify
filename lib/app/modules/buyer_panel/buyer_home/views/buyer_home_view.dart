@@ -79,12 +79,10 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
               // Promotional Banners Section
               if (controller.hasPromotionalBanners())
                 SliverToBoxAdapter(
-                  child: SizedBox(
+                  child: AppImage.network(
+                    url: controller.getPromotionalBanners()[0].imageUrl,
+                    fit: BoxFit.contain,
                     width: double.infinity,
-                    child: AppImage.network(
-                      url: controller.getPromotionalBanners()[0].imageUrl,
-                      fit: BoxFit.contain,
-                    ),
                   ),
                 ),
               const SliverToBoxAdapter(child: SizedBox(height: 15)),
@@ -107,7 +105,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
-                        height: 280,
+                        height: 270,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -117,9 +115,8 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                 .getFeaturedProducts()[index];
                             return Container(
                               width: 180,
-                              margin: const EdgeInsets.only(right: 12),
+                              // margin: const EdgeInsets.only(right: 4),
                               child: ProductCard(
-                                
                                 product: product,
                                 currentQuantity: 0,
                                 onTap: () {
@@ -137,6 +134,35 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                         ),
                       ),
                       const SizedBox(height: 24),
+                      SizedBox(
+                        height: 270,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: controller.getFeaturedProducts().length,
+                          itemBuilder: (context, index) {
+                            final product = controller
+                                .getFeaturedProducts()[index];
+                            return Container(
+                              width: 180,
+                              // margin: const EdgeInsets.only(right: 4),
+                              child: ProductCard(
+                                product: product,
+                                currentQuantity: 0,
+                                onTap: () {
+                                  print('Product tapped: ${product.name}');
+                                },
+                                onIncrement: () {
+                                  print('Add to cart: ${product.name}');
+                                },
+                                onDecrement: () {
+                                  print('Remove from cart: ${product.name}');
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

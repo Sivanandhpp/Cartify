@@ -103,7 +103,7 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildDetailsSection(bool isOutOfStock, ThemeData theme) {
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
