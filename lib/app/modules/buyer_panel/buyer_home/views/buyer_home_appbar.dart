@@ -50,10 +50,7 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.primary, 
-                    AppColors.secondaryBrand,
-                  ],
+                  colors: [AppColors.primary, AppColors.secondaryBrand],
                 ),
               ),
               child: SafeArea(
@@ -67,8 +64,8 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
                       _buildSearchBar(context, collapseRatio),
 
                     // Categories (only visible when expanded)
-                    // if (collapseRatio < 0.5)
-                    _buildCategoriesSection(context, collapseRatio),
+                    if (collapseRatio < 0.5)
+                      _buildCategoriesSection(context, collapseRatio),
                   ],
                 ),
               ),
@@ -161,7 +158,7 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
         child: TextField(
           onChanged: onSearchChanged,
           decoration: InputDecoration(
-            hintText: 'Search for \'Mobile\'',
+            hintText: 'Search for \'Wine\'',
             hintStyle: const TextStyle(color: Colors.grey),
             prefixIcon: const Icon(Icons.search, color: Colors.grey),
             suffixIcon: Container(
@@ -251,7 +248,7 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
       child: TextField(
         onChanged: onSearchChanged,
         decoration: InputDecoration(
-          hintText: 'Search for \'Lipstick\'',
+          hintText: 'Search for \'Ciders\'',
           hintStyle: const TextStyle(color: Colors.grey),
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           suffixIcon: Container(

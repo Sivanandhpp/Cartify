@@ -25,7 +25,7 @@ class BuyerDashboardController extends GetxController {
   
   @override
   void onClose() {
-    pageController.dispose();
+    // pageController.dispose();
     super.onClose();
   }
 }

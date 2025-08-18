@@ -81,7 +81,8 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 SliverToBoxAdapter(
                   child: AppImage.network(
                     url: controller.getPromotionalBanners()[0].imageUrl,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
+                    height: 100,
                     width: double.infinity,
                   ),
                 ),
