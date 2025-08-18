@@ -8,9 +8,6 @@ class ProductCard extends StatelessWidget {
   final VoidCallback? onIncrement;
   final VoidCallback? onDecrement;
   final int currentQuantity;
-  final bool isGridView;
-  final double? width;
-  final double? height;
 
   const ProductCard({
     super.key,
@@ -19,9 +16,6 @@ class ProductCard extends StatelessWidget {
     this.onIncrement,
     this.onDecrement,
     this.currentQuantity = 0,
-    this.isGridView = false,
-    this.width,
-    this.height,
   });
 
   @override
@@ -29,187 +23,20 @@ class ProductCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isOutOfStock = product.stockQuantity <= 0;
 
-    return Container(
-      width: width,
-      height: height,
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: InkWell(
-          onTap: isOutOfStock ? null : onTap,
-          borderRadius: BorderRadius.circular(12),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        onTap: isOutOfStock ? null : onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          width: 180,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Product Image with Add/Remove Controls
-              Expanded(
-                flex: isGridView ? 3 : 2,
-                child: Stack(
-                  children: [
-                    // Product Image
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(12),
-                        ),
-                        color: Colors.grey[100],
-                      ),
-                      child: AppImage.network(
-                        url: product.images.first,
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(12),
-                        ),
-                      ),
-                    ),
-
-                    // Quantity Controls (Top Right)
-                    if (!isOutOfStock)
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: _buildQuantityControls(theme),
-                      ),
-
-                    // Out of Stock Overlay
-                    if (isOutOfStock)
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12),
-                            ),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'OUT OF STOCK',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-
-              // Product Details
-              Expanded(
-                flex: isGridView ? 2 : 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Product Name
-                      Text(
-                        product.name,
-                        style: TextStyle(
-                          fontSize: isGridView ? 12 : 14,
-                          fontWeight: FontWeight.w600,
-                          color: isOutOfStock ? Colors.grey : Colors.black87,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-
-                      // Measure (if available)
-                      if (product.displayMeasure.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          product.displayMeasure,
-                          style: TextStyle(
-                            fontSize: isGridView ? 10 : 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 4),
-
-                      // Rating (if available)
-                      if (product.averageRating > 0) ...[
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.star,
-                              size: isGridView ? 12 : 14,
-                              color: Colors.amber,
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              product.averageRating.toStringAsFixed(1),
-                              style: TextStyle(
-                                fontSize: isGridView ? 10 : 12,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '(${_generateReviewCount()})',
-                              style: TextStyle(
-                                fontSize: isGridView ? 10 : 12,
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                      ],
-
-                      const Spacer(),
-
-                      // Price Section
-                      Row(
-                        children: [
-                          // Current Price
-                          Text(
-                            '₹${product.displayPrice}',
-                            style: TextStyle(
-                              fontSize: isGridView ? 14 : 16,
-                              fontWeight: FontWeight.bold,
-                              color: isOutOfStock
-                                  ? Colors.grey
-                                  : Colors.green[700],
-                            ),
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          // Discount Badge (Mock - you can add discount field to ProductModel)
-                          if (_hasDiscount()) ...[
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.red[100],
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                '${_getDiscountPercentage()}% OFF',
-                                style: TextStyle(
-                                  fontSize: isGridView ? 8 : 10,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.red[700],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              _buildImageSection(isOutOfStock, theme),
+              _buildDetailsSection(isOutOfStock, theme),
             ],
           ),
         ),
@@ -217,9 +44,221 @@ class ProductCard extends StatelessWidget {
     );
   }
 
+  Widget _buildImageSection(bool isOutOfStock, ThemeData theme) {
+    return SizedBox(
+      height: 120,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          // Product Image
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              color: Colors.grey[100],
+            ),
+            child: AppImage.network(
+              url: product.images.isNotEmpty ? product.images.first : '',
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          // Quantity Controls (Top Right)
+          if (!isOutOfStock)
+            Positioned(top: 8, right: 8, child: _buildQuantityControls(theme)),
+
+          // Discount Badge (Top Left) - Using attributes
+          if (product.hasOffer && !isOutOfStock)
+            Positioned(top: 8, left: 8, child: _buildDiscountBadge()),
+
+          // Out of Stock Overlay
+          if (isOutOfStock)
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                ),
+                child: const Center(
+                  child: Text(
+                    'OUT OF STOCK',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailsSection(bool isOutOfStock, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Product Name
+          Text(
+            product.name,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: isOutOfStock ? Colors.grey : Colors.black87,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          const SizedBox(height: 4),
+
+          // Brand - Using attributes
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (product.brand != null)
+                Text(
+                  product.brand!,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              if (product.averageRating > 0) ...[
+                Row(
+                  children: [
+                    const Icon(Icons.star, size: 14, color: Colors.amber),
+                    const SizedBox(width: 4),
+                    Text(
+                      product.averageRating.toStringAsFixed(1),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+
+          // Measure Display
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (product.displayMeasure.isNotEmpty) ...[
+                Text(
+                  product.displayMeasure,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+              // Alcohol Content - Using attributes
+              if (product.alcoholContent != null) ...[
+                Text(
+                  'ABV: ${product.alcoholContent!.toStringAsFixed(1)}%',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.orange[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          // Price Section - Using attributes
+          _buildPriceSection(isOutOfStock, theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceSection(bool isOutOfStock, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            // Effective Price (offer price or regular price)
+            Text(
+              product.displayEffectivePrice,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isOutOfStock
+                    ? Colors.grey
+                    : product.hasOffer
+                    ? Colors.green[700]
+                    : theme.primaryColor,
+              ),
+            ),
+
+            const SizedBox(width: 8),
+
+            // Original Price (strikethrough if offer exists)
+            if (product.hasOffer && !isOutOfStock)
+              Text(
+                product.displayOriginalPrice,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
+          ],
+        ),
+
+        // Discount Percentage
+        if (product.hasOffer && !isOutOfStock) ...[
+          const SizedBox(height: 2),
+          Text(
+            '${product.discountPercentage.toInt()}% OFF',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: Colors.green[700],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildDiscountBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        '${product.discountPercentage.toInt()}%',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
   Widget _buildQuantityControls(ThemeData theme) {
     if (currentQuantity == 0) {
-      // Show just the add button when quantity is 0
       return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -237,18 +276,16 @@ class ProductCard extends StatelessWidget {
           child: InkWell(
             onTap: onIncrement,
             borderRadius: BorderRadius.circular(8),
-            child: Container(
+            child: SizedBox(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-              child: Icon(Icons.add, size: 20, color: theme.primaryColor),
+              child: Icon(Icons.add, size: 18, color: theme.primaryColor),
             ),
           ),
         ),
       );
     }
 
-    // Show quantity controls when quantity > 0
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -264,7 +301,6 @@ class ProductCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Decrement Button
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -272,20 +308,13 @@ class ProductCard extends StatelessWidget {
               borderRadius: const BorderRadius.horizontal(
                 left: Radius.circular(8),
               ),
-              child: Container(
+              child: SizedBox(
                 width: 28,
                 height: 32,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.horizontal(
-                    left: Radius.circular(8),
-                  ),
-                ),
                 child: Icon(Icons.remove, size: 16, color: theme.primaryColor),
               ),
             ),
           ),
-
-          // Quantity Display
           Container(
             width: 32,
             height: 32,
@@ -295,14 +324,12 @@ class ProductCard extends StatelessWidget {
                 currentQuantity.toString(),
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                   color: theme.primaryColor,
                 ),
               ),
             ),
           ),
-
-          // Increment Button
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -310,14 +337,9 @@ class ProductCard extends StatelessWidget {
               borderRadius: const BorderRadius.horizontal(
                 right: Radius.circular(8),
               ),
-              child: Container(
+              child: SizedBox(
                 width: 28,
                 height: 32,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.horizontal(
-                    right: Radius.circular(8),
-                  ),
-                ),
                 child: Icon(Icons.add, size: 16, color: theme.primaryColor),
               ),
             ),
@@ -325,29 +347,5 @@ class ProductCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  // Mock methods - you can replace these with actual business logic
-  bool _hasDiscount() {
-    // You can add discount logic here or add discount fields to ProductModel
-    return product.price > 100; // Mock condition
-  }
-
-  int _getDiscountPercentage() {
-    // Mock discount calculation
-    if (product.price > 200) return 15;
-    if (product.price > 100) return 10;
-    return 5;
-  }
-
-  int _generateReviewCount() {
-    // Mock review count based on rating
-    if (product.averageRating >= 4.5)
-      return 50 + (product.averageRating * 10).round();
-    if (product.averageRating >= 4.0)
-      return 25 + (product.averageRating * 8).round();
-    if (product.averageRating >= 3.0)
-      return 10 + (product.averageRating * 5).round();
-    return (product.averageRating * 3).round();
   }
 }

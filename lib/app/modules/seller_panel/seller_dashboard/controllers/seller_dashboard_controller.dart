@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/index.dart';
-
 class SellerDashboardController extends GetxController {
   // State for Bottom Navigation Bar
   final selectedNavIndex = 0.obs;

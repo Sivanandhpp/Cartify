@@ -28,6 +28,49 @@ class ProductModel {
   /// Arbitrary attributes (size, color, origin, etc.)
   final Map<String, dynamic>? attributes;
 
+  // Convenience getters for common attributes
+  String? get brand => attributes?['brand']?.toString();
+  
+  double? get offerPrice => _parseDouble(attributes?['offer_price']);
+  
+  double? get offerPercentage => _parseDouble(attributes?['offer_percentage']);
+  
+  double? get alcoholContent => _parseDouble(attributes?['alcohol_content_abv']);
+  
+  // Check if product has an offer
+  bool get hasOffer => offerPrice != null && offerPrice! > 0;
+  
+  // Get discount percentage (from attributes or calculated)
+  double get discountPercentage {
+    if (offerPercentage != null) return offerPercentage!;
+    if (hasOffer && offerPrice! < price) {
+      return ((price - offerPrice!) / price) * 100;
+    }
+    return 0.0;
+  }
+  
+  // Get effective price (offer price if available, otherwise regular price)
+  double get effectivePrice => hasOffer ? offerPrice! : price;
+  
+  // Display effective price
+  String get displayEffectivePrice => '₹${effectivePrice.toStringAsFixed(2)}';
+  
+  // Display original price (for strikethrough)
+  String get displayOriginalPrice => '₹${price.toStringAsFixed(2)}';
+  
+  // Get specific attribute value with type safety
+  T? getAttribute<T>(String key) {
+    final value = attributes?[key];
+    if (value == null) return null;
+    
+    if (T == String) return value.toString() as T?;
+    if (T == double) return _parseDouble(value) as T?;
+    if (T == int) return _parseInt(value) as T?;
+    if (T == bool) return (value == true || value == 'true') as T?;
+    
+    return value as T?;
+  }
+
   /// Average rating parsed to double (string in API)
   final double averageRating;
 
@@ -62,8 +105,8 @@ class ProductModel {
       description: json['description']?.toString(),
       price: _parseDouble(json['price']),
       stockQuantity: _parseInt(json['stock_quantity'] ?? json['stock']),
-      measureUnitCode: json['measureUnitCode']?.toString(),
-      measureAmount: _parseDouble(json['measureAmount']),
+      measureUnitCode: json['measure_unit_code']?.toString(),
+      measureAmount: _parseDouble(json['measure_amount']),
       images: _parseImages(json['images'] ?? json['image_urls']),
       attributes: _parseAttributes(json['attributes']),
       averageRating: _parseDouble(json['average_rating']),
@@ -83,8 +126,8 @@ class ProductModel {
       'description': description,
       'price': price.toStringAsFixed(2),
       'stock_quantity': stockQuantity,
-      'measureUnitCode': measureUnitCode,
-      'measureAmount': measureAmount?.toString(),
+      'measure_unit_code': measureUnitCode,
+      'measure_amount': measureAmount?.toString(),
       'images': images,
       'attributes': attributes,
       'average_rating': averageRating.toStringAsFixed(2),
