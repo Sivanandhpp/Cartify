@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/index.dart';
+import '../../../../../core/index.dart';
 import 'cart_item_card_widget.dart';
 
 /// Production-level reusable review order section widget
@@ -13,7 +13,6 @@ class ReviewOrderSectionWidget extends StatelessWidget {
   final int itemCount;
   final Function(String productId)? onIncrementQuantity;
   final Function(String productId)? onDecrementQuantity;
-  
 
   const ReviewOrderSectionWidget({
     super.key,
@@ -99,14 +98,31 @@ class ReviewOrderSectionWidget extends StatelessWidget {
 
           const SizedBox(height: 16),
 
+          // // Cart items
+          // ...cartItems.map(
+          //   (item) => CartItemCardWidget(
+          //     item: item,
+          //     onIncrementQuantity: () =>
+          //         onIncrementQuantity?.call(item.productId),
+          //     onDecrementQuantity: () =>
+          //         onDecrementQuantity?.call(item.productId),
+          //     currentQuantity: item.quantity,
+          //   ),
+          // ),
           // Cart items
-          ...cartItems.map(
-            (item) => CartItemCardWidget(
-              item: item,
-              onIncrementQuantity: () => onIncrementQuantity?.call(item.productId),
-              onDecrementQuantity: () => onDecrementQuantity?.call(item.productId),
-              currentQuantity: item.quantity,
-            ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: cartItems.length,
+            itemBuilder: (context, index) {
+              final item = cartItems[index];
+              return CartItemCardWidget(
+                item: item,
+                onIncrementQuantity: () => onIncrementQuantity!(item.productId),
+                onDecrementQuantity: () => onDecrementQuantity!(item.productId),
+                currentQuantity: item.quantity,
+              );
+            },
           ),
         ],
       ),

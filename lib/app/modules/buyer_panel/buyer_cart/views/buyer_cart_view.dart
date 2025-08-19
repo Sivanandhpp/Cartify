@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
 import '../controllers/buyer_cart_controller.dart';
-import '../widgets/cart_app_bar_widget.dart';
-import '../widgets/review_order_section_widget.dart';
-import '../widgets/add_more_items_widget.dart';
-import '../widgets/bill_details_widget.dart';
-import '../widgets/payment_section_widget.dart';
-import '../widgets/empty_cart_widget.dart';
+import 'widgets/cart_app_bar_widget.dart';
+import 'widgets/review_order_section_widget.dart';
+import 'widgets/add_more_items_widget.dart';
+import 'widgets/bill_details_widget.dart';
+import 'widgets/payment_section_widget.dart';
+import 'widgets/empty_cart_widget.dart';
 
 class BuyerCartView extends GetView<BuyerCartController> {
   const BuyerCartView({super.key});

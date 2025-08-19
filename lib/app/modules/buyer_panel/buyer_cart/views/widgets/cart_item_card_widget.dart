@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/index.dart';
+import '../../../../../core/index.dart';
 
 /// Reusable cart item card widget
 class CartItemCardWidget extends StatelessWidget {

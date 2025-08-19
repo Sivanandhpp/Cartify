@@ -8,23 +8,56 @@ class BuyerCartController extends GetxController {
   final RxDouble deliveryTip = 0.0.obs;
   final RxBool isProcessingPayment = false.obs;
 
-   // Getters using CartService's existing properties
+  // Store the original order of cart items
+  final RxList<String> _itemOrder = <String>[].obs;
+
+  // Getters using CartService's existing properties
   CartModel? get cartData => _cartService.cartData;
-  List<CartItem> get cartItems => _cartService.cartData?.items ?? [];
+
+  // Modified getter to maintain stable order
+  List<CartItem> get cartItems {
+    final items = _cartService.cartData?.items ?? [];
+    if (items.isEmpty) return items;
+
+    // If order is not initialized, initialize it
+    if (_itemOrder.isEmpty) {
+      _itemOrder.value = items.map((item) => item.id).toList();
+    }
+
+    // Sort items based on the stored order
+    final sortedItems = <CartItem>[];
+    for (final itemId in _itemOrder) {
+      try {
+        final item = items.firstWhere((item) => item.id == itemId);
+        sortedItems.add(item);
+      } catch (e) {
+        // Item was removed, remove from order list
+        _itemOrder.remove(itemId);
+      }
+    }
+
+    // Add any new items that weren't in the original order
+    for (final item in items) {
+      if (!_itemOrder.contains(item.id)) {
+        sortedItems.add(item);
+        _itemOrder.add(item.id);
+      }
+    }
+
+    return sortedItems;
+  }
+
   double get subtotal => cartItems.fold(
     0.0,
     (sum, item) => sum + (item.product.effectivePrice * item.quantity),
   );
-  double get totalSavings => cartItems.fold(
-    0.0,
-    (sum, item) {
-      if (item.product.hasOffer) {
-        final discountPerItem = item.product.price - item.product.offerPrice!;
-        return sum + (discountPerItem * item.quantity);
-      }
-      return sum;
-    },
-  );
+  double get totalSavings => cartItems.fold(0.0, (sum, item) {
+    if (item.product.hasOffer) {
+      final discountPerItem = item.product.price - item.product.offerPrice!;
+      return sum + (discountPerItem * item.quantity);
+    }
+    return sum;
+  });
   int get itemCount => _cartService.cartItemsCount;
   bool get isEmpty => cartItems.isEmpty;
   bool get isLoading => _cartService.isLoading;
@@ -58,6 +91,11 @@ class BuyerCartController extends GetxController {
   /// Load cart data on initialization
   Future<void> _loadCart() async {
     await _cartService.getCart();
+    // Initialize item order when cart is first loaded
+    final items = _cartService.cartData?.items ?? [];
+    if (items.isNotEmpty && _itemOrder.isEmpty) {
+      _itemOrder.value = items.map((item) => item.id).toList();
+    }
   }
 
   // Cart operations using existing CartService methods
@@ -91,6 +129,9 @@ class BuyerCartController extends GetxController {
         'Failed to remove item from cart',
         snackPosition: SnackPosition.BOTTOM,
       );
+    } else {
+      // Remove from order list when item is removed
+      _itemOrder.remove(cartItemId);
     }
   }
 
@@ -102,6 +143,9 @@ class BuyerCartController extends GetxController {
         'Failed to clear cart',
         snackPosition: SnackPosition.BOTTOM,
       );
+    } else {
+      // Clear order list when cart is cleared
+      _itemOrder.clear();
     }
   }
 
@@ -128,12 +172,10 @@ class BuyerCartController extends GetxController {
 
     try {
       isProcessingPayment.value = true;
-      
+
       // Show loading state
       Get.dialog(
-        const Center(
-          child: CircularProgressIndicator(),
-        ),
+        const Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
 
@@ -142,7 +184,7 @@ class BuyerCartController extends GetxController {
 
       // Close loading dialog
       Get.back();
-      
+
       // Clear cart after successful payment
       await clearCart();
 
@@ -161,7 +203,7 @@ class BuyerCartController extends GetxController {
       if (Get.isDialogOpen == true) {
         Get.back();
       }
-      
+
       Get.snackbar(
         'Payment Failed',
         'There was an error processing your payment. Please try again.',

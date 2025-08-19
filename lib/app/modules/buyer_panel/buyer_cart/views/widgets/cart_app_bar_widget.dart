@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/index.dart';
+import '../../../../../core/index.dart';
 
 /// Production-level reusable cart app bar widget
 ///
