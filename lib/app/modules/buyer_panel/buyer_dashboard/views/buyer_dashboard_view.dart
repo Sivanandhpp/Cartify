@@ -1,5 +1,6 @@
 import 'package:cartify/app/modules/buyer_panel/buyer_categories/views/buyer_categories_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/views/widgets/bottom_nav_bar.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/views/widgets/cart_tracking_widget.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_home/views/buyer_home_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_offers/views/buyer_offers_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_profile_view.dart';
@@ -13,29 +14,30 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: controller.pageController,
-        onPageChanged: (index) {
-          controller.selectedNavIndex.value = index;
-        },
-        physics: const ClampingScrollPhysics(),
-        children: const [
-          BuyerHomeView(),
-          BuyerCategoriesView(),
-          BuyerWishlistView(),
-          BuyerOffersView(),
-          BuyerProfileView(),
+      body: Stack(
+        children: [
+          PageView(
+            controller: controller.pageController,
+            onPageChanged: (index) {
+              controller.selectedNavIndex.value = index;
+            },
+            physics: const ClampingScrollPhysics(),
+            children: const [
+              BuyerHomeView(),
+              BuyerCategoriesView(),
+              BuyerWishlistView(),
+              BuyerOffersView(),
+              BuyerProfileView(),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: buildCartTrackingWidget(),
+          ),
         ],
       ),
-      // floating action button right above the bottom navigation bar
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Container(
-      //   padding: const EdgeInsets.all(16),
-      //   color: AppColors.primaryBrand,
-      //   width: double.infinity,
-      //   height: 60,
-      //   child: const Column(children: [Text("1 item")]),
-      // ),
 
       bottomNavigationBar: buildBottomNavBar(),
     );
