@@ -47,12 +47,11 @@ class BuyerCartView extends GetView<BuyerCartController> {
                     Obx(
                       () => ReviewOrderSectionWidget(
                         title: 'Review your Order',
-                        deliveryTime: '10 Mins',
-                        deliveryType: 'Superfast',
                         cartItems: controller.cartItems,
                         itemCount: controller.itemCount,
                         onIncrementQuantity: controller.incrementQuantity,
                         onDecrementQuantity: controller.decrementQuantity,
+                        onClearCart: controller.clearCart,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -73,7 +72,7 @@ class BuyerCartView extends GetView<BuyerCartController> {
                         finalTotal: controller.finalTotal,
                       ),
                     ),
-                    const SizedBox(height: 100),
+                    const SizedBox(height: 150),
                   ],
                 ),
               ),

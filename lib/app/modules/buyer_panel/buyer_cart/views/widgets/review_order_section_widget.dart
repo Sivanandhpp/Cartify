@@ -7,22 +7,20 @@ import 'cart_item_card_widget.dart';
 /// Displays order review with delivery info, item count, and cart items list
 class ReviewOrderSectionWidget extends StatelessWidget {
   final String title;
-  final String deliveryTime;
-  final String deliveryType;
   final List<CartItem> cartItems;
   final int itemCount;
-  final Function(String productId)? onIncrementQuantity;
-  final Function(String productId)? onDecrementQuantity;
+  final void Function(String productId)? onIncrementQuantity;
+  final void Function(String productId)? onDecrementQuantity;
+  final VoidCallback? onClearCart;
 
   const ReviewOrderSectionWidget({
     super.key,
     required this.title,
-    required this.deliveryTime,
-    required this.deliveryType,
     required this.cartItems,
     required this.itemCount,
     this.onIncrementQuantity,
     this.onDecrementQuantity,
+    this.onClearCart,
   });
 
   @override
@@ -54,40 +52,6 @@ class ReviewOrderSectionWidget extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // Delivery info
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF4CAF50),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  deliveryTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.speed, size: 16, color: Color(0xFF4CAF50)),
-              const SizedBox(width: 4),
-              Text(
-                deliveryType,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF4CAF50),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
               const Spacer(),
               Text(
                 '$itemCount items',
@@ -96,34 +60,60 @@ class ReviewOrderSectionWidget extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 16),
+          // Cart items with safe access
+          if (cartItems.isNotEmpty)
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: cartItems.length,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemBuilder: (context, index) {
+                // Safety check to prevent index out of bounds
+                if (index >= cartItems.length) {
+                  return const SizedBox.shrink();
+                }
 
-          // // Cart items
-          // ...cartItems.map(
-          //   (item) => CartItemCardWidget(
-          //     item: item,
-          //     onIncrementQuantity: () =>
-          //         onIncrementQuantity?.call(item.productId),
-          //     onDecrementQuantity: () =>
-          //         onDecrementQuantity?.call(item.productId),
-          //     currentQuantity: item.quantity,
-          //   ),
-          // ),
-          // Cart items
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: cartItems.length,
-            itemBuilder: (context, index) {
-              final item = cartItems[index];
-              return CartItemCardWidget(
-                item: item,
-                onIncrementQuantity: () => onIncrementQuantity!(item.productId),
-                onDecrementQuantity: () => onDecrementQuantity!(item.productId),
-                currentQuantity: item.quantity,
-              );
-            },
-          ),
+                final item = cartItems[index];
+                return CartItemCardWidget(
+                  item: item,
+                  onIncrementQuantity: onIncrementQuantity != null
+                      ? () => onIncrementQuantity!(item.productId)
+                      : null,
+                  onDecrementQuantity: onDecrementQuantity != null
+                      ? () => onDecrementQuantity!(item.productId)
+                      : null,
+                  currentQuantity: item.quantity,
+                );
+              },
+            )
+          else
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'No items in cart',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ),
+            ),
+          const SizedBox(height: 8),
+          if (cartItems.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: onClearCart,
+                  child: const Text(
+                    'Clear Cart',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );

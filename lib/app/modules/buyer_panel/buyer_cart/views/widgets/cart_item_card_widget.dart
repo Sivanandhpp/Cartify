@@ -21,13 +21,12 @@ class CartItemCardWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(top: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildProductImage(),
-          const SizedBox(width: 12),
-          Expanded(child: _buildProductDetails(theme)),
+          _buildProductDetails(theme),
           _buildQuantityControls(theme),
           _buildPriceDetails(theme),
         ],
@@ -36,51 +35,56 @@ class CartItemCardWidget extends StatelessWidget {
   }
 
   Widget _buildProductImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: item.product.images.isNotEmpty
+              ? Image.network(item.product.images.first, fit: BoxFit.cover)
+              : Icon(Icons.image_outlined, color: Colors.grey[400], size: 30),
         ),
-        child: item.product.images.isNotEmpty
-            ? Image.network(item.product.images.first, fit: BoxFit.cover)
-            : Icon(Icons.image_outlined, color: Colors.grey[400], size: 30),
       ),
     );
   }
 
   Widget _buildProductDetails(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          // Ensures wrapping and ellipsis for long names
-          width: 120,
-          child: Text(
-            item.product.name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            // Ensures wrapping and ellipsis for long names
+            width: 120,
+            child: Text(
+              item.product.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          item.product.displayMeasure,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-            color: Colors.grey[600],
+          const SizedBox(height: 4),
+          Text(
+            item.product.displayMeasure,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[600],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

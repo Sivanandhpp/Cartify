@@ -85,11 +85,16 @@ class CartService {
     }
   }
 
-  /// Removes all items from the user's cart.
+    /// Removes all items from the user's cart.
   Future<bool> clearCart() async {
     try {
       await _apiClient.dio.delete('/cart');
-      _cartData.value = null;
+      _cartData.value = CartModel(
+        id: '',
+        userId: null,
+        items: [],
+        totalPrice: 0.0,
+      );
       return true;
     } on DioException catch (e) {
       print('Error clearing cart: ${e.response?.data}');
