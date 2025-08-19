@@ -20,17 +20,17 @@ class BuyerCartController extends GetxController {
     if (items.isEmpty) {
       return items;
     }
-    
+
     // If order is not initialized, initialize it (non-reactive)
     if (_itemOrder.isEmpty && items.isNotEmpty) {
       _itemOrder.addAll(items.map((item) => item.id));
       return items;
     }
-    
+
     // Sort items based on the stored order
     final sortedItems = <CartItem>[];
     final currentItemIds = items.map((item) => item.id).toSet();
-    
+
     // Add items in the stored order
     for (final itemId in _itemOrder) {
       if (currentItemIds.contains(itemId)) {
@@ -38,7 +38,7 @@ class BuyerCartController extends GetxController {
         sortedItems.add(item);
       }
     }
-    
+
     // Add any new items that weren't in the original order
     for (final item in items) {
       if (!_itemOrder.contains(item.id)) {
@@ -46,7 +46,7 @@ class BuyerCartController extends GetxController {
         _itemOrder.add(item.id);
       }
     }
-    
+
     return sortedItems;
   }
 
@@ -54,16 +54,13 @@ class BuyerCartController extends GetxController {
     0.0,
     (sum, item) => sum + (item.product.effectivePrice * item.quantity),
   );
-  double get totalSavings => cartItems.fold(
-    0.0,
-    (sum, item) {
-      if (item.product.hasOffer) {
-        final discountPerItem = item.product.price - item.product.offerPrice!;
-        return sum + (discountPerItem * item.quantity);
-      }
-      return sum;
-    },
-  );
+  double get totalSavings => cartItems.fold(0.0, (sum, item) {
+    if (item.product.hasOffer) {
+      final discountPerItem = item.product.price - item.product.offerPrice!;
+      return sum + (discountPerItem * item.quantity);
+    }
+    return sum;
+  });
   int get itemCount => _cartService.cartItemsCount;
   bool get isEmpty => cartItems.isEmpty;
   bool get isLoading => _cartService.isLoading;
@@ -194,11 +191,9 @@ class BuyerCartController extends GetxController {
 
     try {
       isProcessingPayment.value = true;
-      
+
       Get.dialog(
-        const Center(
-          child: CircularProgressIndicator(),
-        ),
+        const Center(child: CircularProgressIndicator()),
         barrierDismissible: false,
       );
 
@@ -219,7 +214,7 @@ class BuyerCartController extends GetxController {
       if (Get.isDialogOpen == true) {
         Get.back();
       }
-      
+
       Get.snackbar(
         'Payment Failed',
         'There was an error processing your payment. Please try again.',
