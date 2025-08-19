@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
 import '../controllers/buyer_cart_controller.dart';
-import 'widgets/cart_app_bar_widget.dart';
 import 'widgets/review_order_section_widget.dart';
 import 'widgets/add_more_items_widget.dart';
 import 'widgets/bill_details_widget.dart';
@@ -16,15 +15,27 @@ class BuyerCartView extends GetView<BuyerCartController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
-      appBar: CartAppBarWidget(
-        locationTitle: 'Kozhikode Work',
-        storeDescription: 'Ui Technology Solutions, Ui Cyberpark, Ui Cyb...',
-        onSharePressed: () {
-          LogService.info('Share button pressed');
-        },
-        onMorePressed: () {
-          LogService.info('More options pressed');
-        },
+      appBar: AppBar(
+        backgroundColor: AppColors.lightBackground,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Get.back(),
+        ),
+        title: const Text(
+          'Shopping Cart',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.isEmpty) {
