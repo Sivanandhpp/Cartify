@@ -3,11 +3,16 @@ import 'package:get/get.dart';
 
 class BuyerHomeController extends GetxController {
   final DashboardService _dashboardService = Get.find<DashboardService>();
+  final CartService _cartService = Get.find<CartService>();
 
   // Reactive variables for dashboard data
   final Rx<DashboardModel?> _dashboardData = Rx<DashboardModel?>(null);
   final RxBool _isLoading = false.obs;
   final RxString _errorMessage = ''.obs;
+
+  // Cart related reactive variables
+  final Rx<CartModel?> _cartData = Rx<CartModel?>(null);
+  final RxBool _isCartLoading = false.obs;
 
   // Getters for reactive variables
   DashboardModel? get dashboardData => _dashboardData.value;
@@ -15,10 +20,17 @@ class BuyerHomeController extends GetxController {
   String get errorMessage => _errorMessage.value;
   bool get hasError => _errorMessage.value.isNotEmpty;
 
+  // Cart getters
+  CartModel? get cartData => _cartData.value;
+  bool get isCartLoading => _isCartLoading.value;
+  int get cartItemsCount => _cartData.value?.items.length ?? 0;
+  double get cartTotalPrice => _cartData.value?.totalPrice ?? 0.0;
+
   @override
   void onInit() {
     super.onInit();
     loadDashboardData();
+    _loadCart();
   }
 
   /// Loads dashboard data from the API
@@ -45,6 +57,45 @@ class BuyerHomeController extends GetxController {
   /// Refreshes dashboard data
   Future<void> refreshDashboard() async {
     await loadDashboardData();
+  }
+
+  /// Loads cart data from the API
+  Future<void> _loadCart() async {
+    try {
+      final cart = await _cartService.getCart();
+      _cartData.value = cart;
+    } catch (e) {
+      LogService.error('Cart loading error: $e');
+    }
+  }
+
+/// Increments product quantity in cart (adds if not exists)
+  Future<void> incrementProductQuantity(String productId) async {
+    final success = await _cartService.incrementProductQuantity(productId);
+    if (!success) {
+      Get.snackbar(
+        'Error',
+        'Failed to update cart',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  /// Decrements product quantity in cart (removes if quantity becomes 0)
+  Future<void> decrementProductQuantity(String productId) async {
+    final success = await _cartService.decrementProductQuantity(productId);
+    if (!success) {
+      Get.snackbar(
+        'Error',
+        'Failed to update cart',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  /// Gets quantity of a specific product in cart
+  int getProductQuantityInCart(String productId) {
+    return _cartService.getProductQuantityInCart(productId);
   }
 
   // Helper methods for easy access to dashboard sections

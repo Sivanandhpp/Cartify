@@ -65,6 +65,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 },
                 onCartTap: () {
                   // Handle cart tap
+                  Get.toNamed('/buyer-cart');
                   print('Cart tapped');
                 },
                 onSearchChanged: (value) {
@@ -117,24 +118,33 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                             return Container(
                               width: 180,
                               // margin: const EdgeInsets.only(right: 4),
-                              child: ProductCard(
-                                product: product,
-                                currentQuantity: 0,
-                                onTap: () {
-                                  print('Product tapped: ${product.name}');
-                                },
-                                onIncrement: () {
-                                  print('Add to cart: ${product.name}');
-                                },
-                                onDecrement: () {
-                                  print('Remove from cart: ${product.name}');
-                                },
+                              child: Obx(
+                                () => ProductCard(
+                                  product: product,
+                                  currentQuantity: controller
+                                      .getProductQuantityInCart(product.id),
+                                  onTap: () {
+                                    print('Product tapped: ${product.name}');
+                                  },
+                                  onIncrement: () {
+                                    print('Add to cart: ${product.name}');
+                                    controller.incrementProductQuantity(
+                                      product.id,
+                                    );
+                                  },
+                                  onDecrement: () {
+                                    print('Remove from cart: ${product.name}');
+                                    controller.decrementProductQuantity(
+                                      product.id,
+                                    );
+                                  },
+                                ),
                               ),
                             );
                           },
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
                       SizedBox(
                         height: 270,
                         child: ListView.builder(
@@ -147,18 +157,27 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                             return Container(
                               width: 180,
                               // margin: const EdgeInsets.only(right: 4),
-                              child: ProductCard(
-                                product: product,
-                                currentQuantity: 0,
-                                onTap: () {
-                                  print('Product tapped: ${product.name}');
-                                },
-                                onIncrement: () {
-                                  print('Add to cart: ${product.name}');
-                                },
-                                onDecrement: () {
-                                  print('Remove from cart: ${product.name}');
-                                },
+                              child: Obx(
+                                () => ProductCard(
+                                  product: product,
+                                  currentQuantity: controller
+                                      .getProductQuantityInCart(product.id),
+                                  onTap: () {
+                                    print('Product tapped: ${product.name}');
+                                  },
+                                  onIncrement: () {
+                                    print('Add to cart: ${product.name}');
+                                    controller.incrementProductQuantity(
+                                      product.id,
+                                    );
+                                  },
+                                  onDecrement: () {
+                                    print('Remove from cart: ${product.name}');
+                                    controller.decrementProductQuantity(
+                                      product.id,
+                                    );
+                                  },
+                                ),
                               ),
                             );
                           },
