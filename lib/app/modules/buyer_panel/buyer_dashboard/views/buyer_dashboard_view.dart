@@ -38,7 +38,6 @@ class BuyerDashboardView extends GetView<BuyerDashboardController> {
           ),
         ],
       ),
-
       bottomNavigationBar: buildBottomNavBar(),
     );
   }

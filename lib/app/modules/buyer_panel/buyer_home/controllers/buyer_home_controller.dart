@@ -1,9 +1,12 @@
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BuyerHomeController extends GetxController {
   final DashboardService _dashboardService = Get.find<DashboardService>();
   final CartService _cartService = Get.find<CartService>();
+  final ProductSheetController _productSheetController = Get.find<ProductSheetController>();
 
   // Reactive variables for dashboard data
   final Rx<DashboardModel?> _dashboardData = Rx<DashboardModel?>(null);
@@ -165,5 +168,10 @@ class BuyerHomeController extends GetxController {
   int getSectionItemCount(String type) {
     final section = getSection(type);
     return section?.data.length ?? 0;
+  }
+
+  // Show Product sheet
+  void showProductSheet(BuildContext context, ProductModel product) {
+    _productSheetController.showProductSheet(context, product);
   }
 }

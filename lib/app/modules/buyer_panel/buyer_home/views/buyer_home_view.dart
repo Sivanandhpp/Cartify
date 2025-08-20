@@ -1,4 +1,5 @@
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_home/views/buyer_home_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -124,7 +125,13 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                   currentQuantity: controller
                                       .getProductQuantityInCart(product.id),
                                   onTap: () {
-                                    print('Product tapped: ${product.name}');
+                                    if (Get.context != null) {
+                                      controller.showProductSheet(
+                                        Get.context!,
+                                        product,
+                                      );
+                                    }
+                                
                                   },
                                   onIncrement: () {
                                     print('Add to cart: ${product.name}');
