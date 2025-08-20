@@ -505,6 +505,7 @@ class ProductBottomSheet extends StatelessWidget {
 
     return Container(
       width: double.infinity,
+      height: 80,
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -522,16 +523,26 @@ class ProductBottomSheet extends StatelessWidget {
           Expanded(
             child: OutlinedButton(
               onPressed: () => controller.onAddToCart(product),
+
               style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
               ),
-              child: const Text('Add to cart'),
+              child: const Text(
+                'Add to cart',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
             ),
           ),
           const SizedBox(width: 12),
-          AppButton(
-            text: 'Buy Now',
-            onPressed: () => controller.onBuyNow(product),
+          Expanded(
+            child: AppButton(
+              height: 50,
+              text: 'Buy Now',
+              onPressed: () => controller.onBuyNow(product),
+            ),
           ),
           // Expanded(
           //   child: ElevatedButton(
