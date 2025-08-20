@@ -505,11 +505,11 @@ class ProductBottomSheet extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: 80,
-      padding: const EdgeInsets.all(16),
+      height: 90,
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24, top: 16),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
