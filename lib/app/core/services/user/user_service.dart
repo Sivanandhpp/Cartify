@@ -7,13 +7,12 @@ import 'package:dio/dio.dart';
 /// Service for managing user profile and addresses.
 class UserService {
   final ApiClient _apiClient;
-
   UserService(this._apiClient);
 
   /// Retrieves the profile of the currently authenticated user.
   Future<UserModel?> getUserProfile() async {
     try {
-      final response = await _apiClient.dio.get('/user/profile');
+      final response = await _apiClient.dio.get('/users/profile');
       return UserModel.fromJson(response.data);
     } on DioException catch (e) {
       LogService.error('Error getting user profile', e.response?.data);

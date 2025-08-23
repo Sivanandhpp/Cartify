@@ -1,6 +1,8 @@
 // lib/app/core/models/product/product_model.dart
 import 'dart:convert';
 
+import 'package:cartify/app/core/index.dart';
+
 import 'category_model.dart';
 
 /// Product model tailored for the current API response.
@@ -221,9 +223,19 @@ class ProductModel {
       cleanUrl = cleanUrl.split(',').first.trim();
     }
 
-    // Validate that it looks like a URL
+    // If it's already an absolute URL, return as-is
     if (cleanUrl.startsWith('http') || cleanUrl.startsWith('https')) {
       return cleanUrl;
+    }
+
+    // If it's a server-relative path (starts with '/'), prefix base URL
+    if (cleanUrl.startsWith('/')) {
+      return '${AppIdentity.baseUrl}$cleanUrl';
+    }
+
+    // If it looks like a relative static path without leading slash, prefix with '/'
+    if (cleanUrl.contains('static')) {
+      return '${AppIdentity.baseUrl}/$cleanUrl';
     }
 
     return '';

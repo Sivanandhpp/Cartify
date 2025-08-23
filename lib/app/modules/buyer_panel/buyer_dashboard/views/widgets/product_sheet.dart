@@ -3,8 +3,6 @@ import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/models/product/product_model.dart';
-import '../../../../../core/widgets/app_image.dart';
 
 class ProductBottomSheet extends StatelessWidget {
   final ProductModel product;

@@ -1,13 +1,36 @@
-import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/buyer_dashboard_controller.dart';
 import 'package:get/get.dart';
+import 'package:cartify/app/core/index.dart';
 
 class BuyerProfileController extends GetxController {
-  final BuyerDashboardController buyerDashboardController = Get.find<BuyerDashboardController>();
+  final AuthenticationService _authService = Get.find<AuthenticationService>();
+  final UserService _userService = Get.find<UserService>();
+  
+  final Rx<UserModel?> user = Rx<UserModel?>(null);
+  final RxBool isLoading = false.obs;
 
-  logout() async {
-    final AuthenticationService authService = Get.find<AuthenticationService>();
-    buyerDashboardController.selectedNavIndex.value = 0;
-    await authService.logout();
+  @override
+  void onInit() {
+    super.onInit();
+    loadUserProfile();
+  }
+
+  Future<void> loadUserProfile() async {
+    isLoading.value = true;
+    try {
+      final userProfile = await _userService.getUserProfile();
+      user.value = userProfile;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load profile');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> logout() async {
+    await _authService.logout();
+  }
+
+  Future<void> refreshProfile() async {
+    await loadUserProfile();
   }
 }

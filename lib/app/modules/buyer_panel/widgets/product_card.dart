@@ -54,6 +54,7 @@ class ProductCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
+            clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(12),
@@ -64,7 +65,7 @@ class ProductCard extends StatelessWidget {
               url: product.images.isNotEmpty ? product.images.first : '',
               width: double.infinity,
               height: double.infinity,
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
             ),
           ),
 
