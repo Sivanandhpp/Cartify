@@ -139,10 +139,7 @@ class BuyerProfileController extends GetxController {
 
   void navigateToAddresses() {
     LogService.info('Navigating to addresses');
-    NotificationService.showInfo(
-      title: 'Addresses',
-      message: 'Opening address book...',
-    );
+   Get.toNamed('buyer-address-view');
     // TODO: Implement navigation
     // Get.toNamed(Routes.ADDRESSES);
   }

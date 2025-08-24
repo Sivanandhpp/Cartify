@@ -1,3 +1,5 @@
+import 'package:cartify/app/core/models/user/address_model.dart';
+
 class UpdateAddressDto {
   final String? recipientName;
   final String? phone;
@@ -6,7 +8,7 @@ class UpdateAddressDto {
   final String? state;
   final String? pincode;
   final String? landmark;
-  final String? addressType; // 'HOME','WORK','HOSTEL','OTHER'
+  final AddressType? addressType;
   final bool? isDefault;
 
   UpdateAddressDto({
@@ -30,7 +32,7 @@ class UpdateAddressDto {
     if (state != null) data['state'] = state;
     if (pincode != null) data['pincode'] = pincode;
     if (landmark != null) data['landmark'] = landmark;
-    if (addressType != null) data['address_type'] = addressType;
+    if (addressType != null) data['address_type'] = addressType.toString().split('.').last;
     if (isDefault != null) data['is_default'] = isDefault;
     return data;
   }

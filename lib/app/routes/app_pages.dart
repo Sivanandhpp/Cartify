@@ -1,7 +1,7 @@
-import 'package:cartify/app/modules/buyer_panel/buyer_cart/bindings/buyer_cart_binding.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
 import 'package:get/get.dart';
 
+import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
 import '../modules/admin_panel/admin_dashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/admin_panel/admin_dashboard/views/admin_dashboard_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
@@ -68,7 +68,12 @@ class AppPages {
     GetPage(
       name: _Paths.BUYER_CART,
       page: () => const BuyerCartView(),
-      binding: BuyerCartBinding(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_ADDRESS_VIEW,
+      page: () => const BuyerAddressView(),
+      binding: BuyerDashboardBinding(),
     ),
   ];
 }

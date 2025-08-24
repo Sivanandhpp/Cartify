@@ -1,4 +1,4 @@
-// lib/app/core/models/user/create_address_dto.dart
+import 'package:cartify/app/core/models/user/address_model.dart';
 
 /// Data Transfer Object for creating a new address.
 class CreateAddressDto {
@@ -9,7 +9,7 @@ class CreateAddressDto {
   final String state;
   final String pincode;
   final String? landmark;
-  final String addressType;
+  final AddressType addressType;
   final bool? isDefault;
 
   CreateAddressDto({
@@ -33,7 +33,7 @@ class CreateAddressDto {
       'city': city,
       'state': state,
       'pincode': pincode,
-      'address_type': addressType,
+      'address_type': addressType.toString().split('.').last,
     };
     if (landmark != null) {
       data['landmark'] = landmark;

@@ -1,7 +1,6 @@
-// lib/app/core/services/user/user_service.dart
-
 import 'dart:io';
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/core/models/user/update_address_dto.dart';
 import 'package:dio/dio.dart';
 
 /// Service for managing user profile and addresses.
@@ -62,7 +61,6 @@ class UserService {
           .toList();
     } on DioException catch (e) {
       LogService.error('Error getting addresses', e.response?.data);
-
       return [];
     }
   }
@@ -82,7 +80,7 @@ class UserService {
   }
 
   /// Updates an existing shipping address.
-  Future<Address?> updateAddress(String addressId, CreateAddressDto dto) async {
+  Future<Address?> updateAddress(String addressId, UpdateAddressDto dto) async {
     try {
       final response = await _apiClient.dio.patch(
         '/address/$addressId',
