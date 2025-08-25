@@ -1,4 +1,4 @@
-import 'package:cartify/app/modules/buyer_panel/buyer_profilee/views/address_form.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/widgets/address_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
