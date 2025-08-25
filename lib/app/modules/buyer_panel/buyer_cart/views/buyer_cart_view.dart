@@ -1,3 +1,4 @@
+import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/widgets/address_selection_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
@@ -55,6 +56,9 @@ class BuyerCartView extends GetView<BuyerCartController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const AddressSelectionWidget(),
+                    const SizedBox(height: 16),
+
                     Obx(
                       () => ReviewOrderSectionWidget(
                         title: 'Review your Order',

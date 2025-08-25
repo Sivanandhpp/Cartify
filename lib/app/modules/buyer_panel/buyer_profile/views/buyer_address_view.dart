@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
 import '../controllers/buyer_address_controller.dart';
-import 'widgets/address_form.dart';
 
 class BuyerAddressView extends GetView<BuyerAddressController> {
   const BuyerAddressView({super.key});

@@ -1,35 +1,32 @@
+import 'package:cartify/app/core/models/user/update_address_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/index.dart';
+import 'package:cartify/app/core/index.dart';
 
-class AddressFormWidget extends StatefulWidget {
-  final Address? address;
-  final Function(CreateAddressDto) onSubmit;
-  final bool isLoading;
-
-  const AddressFormWidget({
-    super.key,
-    this.address,
-    required this.onSubmit,
-    this.isLoading = false,
-  });
+class AddressFormView extends StatefulWidget {
+  final Address? address; // null for add, existing address for edit
+  
+  const AddressFormView({super.key, this.address});
 
   @override
-  State<AddressFormWidget> createState() => _AddressFormWidgetState();
+  State<AddressFormView> createState() => _AddressFormViewState();
 }
 
-class _AddressFormWidgetState extends State<AddressFormWidget> {
+class _AddressFormViewState extends State<AddressFormView> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameController;
-  late final TextEditingController _phoneController;
-  late final TextEditingController _streetController;
-  late final TextEditingController _cityController;
-  late final TextEditingController _stateController;
-  late final TextEditingController _pincodeController;
-  late final TextEditingController _landmarkController;
+  final UserService _userService = Get.find<UserService>();
   
-  AddressType _selectedType = AddressType.HOME;
+  late TextEditingController _recipientNameController;
+  late TextEditingController _phoneController;
+  late TextEditingController _streetController;
+  late TextEditingController _cityController;
+  late TextEditingController _stateController;
+  late TextEditingController _pincodeController;
+  late TextEditingController _landmarkController;
+  
+  AddressType _selectedAddressType = AddressType.HOME;
   bool _isDefault = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -38,24 +35,23 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
   }
 
   void _initializeControllers() {
-    final address = widget.address;
-    _nameController = TextEditingController(text: address?.recipientName ?? '');
-    _phoneController = TextEditingController(text: address?.phone ?? '');
-    _streetController = TextEditingController(text: address?.street ?? '');
-    _cityController = TextEditingController(text: address?.city ?? '');
-    _stateController = TextEditingController(text: address?.state ?? '');
-    _pincodeController = TextEditingController(text: address?.pincode ?? '');
-    _landmarkController = TextEditingController(text: address?.landmark ?? '');
+    _recipientNameController = TextEditingController(text: widget.address?.recipientName ?? '');
+    _phoneController = TextEditingController(text: widget.address?.phone ?? '');
+    _streetController = TextEditingController(text: widget.address?.street ?? '');
+    _cityController = TextEditingController(text: widget.address?.city ?? '');
+    _stateController = TextEditingController(text: widget.address?.state ?? '');
+    _pincodeController = TextEditingController(text: widget.address?.pincode ?? '');
+    _landmarkController = TextEditingController(text: widget.address?.landmark ?? '');
     
-    if (address != null) {
-      _selectedType = address.addressType;
-      _isDefault = address.isDefault;
+    if (widget.address != null) {
+      _selectedAddressType = widget.address!.addressType;
+      _isDefault = widget.address!.isDefault;
     }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _recipientNameController.dispose();
     _phoneController.dispose();
     _streetController.dispose();
     _cityController.dispose();
@@ -65,220 +61,63 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                Text(
-                  widget.address == null ? 'Add New Address' : 'Edit Address',
-                  style: AppTextStyles.headlineSmall(AppColors.primary),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: AppColors.secondaryBrand),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Form fields
-            _buildTextField(
-              controller: _nameController,
-              label: 'Full Name',
-              hint: 'Enter recipient name',
-              validator: (value) => value?.isEmpty == true ? 'Name is required' : null,
-            ),
-            const SizedBox(height: 16),
-
-            _buildTextField(
-              controller: _phoneController,
-              label: 'Phone Number',
-              hint: 'Enter phone number',
-              keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value?.isEmpty == true) return 'Phone number is required';
-                if (value!.length != 10) return 'Enter valid 10-digit phone number';
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            _buildTextField(
-              controller: _streetController,
-              label: 'Street Address',
-              hint: 'House No, Building, Street',
-              maxLines: 2,
-              validator: (value) => value?.isEmpty == true ? 'Street address is required' : null,
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildTextField(
-                    controller: _cityController,
-                    label: 'City',
-                    hint: 'Enter city',
-                    validator: (value) => value?.isEmpty == true ? 'City is required' : null,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildTextField(
-                    controller: _stateController,
-                    label: 'State',
-                    hint: 'Enter state',
-                    validator: (value) => value?.isEmpty == true ? 'State is required' : null,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildTextField(
-                    controller: _pincodeController,
-                    label: 'Pincode',
-                    hint: 'Enter pincode',
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value?.isEmpty == true) return 'Pincode is required';
-                      if (value!.length != 6) return 'Enter valid 6-digit pincode';
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildTextField(
-                    controller: _landmarkController,
-                    label: 'Landmark (Optional)',
-                    hint: 'Nearby landmark',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Address type selection
-            Text(
-              'Address Type',
-              style: AppTextStyles.labelMedium(AppColors.primary),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: AddressType.values.map((type) {
-                final isSelected = _selectedType == type;
-                return ChoiceChip(
-                  label: Text(_getAddressTypeLabel(type)),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _selectedType = type);
-                    }
-                  },
-                  selectedColor: AppColors.primary.withOpacity(0.2),
-                  labelStyle: TextStyle(
-                    color: isSelected ? AppColors.primary : AppColors.secondaryBrand,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-
-            // Default address toggle
-            Row(
-              children: [
-                Checkbox(
-                  value: _isDefault,
-                  onChanged: (value) => setState(() => _isDefault = value ?? false),
-                  activeColor: AppColors.primary,
-                ),
-                Text(
-                  'Set as default address',
-                  style: AppTextStyles.bodyMedium(AppColors.primary),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Submit button
-            AppButton(
-              text: widget.address == null ? 'Add Address' : 'Update Address',
-              onPressed: _handleSubmit,
-              isLoading: widget.isLoading,
-            ),
-            const SizedBox(height: 16),
-          ],
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.medium),
+      child: TextFormField(
+        controller: controller,
+        validator: validator,
+        keyboardType: keyboardType,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.medium,
+            vertical: AppSpacing.small,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    TextInputType? keyboardType,
-    int maxLines = 1,
-    String? Function(String?)? validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.labelMedium(AppColors.primary),
-        ),
-        const SizedBox(height: 6),
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          validator: validator,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.bodyMedium(AppColors.secondaryBrand),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.background),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.background),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.lightError),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            filled: true,
-            fillColor: AppColors.background,
+  Widget _buildAddressTypeDropdown() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.medium),
+      child: DropdownButtonFormField<AddressType>(
+        value: _selectedAddressType,
+        decoration: InputDecoration(
+          labelText: 'Address Type',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.medium,
+            vertical: AppSpacing.small,
           ),
         ),
-      ],
+        items: AddressType.values
+            .map((type) => DropdownMenuItem(
+                  value: type,
+                  child: Text(_getAddressTypeLabel(type)),
+                ))
+            .toList(),
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              _selectedAddressType = value;
+            });
+          }
+        },
+      ),
     );
   }
 
@@ -295,20 +134,182 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
     }
   }
 
-  void _handleSubmit() {
-    if (_formKey.currentState?.validate() == true) {
-      final dto = CreateAddressDto(
-        recipientName: _nameController.text.trim(),
-        phone: _phoneController.text.trim(),
-        street: _streetController.text.trim(),
-        city: _cityController.text.trim(),
-        state: _stateController.text.trim(),
-        pincode: _pincodeController.text.trim(),
-        landmark: _landmarkController.text.trim().isEmpty ? null : _landmarkController.text.trim(),
-        addressType: _selectedType,
-        isDefault: _isDefault,
-      );
-      widget.onSubmit(dto);
+  Widget _buildDefaultAddressSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.large),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Set as default address',
+            style: TextStyle(fontSize: 16),
+          ),
+          Switch(
+            value: _isDefault,
+            onChanged: (value) {
+              setState(() {
+                _isDefault = value;
+              });
+            },
+            activeColor: AppColors.primary,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String? _validateRequired(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'This field is required';
     }
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Phone number is required';
+    }
+    if (value.length != 10) {
+      return 'Enter a valid 10-digit phone number';
+    }
+    return null;
+  }
+
+  String? _validatePincode(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Pincode is required';
+    }
+    if (value.length != 6) {
+      return 'Enter a valid 6-digit pincode';
+    }
+    return null;
+  }
+
+  Future<void> _saveAddress() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      if (widget.address == null) {
+        // Add new address
+        final dto = CreateAddressDto(
+          recipientName: _recipientNameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          street: _streetController.text.trim(),
+          city: _cityController.text.trim(),
+          state: _stateController.text.trim(),
+          pincode: _pincodeController.text.trim(),
+          landmark: _landmarkController.text.trim().isEmpty ? null : _landmarkController.text.trim(),
+          addressType: _selectedAddressType,
+          isDefault: _isDefault,
+        );
+        
+        final result = await _userService.addAddress(dto);
+        if (result != null) {
+          Get.back(result: true);
+          NotificationService.showSuccess(title: 'Success', message: 'Address added successfully');
+        } else {
+          NotificationService.showError(title: 'Error', message: 'Failed to add address');
+        }
+      } else {
+        // Update existing address
+        final dto = UpdateAddressDto(
+          recipientName: _recipientNameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          street: _streetController.text.trim(),
+          city: _cityController.text.trim(),
+          state: _stateController.text.trim(),
+          pincode: _pincodeController.text.trim(),
+          landmark: _landmarkController.text.trim().isEmpty ? null : _landmarkController.text.trim(),
+          addressType: _selectedAddressType,
+          isDefault: _isDefault,
+        );
+        
+        final result = await _userService.updateAddress(widget.address!.id, dto);
+        if (result != null) {
+          Get.back(result: true);
+          NotificationService.showSuccess(title: 'Success', message: 'Address updated successfully');
+        } else {
+          NotificationService.showError(title: 'Error', message: 'Failed to update address');
+        }
+      }
+    } catch (e) {
+      NotificationService.showError(title: 'Error', message: 'Failed to save address: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.address == null ? 'Add Address' : 'Edit Address'),
+        centerTitle: true,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+      ),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.medium),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildTextField(
+                controller: _recipientNameController,
+                label: 'Recipient Name',
+                validator: _validateRequired,
+              ),
+              _buildTextField(
+                controller: _phoneController,
+                label: 'Phone Number',
+                validator: _validatePhone,
+                keyboardType: TextInputType.phone,
+              ),
+              _buildTextField(
+                controller: _streetController,
+                label: 'Street Address',
+                validator: _validateRequired,
+                maxLines: 2,
+              ),
+              _buildTextField(
+                controller: _cityController,
+                label: 'City',
+                validator: _validateRequired,
+              ),
+              _buildTextField(
+                controller: _stateController,
+                label: 'State',
+                validator: _validateRequired,
+              ),
+              _buildTextField(
+                controller: _pincodeController,
+                label: 'Pincode',
+                validator: _validatePincode,
+                keyboardType: TextInputType.number,
+              ),
+              _buildTextField(
+                controller: _landmarkController,
+                label: 'Landmark (Optional)',
+              ),
+              _buildAddressTypeDropdown(),
+              _buildDefaultAddressSwitch(),
+              const SizedBox(height: AppSpacing.large),
+              AppButton(
+                text: widget.address == null ? 'Add Address' : 'Update Address',
+                onPressed: _saveAddress,
+                isLoading: _isLoading,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
