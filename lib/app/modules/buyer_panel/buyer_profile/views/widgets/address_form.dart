@@ -5,7 +5,7 @@ import 'package:cartify/app/core/index.dart';
 
 class AddressFormView extends StatefulWidget {
   final Address? address; // null for add, existing address for edit
-  
+
   const AddressFormView({super.key, this.address});
 
   @override
@@ -15,7 +15,7 @@ class AddressFormView extends StatefulWidget {
 class _AddressFormViewState extends State<AddressFormView> {
   final _formKey = GlobalKey<FormState>();
   final UserService _userService = Get.find<UserService>();
-  
+
   late TextEditingController _recipientNameController;
   late TextEditingController _phoneController;
   late TextEditingController _streetController;
@@ -23,7 +23,7 @@ class _AddressFormViewState extends State<AddressFormView> {
   late TextEditingController _stateController;
   late TextEditingController _pincodeController;
   late TextEditingController _landmarkController;
-  
+
   AddressType _selectedAddressType = AddressType.HOME;
   bool _isDefault = false;
   bool _isLoading = false;
@@ -35,14 +35,22 @@ class _AddressFormViewState extends State<AddressFormView> {
   }
 
   void _initializeControllers() {
-    _recipientNameController = TextEditingController(text: widget.address?.recipientName ?? '');
+    _recipientNameController = TextEditingController(
+      text: widget.address?.recipientName ?? '',
+    );
     _phoneController = TextEditingController(text: widget.address?.phone ?? '');
-    _streetController = TextEditingController(text: widget.address?.street ?? '');
+    _streetController = TextEditingController(
+      text: widget.address?.street ?? '',
+    );
     _cityController = TextEditingController(text: widget.address?.city ?? '');
     _stateController = TextEditingController(text: widget.address?.state ?? '');
-    _pincodeController = TextEditingController(text: widget.address?.pincode ?? '');
-    _landmarkController = TextEditingController(text: widget.address?.landmark ?? '');
-    
+    _pincodeController = TextEditingController(
+      text: widget.address?.pincode ?? '',
+    );
+    _landmarkController = TextEditingController(
+      text: widget.address?.landmark ?? '',
+    );
+
     if (widget.address != null) {
       _selectedAddressType = widget.address!.addressType;
       _isDefault = widget.address!.isDefault;
@@ -77,9 +85,7 @@ class _AddressFormViewState extends State<AddressFormView> {
         maxLines: maxLines,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.medium,
             vertical: AppSpacing.small,
@@ -96,19 +102,19 @@ class _AddressFormViewState extends State<AddressFormView> {
         value: _selectedAddressType,
         decoration: InputDecoration(
           labelText: 'Address Type',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.medium,
             vertical: AppSpacing.small,
           ),
         ),
         items: AddressType.values
-            .map((type) => DropdownMenuItem(
-                  value: type,
-                  child: Text(_getAddressTypeLabel(type)),
-                ))
+            .map(
+              (type) => DropdownMenuItem(
+                value: type,
+                child: Text(_getAddressTypeLabel(type)),
+              ),
+            )
             .toList(),
         onChanged: (value) {
           if (value != null) {
@@ -140,10 +146,7 @@ class _AddressFormViewState extends State<AddressFormView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Set as default address',
-            style: TextStyle(fontSize: 16),
-          ),
+          const Text('Set as default address', style: TextStyle(fontSize: 16)),
           Switch(
             value: _isDefault,
             onChanged: (value) {
@@ -202,17 +205,25 @@ class _AddressFormViewState extends State<AddressFormView> {
           city: _cityController.text.trim(),
           state: _stateController.text.trim(),
           pincode: _pincodeController.text.trim(),
-          landmark: _landmarkController.text.trim().isEmpty ? null : _landmarkController.text.trim(),
+          landmark: _landmarkController.text.trim().isEmpty
+              ? null
+              : _landmarkController.text.trim(),
           addressType: _selectedAddressType,
           isDefault: _isDefault,
         );
-        
+
         final result = await _userService.addAddress(dto);
         if (result != null) {
           Get.back(result: true);
-          NotificationService.showSuccess(title: 'Success', message: 'Address added successfully');
+          NotificationService.showSuccess(
+            title: 'Success',
+            message: 'Address added successfully',
+          );
         } else {
-          NotificationService.showError(title: 'Error', message: 'Failed to add address');
+          NotificationService.showError(
+            title: 'Error',
+            message: 'Failed to add address',
+          );
         }
       } else {
         // Update existing address
@@ -223,21 +234,35 @@ class _AddressFormViewState extends State<AddressFormView> {
           city: _cityController.text.trim(),
           state: _stateController.text.trim(),
           pincode: _pincodeController.text.trim(),
-          landmark: _landmarkController.text.trim().isEmpty ? null : _landmarkController.text.trim(),
+          landmark: _landmarkController.text.trim().isEmpty
+              ? null
+              : _landmarkController.text.trim(),
           addressType: _selectedAddressType,
           isDefault: _isDefault,
         );
-        
-        final result = await _userService.updateAddress(widget.address!.id, dto);
+
+        final result = await _userService.updateAddress(
+          widget.address!.id,
+          dto,
+        );
         if (result != null) {
           Get.back(result: true);
-          NotificationService.showSuccess(title: 'Success', message: 'Address updated successfully');
+          NotificationService.showSuccess(
+            title: 'Success',
+            message: 'Address updated successfully',
+          );
         } else {
-          NotificationService.showError(title: 'Error', message: 'Failed to update address');
+          NotificationService.showError(
+            title: 'Error',
+            message: 'Failed to update address',
+          );
         }
       }
     } catch (e) {
-      NotificationService.showError(title: 'Error', message: 'Failed to save address: $e');
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to save address: $e',
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -249,8 +274,20 @@ class _AddressFormViewState extends State<AddressFormView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.address == null ? 'Add Address' : 'Edit Address'),
+        title: Text(
+          widget.address == null ? 'Add Address' : 'Edit Address',
+          style: const TextStyle(
+            color: AppColors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.white),
+          onPressed: () => Get.back(),
+        ),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
