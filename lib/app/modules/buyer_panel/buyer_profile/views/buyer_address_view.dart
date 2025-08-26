@@ -12,19 +12,18 @@ class BuyerAddressView extends GetView<BuyerAddressController> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
         title: const Text(
           'My Addresses',
           style: TextStyle(
-            color: AppColors.white,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () => Get.back(),
         ),
       ),

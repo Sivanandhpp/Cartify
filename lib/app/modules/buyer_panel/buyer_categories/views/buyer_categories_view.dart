@@ -11,7 +11,14 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categories'),
+        title: const Text(
+          'Categories',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -95,7 +102,11 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
                   color: AppColors.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(24),
                 ),
-                child: const Icon(Icons.category, color: AppColors.primary, size: 24),
+                child: const Icon(
+                  Icons.category,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
               ),
               const SizedBox(height: 12),
               Text(

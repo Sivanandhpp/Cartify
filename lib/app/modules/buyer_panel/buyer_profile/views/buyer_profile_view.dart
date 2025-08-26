@@ -24,20 +24,20 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
             floating: false, // Prevents app bar from floating
             pinned: true, // Keeps app bar visible at all times
             snap: false, // Ensures smooth behavior
-            backgroundColor: AppColors.primary,
+            backgroundColor: AppColors.white,
             title: const Text(
               'Profile',
               style: TextStyle(
-                color: AppColors.white,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
             centerTitle: true,
             elevation: 0,
             actions: [
               IconButton(
-                icon: const Icon(Icons.logout, color: AppColors.white),
+                icon: const Icon(Icons.logout, color: AppColors.black),
                 onPressed: () => controller.showLogoutDialog(context),
               ),
             ],

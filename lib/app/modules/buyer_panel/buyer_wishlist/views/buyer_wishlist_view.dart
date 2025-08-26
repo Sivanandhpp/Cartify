@@ -10,7 +10,11 @@ class BuyerWishlistView extends GetView<BuyerWishlistController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BuyerWishlistView'),
+        title: const Text('BuyerWishlistView', style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),),
         centerTitle: true,
       ),
       body: const Center(

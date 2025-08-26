@@ -189,26 +189,26 @@ class AddressCard extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(
-          address.phone,
-          style: AppTextStyles.bodyMedium(AppColors.secondaryBrand),
+          '${AppStrings.loginCountryCode} ${address.phone}',
+          style: AppTextStyles.bodyMedium(AppColors.black),
         ),
         const SizedBox(height: 8),
         Text(
           address.street,
-          style: AppTextStyles.bodyMedium(AppColors.primary),
+          style: AppTextStyles.bodyMedium(AppColors.black),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
         Text(
           '${address.city}, ${address.state} - ${address.pincode}',
-          style: AppTextStyles.bodyMedium(AppColors.secondaryBrand),
+          style: AppTextStyles.bodyMedium(AppColors.black),
         ),
         if (address.landmark != null && address.landmark!.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
             'Near ${address.landmark}',
-            style: AppTextStyles.bodySmall(AppColors.secondaryBrand),
+            style: AppTextStyles.bodySmall(AppColors.black),
           ),
         ],
       ],

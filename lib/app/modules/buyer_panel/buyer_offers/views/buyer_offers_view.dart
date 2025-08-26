@@ -10,7 +10,11 @@ class BuyerOffersView extends GetView<BuyerOffersController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BuyerOffersView'),
+        title: const Text('BuyerOffersView', style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),),
         centerTitle: true,
       ),
       body: const Center(

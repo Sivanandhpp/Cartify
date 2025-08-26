@@ -64,8 +64,6 @@ class AddressSelectionSheet extends StatelessWidget {
                   }).toList(),
                 );
               }),
-
-              const SizedBox(height: 100),
             ],
           ),
         ),
