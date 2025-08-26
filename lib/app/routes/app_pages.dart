@@ -1,3 +1,4 @@
+import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/buyer_order_status_view.dart';
 import 'package:get/get.dart';
 
 import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
@@ -73,6 +74,11 @@ class AppPages {
     GetPage(
       name: _Paths.BUYER_ADDRESS_VIEW,
       page: () => const BuyerAddressView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_ORDER_STATUS,
+      page: () => const BuyerOrderStatusView(),
       binding: BuyerDashboardBinding(),
     ),
   ];

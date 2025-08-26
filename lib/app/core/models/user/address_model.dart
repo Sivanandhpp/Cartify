@@ -41,8 +41,28 @@ class Address {
       landmark: json['landmark'],
       addressType: AddressType.values.firstWhere(
         (e) => e.toString().split('.').last == json['address_type'],
+        orElse: () => AddressType.HOME,
       ),
-      isDefault: json['is_default'],
+      isDefault: json['is_default'] ?? false,
     );
+  }
+
+  /// Validates if the address has all required fields
+  bool get isValid {
+    return recipientName.isNotEmpty &&
+        phone.isNotEmpty &&
+        street.isNotEmpty &&
+        city.isNotEmpty &&
+        state.isNotEmpty &&
+        pincode.isNotEmpty;
+  }
+
+  /// Gets formatted address string for display
+  String get formattedAddress {
+    final parts = [street, city, state, pincode];
+    if (landmark?.isNotEmpty == true) {
+      parts.insert(1, landmark!);
+    }
+    return parts.join(', ');
   }
 }

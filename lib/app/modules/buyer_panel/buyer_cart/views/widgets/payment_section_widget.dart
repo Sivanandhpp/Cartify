@@ -91,36 +91,13 @@ class PaymentSectionWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: isProcessing ? null : onPayPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightPrimary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: isProcessing
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Text(
-                      '$buttonText ₹${totalAmount.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
+          AppButton(
+            text: '$buttonText ₹${totalAmount.toStringAsFixed(2)}',
+            onPressed: onPayPressed ?? () {},
+            isLoading: isProcessing,
+            enabled: !isProcessing,
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );

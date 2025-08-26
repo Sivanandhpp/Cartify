@@ -6,7 +6,9 @@ import '../../../../core/index.dart';
 
 class BuyerCartController extends GetxController {
   final CartService _cartService = Get.find<CartService>();
-  final BuyerAddressController addressController = Get.find<BuyerAddressController>();
+  final BuyerAddressController addressController =
+      Get.find<BuyerAddressController>();
+  final OrderService _orderService = Get.find<OrderService>();
 
   final RxDouble deliveryTip = 0.0.obs;
   final RxBool isProcessingPayment = false.obs;
@@ -14,7 +16,8 @@ class BuyerCartController extends GetxController {
   bool get hasAddresses => addressController.addresses.isNotEmpty;
   get isAddressLoading => addressController.isLoading.value;
   get selectedAddress => addressController.selectedAddress.value;
-  get getAddressTypeIcon => addressController.getAddressTypeIcon(selectedAddress.addressType);
+  get getAddressTypeIcon =>
+      addressController.getAddressTypeIcon(selectedAddress.addressType);
 
   // Store the original order of cart items (non-reactive)
   final List<String> _itemOrder = [];
@@ -188,55 +191,6 @@ class BuyerCartController extends GetxController {
     deliveryTip.value = amount;
   }
 
-  // Payment processing
-  Future<void> processPayment() async {
-    if (isEmpty) {
-      Get.snackbar(
-        'Empty Cart',
-        'Please add items to your cart before proceeding',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return;
-    }
-
-    try {
-      isProcessingPayment.value = true;
-
-      Get.dialog(
-        const Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
-
-      await Future.delayed(const Duration(seconds: 3));
-      Get.back();
-      await clearCart();
-
-      Get.snackbar(
-        'Order Placed Successfully',
-        'Your order has been placed and will be delivered soon!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-
-      Get.back();
-    } catch (e) {
-      if (Get.isDialogOpen == true) {
-        Get.back();
-      }
-
-      Get.snackbar(
-        'Payment Failed',
-        'There was an error processing your payment. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isProcessingPayment.value = false;
-    }
-  }
-
   void addMoreItems() {
     Get.back();
   }
@@ -260,5 +214,105 @@ class BuyerCartController extends GetxController {
       backgroundColor: Colors.transparent,
       enableDrag: true,
     );
+  }
+
+  /// Enhanced order validation before placing
+  bool _validateOrder() {
+    // Check if cart is empty
+    if (isEmpty) {
+      NotificationService.showError(
+        title: 'Empty Cart',
+        message: 'Please add items to your cart before proceeding',
+      );
+      return false;
+    }
+
+    // Check if address is selected
+    if (selectedAddress == null) {
+      NotificationService.showError(
+        title: 'No Address Selected',
+        message: 'Please select a delivery address',
+      );
+      return false;
+    }
+
+    // Validate address completeness
+    if (!selectedAddress!.isValid) {
+      NotificationService.showError(
+        title: 'Invalid Address',
+        message: 'The selected address is incomplete. Please update it.',
+      );
+      return false;
+    }
+
+    // Check if all items are still in stock (if you have stock validation)
+    for (final item in cartItems) {
+      if (item.product.stockQuantity <= 0) {
+        NotificationService.showError(
+          title: 'Item Out of Stock',
+          message: '${item.product.name} is currently out of stock',
+        );
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Replace the processPayment method with this implementation
+  Future<void> processPayment() async {
+    // Use the enhanced validation
+    if (!_validateOrder()) {
+      return;
+    }
+
+    try {
+      isProcessingPayment.value = true;
+      // Create order DTO
+      final createOrderDto = CreateOrderDto(addressId: selectedAddress!.id);
+
+      // Place the order
+      final order = await _orderService.placeOrder(createOrderDto);
+
+      if (order != null) {
+        // Clear the cart after successful order
+        await clearCart();
+        // Show success message with order details
+        NotificationService.showSuccess(
+          title: 'Order Placed Successfully!',
+          message:
+              'Order #${order.id} has been placed for ₹${order.totalAmount.toStringAsFixed(2)}',
+        );
+
+         // Navigate to success status screen
+        Get.offNamed(
+          '/buyer/order-status?success=true',
+          arguments: order,
+        );
+      } else {
+         // Navigate to failure status screen
+        Get.offNamed(
+          '/buyer/order-status?success=false',
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if open
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+
+      // Show error message
+      Get.snackbar(
+        'Order Failed',
+        'An error occurred while placing your order. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+
+      LogService.error('Error placing order', e);
+    } finally {
+      isProcessingPayment.value = false;
+    }
   }
 }

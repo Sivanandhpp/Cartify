@@ -13,6 +13,7 @@ abstract class Routes {
   static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
   static const BUYER_CART = _Paths.BUYER_CART;
   static const BUYER_ADDRESS_VIEW = _Paths.BUYER_ADDRESS_VIEW;
+  static const BUYER_ORDER_STATUS = _Paths.BUYER_ORDER_STATUS;
 }
 
 abstract class _Paths {
@@ -26,4 +27,5 @@ abstract class _Paths {
   static const ADMIN_DASHBOARD = '/admin-dashboard';
   static const BUYER_CART = '/buyer-cart';
   static const BUYER_ADDRESS_VIEW = '/buyer-address-view';
+  static const BUYER_ORDER_STATUS = '/buyer/order-status';
 }

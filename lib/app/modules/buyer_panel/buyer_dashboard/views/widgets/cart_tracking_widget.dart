@@ -1,6 +1,5 @@
 // Local imports (relative)
 import 'package:cartify/app/modules/buyer_panel/buyer_cart/controllers/buyer_cart_controller.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/views/widgets/product_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/index.dart';
