@@ -1,15 +1,16 @@
 import 'dart:ui';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/controllers/buyer_address_controller.dart';
+import 'package:cartify/app/modules/buyer_panel/widgets/address_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/index.dart';
-import '../../controllers/buyer_cart_controller.dart';
 
 class AddressSelectionSheet extends StatelessWidget {
   const AddressSelectionSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<BuyerCartController>();
+    final controller = Get.find<BuyerAddressController>();
 
     return Container(
       decoration: const BoxDecoration(
@@ -20,7 +21,7 @@ class AddressSelectionSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuyerCartController controller) {
+  Widget _buildContent(BuyerAddressController controller) {
     return Column(
       children: [
         const SizedBox(height: 80), // Space for floating header
@@ -29,7 +30,7 @@ class AddressSelectionSheet extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
               Obx(() {
-                if (controller.isLoadingAddresses.value) {
+                if (controller.isLoading.value) {
                   return const Padding(
                     padding: EdgeInsets.all(40),
                     child: Center(
@@ -48,7 +49,18 @@ class AddressSelectionSheet extends StatelessWidget {
                   children: controller.addresses.map((address) {
                     final isSelected =
                         controller.selectedAddress.value?.id == address.id;
-                    return _buildAddressCard(controller, address, isSelected);
+                    return AddressCard(
+                      address: address,
+                      controller: controller,
+                      isSelected: isSelected,
+                      showEditButton: true,
+                      showDeleteButton: false,
+                      showSelectionIndicator: true,
+                      onTap: () {
+                        controller.selectAddress(address);
+                        Get.back();
+                      },
+                    );
                   }).toList(),
                 );
               }),
@@ -130,7 +142,7 @@ class AddressSelectionSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuyerCartController controller) {
+  Widget _buildEmptyState(BuyerAddressController controller) {
     return Padding(
       padding: const EdgeInsets.all(40),
       child: Column(
@@ -163,168 +175,6 @@ class AddressSelectionSheet extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAddressCard(
-    BuyerCartController controller,
-    Address address,
-    bool isSelected,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isSelected
-              ? AppColors.primary
-              : AppColors.grey.withOpacity(0.3),
-          width: isSelected ? 2 : 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: InkWell(
-        onTap: () {
-          controller.selectAddress(address);
-          Get.back();
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildAddressHeader(controller, address, isSelected),
-              const SizedBox(height: 6),
-              _buildAddressDetails(address),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAddressHeader(
-    BuyerCartController controller,
-    Address address,
-    bool isSelected,
-  ) {
-    return Row(
-      children: [
-        // Address type
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                controller.getAddressTypeIcon(address.addressType),
-                size: 16,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                controller.getAddressTypeLabel(address.addressType),
-                style: AppTextStyles.labelMedium(AppColors.primary),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-
-        // Default badge
-        if (address.isDefault)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.darkSuccess.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'DEFAULT',
-              style: AppTextStyles.labelMedium(AppColors.darkSuccess),
-            ),
-          ),
-
-        const Spacer(),
-
-        // Edit button
-        GestureDetector(
-          onTap: () {
-            Get.back();
-            controller.showEditAddressForm(address);
-          },
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.edit_outlined,
-              color: AppColors.primary,
-              size: 16,
-            ),
-          ),
-        ),
-
-        // Selection indicator
-        if (isSelected) ...[
-          const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.check, color: Colors.white, size: 16),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildAddressDetails(Address address) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          address.recipientName,
-          style: AppTextStyles.titleMedium(AppColors.primary),
-        ),
-        Text(
-          address.phone,
-          style: AppTextStyles.bodyMedium(AppColors.secondaryBrand),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          address.street,
-          style: AppTextStyles.bodyMedium(AppColors.primary),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Text(
-          '${address.city}, ${address.state} - ${address.pincode}',
-          style: AppTextStyles.bodyMedium(AppColors.secondaryBrand),
-        ),
-        if (address.landmark != null) ...[
-          Text(
-            'Near ${address.landmark}',
-            style: AppTextStyles.bodySmall(AppColors.secondaryBrand),
-          ),
-        ],
-      ],
     );
   }
 }

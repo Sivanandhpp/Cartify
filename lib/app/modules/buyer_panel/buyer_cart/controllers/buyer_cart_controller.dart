@@ -1,20 +1,20 @@
 import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/widgets/address_selection_sheet.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/widgets/address_form.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/controllers/buyer_address_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
 
 class BuyerCartController extends GetxController {
   final CartService _cartService = Get.find<CartService>();
-  final UserService _userService = Get.find<UserService>();
-
-  // Address management
-  final selectedAddress = Rxn<Address>();
-  final RxList<Address> addresses = <Address>[].obs;
-  final RxBool isLoadingAddresses = false.obs;
+  final BuyerAddressController addressController = Get.find<BuyerAddressController>();
 
   final RxDouble deliveryTip = 0.0.obs;
   final RxBool isProcessingPayment = false.obs;
+
+  bool get hasAddresses => addressController.addresses.isNotEmpty;
+  get isAddressLoading => addressController.isLoading.value;
+  get selectedAddress => addressController.selectedAddress.value;
+  get getAddressTypeIcon => addressController.getAddressTypeIcon(selectedAddress.addressType);
 
   // Store the original order of cart items (non-reactive)
   final List<String> _itemOrder = [];
@@ -99,7 +99,6 @@ class BuyerCartController extends GetxController {
     super.onInit();
     deliveryTip.value = 0.0;
     _loadCart();
-    loadAddresses();
   }
 
   /// Load cart data on initialization
@@ -109,77 +108,6 @@ class BuyerCartController extends GetxController {
     final items = _cartService.cartData?.items ?? [];
     if (items.isNotEmpty && _itemOrder.isEmpty) {
       _itemOrder.addAll(items.map((item) => item.id));
-    }
-  }
-
-  // Address Management Methods
-  Future<void> loadAddresses() async {
-    try {
-      isLoadingAddresses.value = true;
-      final result = await _userService.getAddresses();
-      addresses.value = result;
-
-      // Auto-select default address if no address is selected
-      if (selectedAddress.value == null && addresses.isNotEmpty) {
-        final defaultAddress = addresses.firstWhereOrNull(
-          (addr) => addr.isDefault,
-        );
-        if (defaultAddress != null) {
-          selectedAddress.value = defaultAddress;
-        }
-      }
-    } catch (e) {
-      NotificationService.showError(
-        title: 'Failed',
-        message: 'Failed to load addresses',
-      );
-      LogService.error('Error loading addresses', e);
-    } finally {
-      isLoadingAddresses.value = false;
-    }
-  }
-
-  void selectAddress(Address address) {
-    selectedAddress.value = address;
-  }
-
-  Future<void> showAddAddressForm() async {
-    final result = await Get.to(() => const AddressFormView());
-    if (result == true) {
-      await loadAddresses();
-    }
-  }
-
-  Future<void> showEditAddressForm(Address address) async {
-    final result = await Get.to(() => AddressFormView(address: address));
-    if (result == true) {
-      await loadAddresses();
-    }
-  }
-
-  String getAddressTypeLabel(AddressType type) {
-    switch (type) {
-      case AddressType.HOME:
-        return 'Home';
-      case AddressType.WORK:
-        return 'Work';
-      case AddressType.HOSTEL:
-        return 'Hostel';
-      case AddressType.OTHER:
-        return 'Other';
-    }
-  }
-
-  IconData getAddressTypeIcon(AddressType type) {
-    switch (type) {
-      case AddressType.HOME:
-        return Icons.home_outlined;
-      case AddressType.WORK:
-        return Icons.business_outlined;
-      case AddressType.HOSTEL:
-        return Icons.school_outlined;
-      case AddressType.OTHER:
-        return Icons.location_on_outlined;
     }
   }
 
@@ -325,7 +253,7 @@ class BuyerCartController extends GetxController {
         maxChildSize: 0.75,
         expand: false,
         builder: (context, scrollController) {
-          return AddressSelectionSheet();
+          return const AddressSelectionSheet();
         },
       ),
       isScrollControlled: true,

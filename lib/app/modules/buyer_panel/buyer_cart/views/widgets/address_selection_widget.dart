@@ -11,7 +11,7 @@ class AddressSelectionWidget extends StatelessWidget {
     final controller = Get.find<BuyerCartController>();
 
     return Obx(() {
-      if (controller.isLoadingAddresses.value) {
+      if (controller.isAddressLoading) {
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -49,9 +49,6 @@ class AddressSelectionWidget extends StatelessWidget {
         );
       }
 
-      final hasAddresses = controller.addresses.isNotEmpty;
-      final selectedAddress = controller.selectedAddress.value;
-
       return GestureDetector(
         onTap: controller.showAddressSelectionSheet,
         child: Container(
@@ -73,7 +70,7 @@ class AddressSelectionWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (hasAddresses && selectedAddress != null) ...[
+                    if (controller.hasAddresses && controller.selectedAddress != null) ...[
                       const Text(
                         'Delivery Address',
                         style: const TextStyle(
@@ -101,10 +98,7 @@ class AddressSelectionWidget extends StatelessWidget {
                               ],
                             ),
                             child: Icon(
-                              controller.getAddressTypeIcon(
-                                selectedAddress.addressType,
-                              ),
-
+                              controller.getAddressTypeIcon,
                               color: AppColors.primary,
                               size: 20,
                             ),
@@ -114,7 +108,7 @@ class AddressSelectionWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                selectedAddress.recipientName,
+                                controller.selectedAddress.recipientName,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -122,7 +116,7 @@ class AddressSelectionWidget extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${selectedAddress.street}, ${selectedAddress.city}',
+                                '${controller.selectedAddress.street}, ${controller.selectedAddress.city}',
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: AppColors.grey800,

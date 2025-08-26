@@ -6,6 +6,9 @@ import '../../../../core/index.dart';
 class BuyerAddressController extends GetxController {
   final UserService _userService = Get.find<UserService>();
 
+  // Address management
+  final selectedAddress = Rxn<Address>();
+
   // Reactive state
   final RxList<Address> addresses = <Address>[].obs;
   final RxBool isLoading = true.obs;
@@ -22,12 +25,30 @@ class BuyerAddressController extends GetxController {
       isLoading.value = true;
       final result = await _userService.getAddresses();
       addresses.value = result;
+      // Auto-select default address if no address is selected
+
+      if (selectedAddress.value == null && addresses.isNotEmpty) {
+        final defaultAddress = addresses.firstWhereOrNull(
+          (addr) => addr.isDefault,
+        );
+
+        if (defaultAddress != null) {
+          selectedAddress.value = defaultAddress;
+        }
+      }
     } catch (e) {
-      NotificationService.showError(title: 'Failed', message: 'Failed to load addresses');
+      NotificationService.showError(
+        title: 'Failed',
+        message: 'Failed to load addresses',
+      );
       LogService.error('Error loading addresses', e);
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void selectAddress(Address address) {
+    selectedAddress.value = address;
   }
 
   /// Refreshes the addresses list
@@ -90,15 +111,28 @@ class BuyerAddressController extends GetxController {
   Future<void> deleteAddress(String addressId) async {
     try {
       final success = await _userService.deleteAddress(addressId);
-      
+
       if (success) {
         addresses.removeWhere((addr) => addr.id == addressId);
-        NotificationService.showSuccess(title: 'Success', message: 'Address deleted successfully');
+        // If deleted address was selected, clear it
+        if (selectedAddress.value?.id == addressId) {
+          selectedAddress.value = null;
+        }
+        NotificationService.showSuccess(
+          title: 'Success',
+          message: 'Address deleted successfully',
+        );
       } else {
-        NotificationService.showError(title: 'Failed', message: 'Failed to delete address');
+        NotificationService.showError(
+          title: 'Failed',
+          message: 'Failed to delete address',
+        );
       }
     } catch (e) {
-      NotificationService.showError(title: 'Failed', message: 'Failed to delete address');
+      NotificationService.showError(
+        title: 'Failed',
+        message: 'Failed to delete address',
+      );
       LogService.error('Error deleting address', e);
     }
   }
