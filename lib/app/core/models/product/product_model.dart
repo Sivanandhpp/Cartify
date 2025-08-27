@@ -1,9 +1,7 @@
 // lib/app/core/models/product/product_model.dart
 import 'dart:convert';
-
 import 'package:cartify/app/core/index.dart';
 
-import 'category_model.dart';
 
 /// Product model tailored for the current API response.
 /// Works both for product details and dashboard product list responses.

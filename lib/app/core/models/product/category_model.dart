@@ -1,4 +1,6 @@
 // lib/app/core/models/product/category_model.dart
+import 'package:cartify/app/core/config/app_config.dart';
+
 /// Represents a product category with hierarchical structure
 class CategoryModel {
   final String id;
@@ -23,7 +25,7 @@ class CategoryModel {
     return CategoryModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      imageUrl: json['image_url']?.toString(),
+      imageUrl: _cleanCategoryImageUrl(json['image_url']?.toString()),
       parentId: json['parent_id']?.toString(),
       children:
           (json['children'] as List<dynamic>?)
@@ -83,6 +85,12 @@ class CategoryModel {
     return null;
   }
 
+  /// Get cleaned and formatted image URL
+  String? get cleanImageUrl => imageUrl;
+
+  /// Check if category has a valid image URL
+  bool get hasImage => imageUrl != null && imageUrl!.isNotEmpty;
+
   static DateTime? _parseDateTime(dynamic value) {
     if (value == null) return null;
     try {
@@ -90,5 +98,42 @@ class CategoryModel {
     } catch (_) {
       return null;
     }
+  }
+
+  /// Helper method to clean category image URLs by removing curly braces and building absolute URLs
+  static String? _cleanCategoryImageUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+
+    // Remove curly braces, square brackets, and extra whitespace
+    String cleanUrl = url
+        .replaceAll(RegExp(r'[{}[\]]'), '') // Remove {}, []
+        .trim(); // Remove leading/trailing whitespace
+
+    if (cleanUrl.isEmpty) return null;
+
+    // Handle comma-separated URLs (take the first one if multiple)
+    if (cleanUrl.contains(',')) {
+      cleanUrl = cleanUrl.split(',').first.trim();
+    }
+
+    // If it's already an absolute URL, return as-is
+    if (cleanUrl.startsWith('http') || cleanUrl.startsWith('https')) {
+      return cleanUrl;
+    }
+
+    // If it's a server-relative path (starts with '/'), prefix base URL
+    if (cleanUrl.startsWith('/')) {
+      return '${AppConfig.baseUrl}$cleanUrl';
+    }
+
+    // If it looks like a relative static path without leading slash, prefix with '/'
+    if (cleanUrl.contains('static') ||
+        cleanUrl.contains('category') ||
+        cleanUrl.contains('image')) {
+      return '${AppConfig.baseUrl}/$cleanUrl';
+    }
+
+    // For other relative paths, add base URL with leading slash
+    return '${AppConfig.baseUrl}/$cleanUrl';
   }
 }
