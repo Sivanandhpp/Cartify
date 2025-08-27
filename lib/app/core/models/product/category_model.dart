@@ -1,9 +1,11 @@
 // lib/app/core/models/product/category_model.dart
+/// Represents a product category with hierarchical structure
 class CategoryModel {
   final String id;
   final String name;
   final String? imageUrl;
   final String? parentId;
+  final List<CategoryModel> children;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -12,6 +14,7 @@ class CategoryModel {
     required this.name,
     this.imageUrl,
     this.parentId,
+    this.children = const [],
     this.createdAt,
     this.updatedAt,
   });
@@ -22,6 +25,14 @@ class CategoryModel {
       name: json['name']?.toString() ?? '',
       imageUrl: json['image_url']?.toString(),
       parentId: json['parent_id']?.toString(),
+      children:
+          (json['children'] as List<dynamic>?)
+              ?.map(
+                (child) =>
+                    CategoryModel.fromJson(child as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
       createdAt: _parseDateTime(json['created_at']),
       updatedAt: _parseDateTime(json['updated_at']),
     );
@@ -33,9 +44,43 @@ class CategoryModel {
       'name': name,
       'image_url': imageUrl,
       'parent_id': parentId,
+      'children': children.map((child) => child.toJson()).toList(),
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
+  }
+
+  /// Check if this category has child categories
+  bool get hasChildren => children.isNotEmpty;
+
+  /// Get all descendant categories (children, grandchildren, etc.)
+  List<CategoryModel> get allDescendants {
+    final descendants = <CategoryModel>[];
+    for (final child in children) {
+      descendants.add(child);
+      descendants.addAll(child.allDescendants);
+    }
+    return descendants;
+  }
+
+  /// Get all descendant IDs including this category's ID
+  List<String> get allDescendantIds {
+    final ids = <String>[id];
+    for (final child in children) {
+      ids.addAll(child.allDescendantIds);
+    }
+    return ids;
+  }
+
+  /// Find a child category by ID (recursive search)
+  CategoryModel? findChildById(String categoryId) {
+    if (id == categoryId) return this;
+
+    for (final child in children) {
+      final found = child.findChildById(categoryId);
+      if (found != null) return found;
+    }
+    return null;
   }
 
   static DateTime? _parseDateTime(dynamic value) {
