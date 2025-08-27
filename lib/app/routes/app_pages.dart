@@ -1,16 +1,16 @@
-import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/buyer_order_status_view.dart';
 import 'package:get/get.dart';
-
-import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
 import '../modules/admin_panel/admin_dashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/admin_panel/admin_dashboard/views/admin_dashboard_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
 import '../modules/authentication/login/views/login_view.dart';
 import '../modules/authentication/otp_check/bindings/otp_check_binding.dart';
 import '../modules/authentication/otp_check/views/otp_check_view.dart';
+import '../modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
+import '../modules/buyer_panel/buyer_cart/views/buyer_order_status_view.dart';
 import '../modules/buyer_panel/buyer_dashboard/bindings/buyer_dashboard_binding.dart';
 import '../modules/buyer_panel/buyer_dashboard/views/buyer_dashboard_view.dart';
+import '../modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
+import '../modules/buyer_panel/buyer_profile/views/buyer_orders_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
@@ -79,6 +79,11 @@ class AppPages {
     GetPage(
       name: _Paths.BUYER_ORDER_STATUS,
       page: () => const BuyerOrderStatusView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_ORDERS_VIEW,
+      page: () => const BuyerOrdersView(),
       binding: BuyerDashboardBinding(),
     ),
   ];

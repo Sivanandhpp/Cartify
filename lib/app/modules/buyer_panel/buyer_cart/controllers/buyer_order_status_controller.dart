@@ -10,12 +10,22 @@ class BuyerOrderStatusController extends GetxController
   late Animation<double> checkmarkAnimation;
   late Animation<double> fadeAnimation;
 
-  final OrderModel? order = Get.arguments as OrderModel?;
-  final bool isSuccess = Get.parameters['success'] == 'true';
+  // Retrieve navigation arguments passed with Get.offNamed(...)
+  final Map<String, dynamic> _routeArgs =
+      (Get.arguments ?? {}) as Map<String, dynamic>;
+
+  // Use the parsed arguments correctly
+  late final bool isSuccess;
+  late final OrderModel? order;
 
   @override
   void onInit() {
     super.onInit();
+
+    // Initialize the values from route arguments
+    isSuccess = _routeArgs['success'] == true;
+    order = _routeArgs['order'] as OrderModel?;
+
     _initializeAnimations();
     _startAnimations();
   }

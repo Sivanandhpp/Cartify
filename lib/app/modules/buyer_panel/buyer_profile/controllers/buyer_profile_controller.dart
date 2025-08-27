@@ -9,7 +9,7 @@ class BuyerProfileController extends GetxController {
   // Dependencies
   final AuthenticationService _authService = Get.find<AuthenticationService>();
   final UserService _userService = Get.find<UserService>();
-  
+
   // Reactive state
   final Rx<UserModel?> user = Rx<UserModel?>(null);
   final RxBool isLoading = false.obs;
@@ -20,8 +20,8 @@ class BuyerProfileController extends GetxController {
   String get displayPhoneNumber => user.value?.phoneNumber ?? 'No phone';
   String get displayProfilePhoto => user.value?.profilePhotoUrl ?? '';
   bool get hasProfilePhoto => user.value?.profilePhotoUrl?.isNotEmpty == true;
-  bool get hasCompleteProfile => 
-      user.value?.name?.isNotEmpty == true && 
+  bool get hasCompleteProfile =>
+      user.value?.name?.isNotEmpty == true &&
       user.value?.email?.isNotEmpty == true;
 
   @override
@@ -129,17 +129,14 @@ class BuyerProfileController extends GetxController {
   // Navigation methods
   void navigateToOrders() {
     LogService.info('Navigating to orders');
-    NotificationService.showInfo(
-      title: 'My Orders',
-      message: 'Opening order history...',
-    );
+    Get.toNamed('buyer-orders');
     // TODO: Implement navigation
     // Get.toNamed(Routes.ORDERS);
   }
 
   void navigateToAddresses() {
     LogService.info('Navigating to addresses');
-   Get.toNamed('buyer-address-view');
+    Get.toNamed('buyer-address');
     // TODO: Implement navigation
     // Get.toNamed(Routes.ADDRESSES);
   }
@@ -206,10 +203,7 @@ class BuyerProfileController extends GetxController {
 
   void navigateToAbout() {
     LogService.info('Navigating to about page');
-    NotificationService.showInfo(
-      title: 'About',
-      message: 'Version 1.0.0',
-    );
+    NotificationService.showInfo(title: 'About', message: 'Version 1.0.0');
     // TODO: Implement navigation
     // Get.toNamed(Routes.ABOUT);
   }

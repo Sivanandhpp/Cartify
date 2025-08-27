@@ -230,12 +230,12 @@ class ProductModel {
 
     // If it's a server-relative path (starts with '/'), prefix base URL
     if (cleanUrl.startsWith('/')) {
-      return '${AppIdentity.baseUrl}$cleanUrl';
+      return '${AppConfig.baseUrl}$cleanUrl';
     }
 
     // If it looks like a relative static path without leading slash, prefix with '/'
     if (cleanUrl.contains('static')) {
-      return '${AppIdentity.baseUrl}/$cleanUrl';
+      return '${AppConfig.baseUrl}/$cleanUrl';
     }
 
     return '';

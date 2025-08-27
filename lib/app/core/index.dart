@@ -8,7 +8,6 @@
 // Purpose: Exports related to application setup and environment.
 export 'config/app_identity.dart';
 export 'config/app_config.dart';
-export 'config/app_environment.dart';
 
 // =================================================================================================
 //                                        CONSTANTS

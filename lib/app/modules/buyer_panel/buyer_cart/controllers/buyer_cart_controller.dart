@@ -1,5 +1,6 @@
 import 'package:cartify/app/modules/buyer_panel/buyer_cart/views/widgets/address_selection_sheet.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/controllers/buyer_address_controller.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
@@ -275,25 +276,15 @@ class BuyerCartController extends GetxController {
       final order = await _orderService.placeOrder(createOrderDto);
 
       if (order != null) {
+        // Show success message with order details
+        LogService.info('Order placed successfully: ${order.id}');
+        // Navigate to success status screen
+        Get.offNamed(Routes.BUYER_ORDER_STATUS, arguments: {'success': true, 'order': order});
         // Clear the cart after successful order
         await clearCart();
-        // Show success message with order details
-        NotificationService.showSuccess(
-          title: 'Order Placed Successfully!',
-          message:
-              'Order #${order.id} has been placed for ₹${order.totalAmount.toStringAsFixed(2)}',
-        );
-
-         // Navigate to success status screen
-        Get.offNamed(
-          '/buyer/order-status?success=true',
-          arguments: order,
-        );
       } else {
-         // Navigate to failure status screen
-        Get.offNamed(
-          '/buyer/order-status?success=false',
-        );
+        // Navigate to failure status screen
+        Get.offNamed(Routes.BUYER_ORDER_STATUS, arguments: {'success': false});
       }
     } catch (e) {
       // Close loading dialog if open

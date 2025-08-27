@@ -14,7 +14,7 @@ class ApiClient {
   final Dio _dio;
   final FlutterSecureStorage _secureStorage;
 
-  static const String _baseUrl = 'http://10.0.2.2:3000';
+  static const String _baseUrl = AppConfig.baseUrl;
 
   factory ApiClient(FlutterSecureStorage secureStorage) {
     final dio = Dio(BaseOptions(baseUrl: _baseUrl));

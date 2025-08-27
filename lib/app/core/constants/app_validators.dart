@@ -8,7 +8,7 @@ class AppValidators {
   static final RegExp namePattern = RegExp(r'^[a-zA-Z\s]+$');
   static final RegExp alphanumericPattern = RegExp(r'^[a-zA-Z0-9]+$');
   static final RegExp strongPasswordPattern = RegExp(
-    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]',
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$',
   );
 
   // Validation Methods
@@ -98,22 +98,6 @@ class AppValidators {
     return null;
   }
 
-  static String? validateAge(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Age is required';
-    }
-    final age = int.tryParse(value);
-    if (age == null) {
-      return 'Please enter a valid age';
-    }
-    if (age < 13) {
-      return 'You must be at least 13 years old';
-    }
-    if (age > 120) {
-      return 'Please enter a valid age';
-    }
-    return null;
-  }
 
   static String? validateUrl(String? value) {
     if (value == null || value.isEmpty) {
@@ -140,6 +124,3 @@ class AppValidators {
     return null;
   }
 }
-
-
-

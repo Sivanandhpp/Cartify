@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 
 /// Simple spacing system for the entire application
+class AppPadding {
+  AppPadding._();
+  
+  }
 class AppSpacing {
   AppSpacing._();
 
   // Basic spacing values
+  static const double xSmall = 4.0;
   static const double small = 8.0;
   static const double medium = 16.0;
   static const double large = 24.0;
   static const double xlarge = 32.0;
+
+  // Screen paddings
+  static const EdgeInsets paddingScreen = EdgeInsets.all(medium);
+  static const EdgeInsets paddingScreenHorizontal = EdgeInsets.symmetric(horizontal: medium);
+  static const EdgeInsets paddingScreenVertical = EdgeInsets.symmetric(vertical: medium);
+  static const EdgeInsets paddingScreenTop = EdgeInsets.only(top: medium);
+  static const EdgeInsets paddingScreenBottom = EdgeInsets.only(bottom: medium);
+  static const EdgeInsets paddingScreenLeft = EdgeInsets.only(left: medium);
+  static const EdgeInsets paddingScreenRight = EdgeInsets.only(right: medium);
 
   // Common paddings
   static const EdgeInsets paddingSmall = EdgeInsets.all(small);

@@ -2,30 +2,30 @@
 
 import 'package:cartify/app/core/models/order/create_order_dto.dart';
 import 'package:cartify/app/core/models/order/order_model.dart';
+import 'package:cartify/app/core/models/order/order_item_model.dart';
+import 'package:cartify/app/core/models/order/update_order_item_dto.dart';
 import 'package:cartify/app/core/services/api_client.dart';
 import 'package:cartify/app/core/services/log_service.dart';
 import 'package:dio/dio.dart';
 
-/// Service for creating and viewing orders.
+/// Service for order management (both buyer and seller operations)
 class OrderService {
   final ApiClient _apiClient;
 
   OrderService(this._apiClient);
 
-  /// Creates a new order from the user's current cart.
+  /// Creates a new order from the user's current cart (Buyer operation)
   Future<OrderModel?> placeOrder(CreateOrderDto dto) async {
     try {
       LogService.business('Placing order', {'addressId': dto.addressId});
 
       final response = await _apiClient.dio.post('/orders', data: dto.toJson());
 
-      // Log the raw response to debug the issue
       LogService.info('Order API Response', {
         'statusCode': response.statusCode,
         'data': response.data,
       });
 
-      // Validate response data before parsing
       if (response.data == null) {
         LogService.error('Order API returned null data');
         return null;
@@ -55,23 +55,154 @@ class OrderService {
     }
   }
 
-  /// Retrieves a list of all past orders for the authenticated user.
-  Future<List<OrderModel>> getOrderHistory() async {
+  /// Retrieves seller's orders (orders containing seller's items)
+  Future<List<OrderModel>> getSellerOrders() async {
     try {
+      LogService.info('Fetching seller orders');
+
       final response = await _apiClient.dio.get('/orders');
+
       final orders = (response.data as List)
           .map((order) => OrderModel.fromJson(order))
           .toList();
 
-      LogService.info('Fetched ${orders.length} orders from history');
+      LogService.info('Fetched ${orders.length} seller orders');
       return orders;
     } on DioException catch (e) {
-      LogService.error('Error getting order history', e.response?.data);
+      LogService.error('Error getting seller orders', {
+        'statusCode': e.response?.statusCode,
+        'error': e.response?.data,
+      });
+      return [];
+    } catch (e) {
+      LogService.error('Unexpected error getting seller orders', e);
       return [];
     }
   }
 
-  /// Retrieves the full details of a single order.
+  /// Updates the status of a specific order item (Seller operation)
+  Future<OrderItem?> updateOrderItemStatus(
+    String itemId,
+    UpdateOrderItemDto dto,
+  ) async {
+    try {
+      LogService.business('Updating order item status', {
+        'itemId': itemId,
+        'newStatus': dto.status.toString(),
+      });
+
+      final response = await _apiClient.dio.patch(
+        '/orders/items/$itemId',
+        data: dto.toJson(),
+      );
+
+      if (response.data == null) {
+        LogService.error('Update order item API returned null data');
+        return null;
+      }
+
+      final updatedItem = OrderItem.fromJson(response.data);
+
+      LogService.business('Order item status updated successfully', {
+        'itemId': itemId,
+        'newStatus': updatedItem.status.toString(),
+      });
+
+      return updatedItem;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        LogService.error(
+          'Forbidden: Cannot update item that doesn\'t belong to seller',
+          {'itemId': itemId},
+        );
+      } else {
+        LogService.error('Error updating order item status', {
+          'statusCode': e.response?.statusCode,
+          'error': e.response?.data,
+          'itemId': itemId,
+        });
+      }
+      return null;
+    } catch (e) {
+      LogService.error('Unexpected error updating order item status', e);
+      return null;
+    }
+  }
+
+  /// Retrieves buyer's order history
+  Future<List<OrderModel>> getBuyerOrderHistory() async {
+    try {
+      LogService.info('Fetching buyer order history');
+
+      final response = await _apiClient.dio.get('/orders');
+
+      LogService.info('Raw API Response', {
+        'statusCode': response.statusCode,
+        'dataType': response.data.runtimeType.toString(),
+        'dataLength': response.data is List
+            ? (response.data as List).length
+            : 'N/A',
+      });
+
+      if (response.data == null) {
+        LogService.warning('API returned null data for buyer orders');
+        return [];
+      }
+
+      if (response.data is! List) {
+        LogService.error('API response is not a list', {
+          'actualType': response.data.runtimeType.toString(),
+          'data': response.data,
+        });
+        return [];
+      }
+
+      final List<OrderModel> orders = [];
+      final responseList = response.data as List;
+
+      for (int i = 0; i < responseList.length; i++) {
+        try {
+          final orderData = responseList[i];
+          if (orderData is Map<String, dynamic>) {
+            final order = OrderModel.fromJson(orderData);
+            orders.add(order);
+          } else {
+            LogService.warning('Order at index $i is not a valid object', {
+              'index': i,
+              'type': orderData.runtimeType.toString(),
+              'data': orderData,
+            });
+          }
+        } catch (e, stackTrace) {
+          LogService.error('Error parsing order at index $i', {
+            'index': i,
+            'error': e.toString(),
+            'stackTrace': stackTrace.toString(),
+            'orderData': responseList[i],
+          });
+          // Continue processing other orders instead of failing completely
+        }
+      }
+
+      LogService.info('Successfully fetched ${orders.length} buyer orders');
+      return orders;
+    } on DioException catch (e) {
+      LogService.error('DioException getting buyer order history', {
+        'statusCode': e.response?.statusCode,
+        'error': e.response?.data,
+        'message': e.message,
+      });
+      return [];
+    } catch (e, stackTrace) {
+      LogService.error('Unexpected error getting buyer order history', {
+        'error': e.toString(),
+        'stackTrace': stackTrace.toString(),
+      });
+      return [];
+    }
+  }
+
+  /// Retrieves the full details of a single order
   Future<OrderModel?> getOrderById(String orderId) async {
     try {
       final response = await _apiClient.dio.get('/orders/$orderId');
