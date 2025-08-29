@@ -1,7 +1,6 @@
-// lib/app/core/models/product/product_model.dart
 import 'dart:convert';
 import 'package:cartify/app/core/index.dart';
-
+import 'package:cartify/app/core/services/api_clean_url.dart';
 
 /// Product model tailored for the current API response.
 /// Works both for product details and dashboard product list responses.
@@ -107,7 +106,7 @@ class ProductModel {
       stockQuantity: _parseInt(json['stock_quantity'] ?? json['stock']),
       measureUnitCode: json['measure_unit_code']?.toString(),
       measureAmount: _parseDouble(json['measure_amount']),
-      images: _parseImages(json['images'] ?? json['image_urls']),
+      images: ApiCleanUrl.cleanImageUrls(json['images'] ?? json['image_urls']),
       attributes: _parseAttributes(json['attributes']),
       averageRating: _parseDouble(json['average_rating']),
       categoryId: json['category_id']?.toString(),
@@ -177,66 +176,6 @@ class ProductModel {
     } catch (_) {
       return null;
     }
-  }
-
-  static List<String> _parseImages(dynamic images) {
-    if (images == null) return [];
-
-    // Handle List of images
-    if (images is List) {
-      return images
-          .map((e) => _cleanImageUrl(e?.toString() ?? ''))
-          .where((s) => s.isNotEmpty)
-          .toList();
-    }
-
-    // Handle single string URL
-    if (images is String) {
-      final cleanUrl = _cleanImageUrl(images);
-      return cleanUrl.isNotEmpty ? [cleanUrl] : [];
-    }
-
-    // Handle Set or other collection types that might be stringified with {}
-    if (images is Set) {
-      return images
-          .map((e) => _cleanImageUrl(e?.toString() ?? ''))
-          .where((s) => s.isNotEmpty)
-          .toList();
-    }
-
-    return [];
-  }
-
-  /// Helper method to clean image URLs by removing curly braces and trimming
-  static String _cleanImageUrl(String url) {
-    if (url.isEmpty) return '';
-
-    // Remove curly braces, square brackets, and extra whitespace
-    String cleanUrl = url
-        .replaceAll(RegExp(r'[{}[\]]'), '') // Remove {}, []
-        .trim(); // Remove leading/trailing whitespace
-
-    // Handle comma-separated URLs (take the first one if multiple)
-    if (cleanUrl.contains(',')) {
-      cleanUrl = cleanUrl.split(',').first.trim();
-    }
-
-    // If it's already an absolute URL, return as-is
-    if (cleanUrl.startsWith('http') || cleanUrl.startsWith('https')) {
-      return cleanUrl;
-    }
-
-    // If it's a server-relative path (starts with '/'), prefix base URL
-    if (cleanUrl.startsWith('/')) {
-      return '${AppConfig.baseUrl}$cleanUrl';
-    }
-
-    // If it looks like a relative static path without leading slash, prefix with '/'
-    if (cleanUrl.contains('static')) {
-      return '${AppConfig.baseUrl}/$cleanUrl';
-    }
-
-    return '';
   }
 
   static Map<String, dynamic>? _parseAttributes(dynamic value) {

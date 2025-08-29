@@ -1,4 +1,4 @@
-// lib/app/core/models/user/user_model.dart
+import 'package:cartify/app/core/services/api_clean_url.dart';
 
 /// Represents a user of the application.
 ///
@@ -32,7 +32,7 @@ class UserModel {
       name: json['name'],
       email: json['email'],
       role: json['role'],
-      profilePhotoUrl: json['profile_photo_url'],
+      profilePhotoUrl: ApiCleanUrl.cleanProfilePictureUrl(json['profile_photo_url']),
       isActive: json['is_active'] ?? true,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
@@ -53,4 +53,7 @@ class UserModel {
       'created_at': createdAt.toIso8601String(),
     };
   }
+
+  /// Check if user has a valid profile picture
+  bool get hasProfilePicture => profilePhotoUrl != null && profilePhotoUrl!.isNotEmpty;
 }
