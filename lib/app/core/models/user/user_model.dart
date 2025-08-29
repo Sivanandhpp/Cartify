@@ -10,6 +10,7 @@ class UserModel {
   final String? email;
   final String role;
   final String? profilePhotoUrl;
+  final bool isActive;
   final DateTime createdAt;
 
   UserModel({
@@ -19,6 +20,7 @@ class UserModel {
     this.email,
     required this.role,
     this.profilePhotoUrl,
+    required this.isActive,
     required this.createdAt,
   });
 
@@ -31,7 +33,10 @@ class UserModel {
       email: json['email'],
       role: json['role'],
       profilePhotoUrl: json['profile_photo_url'],
-      createdAt: DateTime.parse(json['created_at']),
+      isActive: json['is_active'] ?? true,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
     );
   }
 
@@ -44,6 +49,7 @@ class UserModel {
       'email': email,
       'role': role,
       'profile_photo_url': profilePhotoUrl,
+      'is_active': isActive,
       'created_at': createdAt.toIso8601String(),
     };
   }

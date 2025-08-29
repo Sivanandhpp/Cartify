@@ -212,7 +212,7 @@ class _AddressFormViewState extends State<AddressFormView> {
           isDefault: _isDefault,
         );
 
-        final result = await _userService.addAddress(dto);
+        final result = await _userService.createAddress(dto);
         if (result != null) {
           Get.back(result: true);
           NotificationService.showSuccess(

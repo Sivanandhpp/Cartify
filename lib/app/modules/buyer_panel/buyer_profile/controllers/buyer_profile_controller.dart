@@ -1,5 +1,6 @@
 // Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_edit_profile_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/widgets/profile_menu_section.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -210,14 +211,8 @@ class BuyerProfileController extends GetxController {
 
   /// Handles profile editing
   void editProfile() {
-    LogService.info('Editing profile');
-    NotificationService.showInfo(
-      title: 'Coming Soon',
-      message: 'Profile editing feature will be available soon',
-    );
-    // TODO: Implement profile editing
-    // Get.toNamed(Routes.EDIT_PROFILE);
-  }
+LogService.info('Opening edit profile page');
+  Get.to(() => const BuyerEditProfileView());  }
 
   /// Shows logout confirmation dialog
   void showLogoutDialog(BuildContext context) {
