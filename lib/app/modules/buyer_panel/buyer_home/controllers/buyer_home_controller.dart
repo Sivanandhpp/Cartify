@@ -1,4 +1,5 @@
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/buyer_dashboard_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,8 @@ import 'package:get/get.dart';
 class BuyerHomeController extends GetxController {
   final DashboardService _dashboardService = Get.find<DashboardService>();
   final CartService _cartService = Get.find<CartService>();
-  final ProductSheetController _productSheetController = Get.find<ProductSheetController>();
+  final ProductSheetController _productSheetController =
+      Get.find<ProductSheetController>();
 
   // Reactive variables for dashboard data
   final Rx<DashboardModel?> _dashboardData = Rx<DashboardModel?>(null);
@@ -29,11 +31,14 @@ class BuyerHomeController extends GetxController {
   int get cartItemsCount => _cartData.value?.items.length ?? 0;
   double get cartTotalPrice => _cartData.value?.totalPrice ?? 0.0;
 
+  final Rxn<CategoryModel> selectedCategory =
+      Rxn<CategoryModel>(); // null means "All" is selected
+
   @override
   void onInit() {
     super.onInit();
     loadDashboardData();
-    _loadCart();
+    // selectedCategory remains null by default (meaning "All" is selected)
   }
 
   /// Loads dashboard data from the API
@@ -72,7 +77,7 @@ class BuyerHomeController extends GetxController {
     }
   }
 
-/// Increments product quantity in cart (adds if not exists)
+  /// Increments product quantity in cart (adds if not exists)
   Future<void> incrementProductQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
@@ -99,6 +104,32 @@ class BuyerHomeController extends GetxController {
   /// Gets quantity of a specific product in cart
   int getProductQuantityInCart(String productId) {
     return _cartService.getProductQuantityInCart(productId);
+  }
+
+  /// Handle category selection from app bar
+  void onCategoryTap(CategoryModel? category) {
+    selectedCategory.value = category; // Can be null for "All"
+
+    try {
+      // Get the dashboard controller to navigate internally
+      final dashboardController = Get.find<BuyerDashboardController>();
+
+      if (category == null) {
+        // "All" selected - navigate to categories page without pre-selection
+        dashboardController.navigateToCategoriesShowAll();
+      } else {
+        // Specific category selected - navigate with pre-selection
+        dashboardController.navigateToCategories(selectedCategory: category);
+      }
+    } catch (e) {
+      LogService.error('Dashboard navigation error', e);
+      // Fallback: show error message
+      Get.snackbar(
+        'Navigation Error',
+        'Unable to navigate to categories',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   // Helper methods for easy access to dashboard sections

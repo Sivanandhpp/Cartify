@@ -22,6 +22,31 @@ class BuyerCategoriesController extends GetxController {
   void onInit() {
     super.onInit();
     loadCategories();
+
+    // Check if a category was passed from navigation arguments
+    _handleNavigationArguments();
+  }
+
+  /// Handle navigation arguments to pre-select a category
+  void _handleNavigationArguments() {
+    final arguments = Get.arguments as Map<String, dynamic>?;
+    if (arguments != null && arguments.containsKey('selectedCategory')) {
+      final CategoryModel? preSelectedCategory = arguments['selectedCategory'];
+      if (preSelectedCategory != null) {
+        // Wait for categories to load before selecting
+        ever(topLevelCategories, (List<CategoryModel> categories) {
+          if (categories.isNotEmpty) {
+            // Find the category in the loaded list and select it
+            final category = categories.firstWhereOrNull(
+              (cat) => cat.id == preSelectedCategory.id,
+            );
+            if (category != null) {
+              selectCategory(category);
+            }
+          }
+        });
+      }
+    }
   }
 
   /// Load the complete category tree structure
@@ -53,7 +78,6 @@ class BuyerCategoriesController extends GetxController {
         'categoryName': category.name,
       });
 
-      // Use the new category tree endpoint to get ALL products in the category tree
       final products = await _productService.getProductsInCategoryTree(
         category.id,
       );
@@ -73,7 +97,6 @@ class BuyerCategoriesController extends GetxController {
     selectedSubCategory.value = subCategory;
 
     if (subCategory == null) {
-      // Show all products in the main category tree
       if (selectedCategory.value != null) {
         await selectCategory(selectedCategory.value!);
       }
@@ -87,7 +110,6 @@ class BuyerCategoriesController extends GetxController {
         'subCategoryName': subCategory.name,
       });
 
-      // Use the specific category endpoint to get products ONLY from this sub-category
       final products = await _productService.getProductsByCategory(
         subCategory.id,
       );
@@ -115,9 +137,39 @@ class BuyerCategoriesController extends GetxController {
     await loadCategories();
   }
 
+  /// Public method to select category directly (for dashboard navigation)
+  void selectCategoryDirectly(CategoryModel categoryToSelect) {
+    if (topLevelCategories.isNotEmpty) {
+      // Categories already loaded, select immediately
+      final category = topLevelCategories.firstWhereOrNull(
+        (cat) => cat.id == categoryToSelect.id,
+      );
+      if (category != null) {
+        selectCategory(category);
+      } else {
+        LogService.warning('Category not found in loaded categories', {
+          'requestedCategoryId': categoryToSelect.id,
+          'loadedCategoryCount': topLevelCategories.length,
+        });
+      }
+    } else {
+      // Wait for categories to load
+      LogService.info('Waiting for categories to load before selecting');
+      ever(topLevelCategories, (List<CategoryModel> categories) {
+        if (categories.isNotEmpty) {
+          final category = categories.firstWhereOrNull(
+            (cat) => cat.id == categoryToSelect.id,
+          );
+          if (category != null) {
+            selectCategory(category);
+          }
+        }
+      });
+    }
+  }
+
   // ===== CART FUNCTIONALITY =====
 
-  /// Increments product quantity in cart (adds if not exists)
   Future<void> incrementProductQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
@@ -129,7 +181,6 @@ class BuyerCategoriesController extends GetxController {
     }
   }
 
-  /// Decrements product quantity in cart (removes if quantity becomes 0)
   Future<void> decrementProductQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
@@ -141,12 +192,10 @@ class BuyerCategoriesController extends GetxController {
     }
   }
 
-  /// Gets quantity of a specific product in cart
   int getProductQuantityInCart(String productId) {
     return _cartService.getProductQuantityInCart(productId);
   }
 
-  /// Show Product sheet
   void showProductSheet(BuildContext context, ProductModel product) {
     _productSheetController.showProductSheet(context, product);
   }
@@ -162,19 +211,11 @@ class BuyerCategoriesController extends GetxController {
   String get selectedSubCategoryName =>
       selectedSubCategory.value?.name ?? 'All';
 
-  /// Get parent categories (top-level categories)
   List<CategoryModel> get parentCategories => topLevelCategories;
-
-  /// Get sub-categories of the currently selected category
   List<CategoryModel> get subCategories =>
       selectedCategory.value?.children ?? [];
-
-  /// Check if the selected category has sub-categories
   bool get hasSubCategories => subCategories.isNotEmpty;
 
-  /// Get cart item count for display
   int get cartItemsCount => _cartService.cartItemsCount;
-
-  /// Get cart total for display
   double get cartTotal => _cartService.cartTotalPrice;
 }

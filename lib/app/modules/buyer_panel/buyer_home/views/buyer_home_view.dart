@@ -59,7 +59,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
               BuyerHomeSliverAppBar(
                 categories: controller.getCategories(),
                 selectedLocation: 'Kozhikode Work',
-                selectedCategory: controller.getCategories().first,
+                selectedCategory: controller.selectedCategory.value,
                 onLocationTap: () {
                   // Handle location tap
                   print('Location tapped');
@@ -73,10 +73,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                   // Handle search
                   print('Search: $value');
                 },
-                onCategoryTap: (category) {
-                  // Handle category selection
-                  print('Category selected: ${category.name}');
-                },
+                onCategoryTap: controller.onCategoryTap,
               ),
               // Promotional Banners Section
               if (controller.hasPromotionalBanners())
@@ -131,7 +128,6 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                         product,
                                       );
                                     }
-                                
                                   },
                                   onIncrement: () {
                                     print('Add to cart: ${product.name}');

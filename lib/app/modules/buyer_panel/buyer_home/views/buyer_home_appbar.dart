@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cartify/app/core/index.dart';
+import 'package:get/get.dart';
 
 class BuyerHomeSliverAppBar extends StatelessWidget {
   final List<CategoryModel> categories;
@@ -7,7 +8,8 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
   final VoidCallback? onLocationTap;
   final VoidCallback? onCartTap;
   final Function(String)? onSearchChanged;
-  final Function(CategoryModel)? onCategoryTap;
+  final Function(CategoryModel?)?
+  onCategoryTap; // Changed to accept null for "All"
   final CategoryModel? selectedCategory;
 
   const BuyerHomeSliverAppBar({
@@ -25,15 +27,14 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: const Color(0xFF2196F3), // Primary blue
+      backgroundColor: const Color(0xFF2196F3),
       pinned: true,
       floating: true,
       snap: false,
       elevation: 0,
-      expandedHeight: 210.0, // Height for expanded state
+      expandedHeight: 210.0,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
-          // Calculate collapse ratio
           final appBarHeight = constraints.biggest.height;
           final expandedHeight = 200.0;
           final collapsedHeight =
@@ -56,14 +57,9 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
               child: SafeArea(
                 child: Column(
                   children: [
-                    // Top bar with location and cart
                     _buildTopBar(context, collapseRatio),
-
-                    // Search bar (only visible when expanded)
                     if (collapseRatio < 0.8)
                       _buildSearchBar(context, collapseRatio),
-
-                    // Categories (only visible when expanded)
                     if (collapseRatio < 0.5)
                       _buildCategoriesSection(context, collapseRatio),
                   ],
@@ -83,7 +79,6 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          // Location section
           Expanded(
             child: GestureDetector(
               onTap: onLocationTap,
@@ -135,8 +130,6 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
               ),
             ),
           ),
-
-          // Profile icon
           IconButton(
             onPressed: onCartTap,
             icon: const CircleAvatar(
@@ -191,13 +184,64 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: categories.length,
+          itemCount: categories.length + 1, // +1 for "All" option
           itemBuilder: (context, index) {
-            final category = categories[index];
+            // First item is "All"
+            if (index == 0) {
+              final isSelected = selectedCategory == null;
+              return GestureDetector(
+                onTap: () {
+                  // Use callback instead of direct navigation
+                  onCategoryTap?.call(null);
+                },
+                child: Container(
+                  width: 60,
+                  margin: const EdgeInsets.only(right: 16),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.apps_rounded,
+                          color: isSelected ? AppColors.primary : Colors.white,
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'All',
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.white70,
+                          fontSize: 11,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            // Regular categories (index - 1 because of "All" at index 0)
+            final category = categories[index - 1];
             final isSelected = selectedCategory?.id == category.id;
 
             return GestureDetector(
-              onTap: () => onCategoryTap?.call(category),
+              onTap: () {
+                // Use callback instead of direct navigation
+                onCategoryTap?.call(category);
+              },
               child: Container(
                 width: 60,
                 margin: const EdgeInsets.only(right: 16),
@@ -212,10 +256,19 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
                             : Colors.white.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(
-                        Icons.category,
-                        color: isSelected ? Colors.blue : Colors.white,
-                        size: 28,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child:
+                            category.imageUrl != null &&
+                                category.imageUrl!.isNotEmpty
+                            ? AppImage.network(
+                                url: category.imageUrl!,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorWidget: _buildCategoryIcon(isSelected),
+                              )
+                            : _buildCategoryIcon(isSelected),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -238,6 +291,14 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildCategoryIcon(bool isSelected) {
+    return Icon(
+      Icons.category,
+      color: isSelected ? AppColors.primary : Colors.white,
+      size: 28,
     );
   }
 

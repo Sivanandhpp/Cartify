@@ -1,3 +1,4 @@
+import 'package:cartify/app/modules/buyer_panel/buyer_categories/views/buyer_categories_view.dart';
 import 'package:get/get.dart';
 import '../modules/admin_panel/admin_dashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/admin_panel/admin_dashboard/views/admin_dashboard_view.dart';
@@ -69,6 +70,11 @@ class AppPages {
     GetPage(
       name: _Paths.BUYER_CART,
       page: () => const BuyerCartView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_CATEGORIES,
+      page: () => const BuyerCategoriesView(),
       binding: BuyerDashboardBinding(),
     ),
     GetPage(

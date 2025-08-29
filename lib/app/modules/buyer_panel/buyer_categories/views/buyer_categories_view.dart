@@ -35,7 +35,6 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
         () => AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-
           automaticallyImplyLeading: false,
           leading: controller.isAnyCategorySelected
               ? IconButton(
@@ -53,7 +52,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
               color: Colors.black,
             ),
           ),
-          centerTitle: true,
+          centerTitle: false,
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh, color: Colors.black),
@@ -110,17 +109,17 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.85,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.0, // Square aspect ratio
               ),
               delegate: SliverChildBuilderDelegate((context, index) {
                 final category = controller.parentCategories[index];
-                return _buildBeautifulCategoryCard(category);
+                return _buildCategoryCard(category);
               }, childCount: controller.parentCategories.length),
             ),
           ),
@@ -129,163 +128,136 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
     );
   }
 
-  Widget _buildBeautifulCategoryCard(CategoryModel category) {
-    final colors = [
-      const Color(0xFF6C63FF),
-      const Color(0xFF4ECDC4),
-      const Color(0xFFFF6B6B),
-      const Color(0xFF4DABF7),
-      const Color(0xFF69DB7C),
-      const Color(0xFFFFD93D),
-      const Color(0xFFFF8CC8),
-      const Color(0xFF74C0FC),
-    ];
-
-    final categoryIndex = controller.parentCategories.indexOf(category);
-    final cardColor = colors[categoryIndex % colors.length];
-
+  Widget _buildCategoryCard(CategoryModel category) {
     return GestureDetector(
       onTap: () => controller.selectCategory(category),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: cardColor.withOpacity(0.3),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [cardColor, cardColor.withOpacity(0.8)],
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Full-screen category image
+              category.imageUrl != null && category.imageUrl!.isNotEmpty
+                  ? Image.network(
+                      category.imageUrl!,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) =>
+                          _buildFallbackImage(),
+                    )
+                  : _buildFallbackImage(),
+
+              // Dark overlay for text visibility
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  ),
+                ),
               ),
-            ),
-            child: Stack(
-              children: [
-                // Background pattern
-                Positioned(
-                  top: -20,
-                  right: -20,
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: -30,
-                  left: -30,
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                ),
-                // Content
-                Padding(
-                  padding: const EdgeInsets.all(20),
+
+              // Category text content
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Category image container
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child:
-                              category.imageUrl != null &&
-                                  category.imageUrl!.isNotEmpty
-                              ? Image.network(
-                                  category.imageUrl!,
-                                  fit: BoxFit.cover,
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  Colors.white.withOpacity(0.7),
-                                                ),
-                                            strokeWidth: 2,
-                                          ),
-                                        );
-                                      },
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      _buildCategoryIcon(),
-                                )
-                              : _buildCategoryIcon(),
-                        ),
-                      ),
-                      const Spacer(),
-                      // Category name
+                      // Category name with shadow
                       Text(
                         category.name,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(1, 1),
+                              blurRadius: 3,
+                              color: Colors.black54,
+                            ),
+                          ],
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      // Sub-categories count
+                      // Sub-categories count with shadow
                       Text(
                         '${category.children.length} subcategories',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(1, 1),
+                              blurRadius: 2,
+                              color: Colors.black54,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildCategoryIcon() {
-    return const Icon(Icons.category_rounded, color: Colors.white, size: 30);
+  Widget _buildFallbackImage() {
+    return Container(
+      color: Colors.grey[300],
+      child: Center(
+        child: Icon(Icons.category_rounded, size: 40, color: Colors.grey[600]),
+      ),
+    );
   }
 
   Widget _buildProductsView() {
     return Column(
       children: [
-        if (controller.hasSubCategories) _buildBeautifulSubCategoryFilter(),
+        if (controller.hasSubCategories) _buildSubCategoryFilter(),
         Expanded(child: _buildProductsGrid()),
       ],
     );
   }
 
-  Widget _buildBeautifulSubCategoryFilter() {
+  Widget _buildSubCategoryFilter() {
     return Container(
       height: 120,
       decoration: const BoxDecoration(
@@ -299,7 +271,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
           // "All" chip with category icon
-          _buildBeautifulSubCategoryChip(
+          _buildSubCategoryChip(
             'All',
             null,
             controller.selectedSubCategory.value == null,
@@ -312,7 +284,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
                 controller.selectedSubCategory.value?.id == subCategory.id;
             return Padding(
               padding: const EdgeInsets.only(right: 12),
-              child: _buildBeautifulSubCategoryChip(
+              child: _buildSubCategoryChip(
                 subCategory.name,
                 subCategory.imageUrl,
                 isSelected,
@@ -325,7 +297,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
     );
   }
 
-  Widget _buildBeautifulSubCategoryChip(
+  Widget _buildSubCategoryChip(
     String label,
     String? imageUrl,
     bool isSelected,
