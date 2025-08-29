@@ -34,21 +34,30 @@ class SellerHomeController extends GetxController {
 
   void navigateToAddProduct() {
     // Navigate to add product page
-    Get.snackbar('Navigation', 'Navigate to Add Product');
-    
+    NotificationService.showInfo(
+      title: 'Navigation',
+      message: 'Navigate to Add Product',
+    );
   }
 
   void navigateToViewProducts() {
     // Navigate to view products page
-    Get.snackbar('Navigation', 'Navigate to View Products');
+    NotificationService.showInfo(
+      title: 'Navigation',
+      message: 'Navigate to View Products',
+    );
   }
 
   void navigateToViewOrders() {
     // Navigate to view orders page
-    Get.snackbar('Navigation', 'Navigate to View Orders');
+    NotificationService.showInfo(
+      title: 'Navigation',
+      message: 'Navigate to View Orders',
+    );
   }
- logout() async {
-  LogService.warning('User logged out');
+
+  logout() async {
+    LogService.warning('User logged out');
     final AuthenticationService authService = Get.find<AuthenticationService>();
     await authService.logout();
   }

@@ -48,7 +48,18 @@ class CartItemCardWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: item.product.images.isNotEmpty
-              ? Image.network(item.product.images.first, fit: BoxFit.cover)
+              ? AppImage.network(
+                  url: item.product.images.first,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  borderRadius: BorderRadius.circular(8),
+                  errorWidget: Icon(
+                    Icons.image_outlined,
+                    color: Colors.grey[400],
+                    size: 30,
+                  ),
+                )
               : Icon(Icons.image_outlined, color: Colors.grey[400], size: 30),
         ),
       ),

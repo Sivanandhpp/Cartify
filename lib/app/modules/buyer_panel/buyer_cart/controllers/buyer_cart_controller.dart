@@ -119,10 +119,9 @@ class BuyerCartController extends GetxController {
   Future<void> incrementQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to update cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update cart',
       );
     }
   }
@@ -130,10 +129,9 @@ class BuyerCartController extends GetxController {
   Future<void> decrementQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to update cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update cart',
       );
     } else {
       // Clean up order list after successful operation (schedule for next frame)
@@ -146,10 +144,9 @@ class BuyerCartController extends GetxController {
   Future<void> removeItem(String cartItemId) async {
     final cart = await _cartService.removeItemFromCart(cartItemId);
     if (cart == null) {
-      Get.snackbar(
-        'Error',
-        'Failed to remove item from cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to remove item from cart',
       );
     } else {
       // Clean up order list after successful operation
@@ -162,10 +159,9 @@ class BuyerCartController extends GetxController {
   Future<void> clearCart() async {
     final success = await _cartService.clearCart();
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to clear cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to clear cart',
       );
     } else {
       // Clear order list after successful operation
@@ -293,12 +289,9 @@ class BuyerCartController extends GetxController {
       }
 
       // Show error message
-      Get.snackbar(
-        'Order Failed',
-        'An error occurred while placing your order. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      NotificationService.showError(
+        title: 'Order Failed',
+        message: 'An error occurred while placing your order. Please try again.',
       );
 
       LogService.error('Error placing order', e);

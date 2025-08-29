@@ -195,14 +195,11 @@ class AppImagePicker {
       // Check permissions
       final hasPermission = await _checkPermissions(source);
       if (!hasPermission) {
-        Get.snackbar(
-          'Permission Required',
-          source == ImageSource.camera
+        NotificationService.showWarning(
+          title: 'Permission Required',
+          message: source == ImageSource.camera
               ? 'Camera permission is required to take photos'
               : 'Storage permission is required to access gallery',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.lightError,
-          colorText: AppColors.white,
         );
         return null;
       }
@@ -247,22 +244,16 @@ class AppImagePicker {
         errorMessage += 'Please try again or restart the app.';
       }
 
-      Get.snackbar(
-        'Error',
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.lightError,
-        colorText: AppColors.white,
+      NotificationService.showError(
+        title: 'Error',
+        message: errorMessage,
         duration: const Duration(seconds: 4),
       );
     } catch (e) {
       LogService.error('Unexpected error picking image', e);
-      Get.snackbar(
-        'Error',
-        'An unexpected error occurred. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.lightError,
-        colorText: AppColors.white,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'An unexpected error occurred. Please try again.',
       );
     }
 

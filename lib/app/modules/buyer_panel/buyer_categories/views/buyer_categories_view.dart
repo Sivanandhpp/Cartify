@@ -149,25 +149,11 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
             children: [
               // Full-screen category image
               category.imageUrl != null && category.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      category.imageUrl!,
+                  ? AppImage.network(
+                      url: category.imageUrl!,
                       fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildFallbackImage(),
+                      borderRadius: BorderRadius.circular(16),
+                      errorWidget: _buildFallbackImage(),
                     )
                   : _buildFallbackImage(),
 
@@ -340,32 +326,16 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
                   width: 1,
                 ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: imageUrl != null && imageUrl.isNotEmpty
-                    ? Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  isSelected ? Colors.white : AppColors.primary,
-                                ),
-                                strokeWidth: 2,
-                              ),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) =>
-                            _buildSubCategoryIcon(isSelected, label == 'All'),
-                      )
-                    : _buildSubCategoryIcon(isSelected, label == 'All'),
-              ),
+              child: imageUrl != null && imageUrl.isNotEmpty
+                  ? AppImage.network(
+                      url: imageUrl,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                      borderRadius: BorderRadius.circular(12),
+                      errorWidget: _buildSubCategoryIcon(isSelected, label == 'All'),
+                    )
+                  : _buildSubCategoryIcon(isSelected, label == 'All'),
             ),
             const SizedBox(height: 8),
             // Label

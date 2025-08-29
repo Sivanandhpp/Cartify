@@ -81,10 +81,9 @@ class BuyerHomeController extends GetxController {
   Future<void> incrementProductQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to update cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update cart',
       );
     }
   }
@@ -93,10 +92,9 @@ class BuyerHomeController extends GetxController {
   Future<void> decrementProductQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to update cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update cart',
       );
     }
   }
@@ -124,10 +122,9 @@ class BuyerHomeController extends GetxController {
     } catch (e) {
       LogService.error('Dashboard navigation error', e);
       // Fallback: show error message
-      Get.snackbar(
-        'Navigation Error',
-        'Unable to navigate to categories',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Navigation Error',
+        message: 'Unable to navigate to categories',
       );
     }
   }

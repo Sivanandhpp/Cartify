@@ -65,12 +65,9 @@ class BuyerEditProfileController extends GetxController {
         'mimeType': result.mimeType,
       });
 
-      Get.snackbar(
-        'Image Selected',
-        'Profile picture updated. Tap "Update Profile" to save.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.inStock,
-        colorText: AppColors.white,
+      NotificationService.showInfo(
+        title: 'Image Selected',
+        message: 'Profile picture updated. Tap "Update Profile" to save.',
       );
     }
   }
@@ -96,12 +93,9 @@ class BuyerEditProfileController extends GetxController {
         selectedImageMimeType.value = '';
         selectedImageSize.value = 0;
 
-        Get.snackbar(
-          'Success',
-          'Profile picture updated successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.inStock,
-          colorText: AppColors.white,
+        NotificationService.showSuccess(
+          title: 'Success',
+          message: 'Profile picture updated successfully',
         );
 
         LogService.info('Profile picture uploaded successfully');
@@ -110,12 +104,9 @@ class BuyerEditProfileController extends GetxController {
       }
     } catch (e) {
       LogService.error('Error uploading profile picture', e);
-      Get.snackbar(
-        'Error',
-        'Failed to update profile picture. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.lightError,
-        colorText: AppColors.white,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update profile picture. Please try again.',
       );
     } finally {
       isUploadingPhoto.value = false;
@@ -150,12 +141,9 @@ class BuyerEditProfileController extends GetxController {
       if (updatedUser != null) {
         _userController.updateUser(updatedUser);
 
-        Get.snackbar(
-          'Success',
-          'Profile updated successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.inStock,
-          colorText: AppColors.white,
+        NotificationService.showSuccess(
+          title: 'Success',
+          message: 'Profile updated successfully',
         );
 
         LogService.info('Profile updated successfully');
@@ -165,12 +153,9 @@ class BuyerEditProfileController extends GetxController {
       }
     } catch (e) {
       LogService.error('Error updating profile', e);
-      Get.snackbar(
-        'Error',
-        'Failed to update profile. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.lightError,
-        colorText: AppColors.white,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update profile. Please try again.',
       );
     } finally {
       isLoading.value = false;

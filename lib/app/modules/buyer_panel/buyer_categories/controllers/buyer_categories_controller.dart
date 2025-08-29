@@ -173,10 +173,9 @@ class BuyerCategoriesController extends GetxController {
   Future<void> incrementProductQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to update cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update cart',
       );
     }
   }
@@ -184,10 +183,9 @@ class BuyerCategoriesController extends GetxController {
   Future<void> decrementProductQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
-      Get.snackbar(
-        'Error',
-        'Failed to update cart',
-        snackPosition: SnackPosition.BOTTOM,
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to update cart',
       );
     }
   }
