@@ -11,6 +11,11 @@ class AppColors {
   static const Color primaryBrand = Color(0xFF005AE6);
   static const Color secondaryBrand = Color(0xFF00B8D9);
   static const Color accentBrand = Color(0xFF7B68EE);
+ // Semantic Status Colors
+  static const Color success = Color(0xFF4CAF50); // Green
+  static const Color error = Color(0xFFE53935);   // Red
+  static const Color warning = Color(0xFFFF9800); // Orange
+  static const Color info = Color(0xFF2196F3);    // Blue
 
   // Light Theme Colors
   static const Color lightPrimary = primaryBrand;

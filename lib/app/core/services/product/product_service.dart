@@ -1,11 +1,10 @@
 // lib/app/core/services/product/product_service.dart
 
 import 'dart:io';
-import 'package:cartify/app/core/models/product/category_model.dart';
-import 'package:cartify/app/core/models/product/product_model.dart';
-import 'package:cartify/app/core/services/api_client.dart';
-import 'package:cartify/app/core/services/log_service.dart';
+import 'package:cartify/app/core/models/product/create_product_dto.dart';
+import 'package:cartify/app/core/models/product/update_product_dto.dart';
 import 'package:dio/dio.dart';
+import 'package:cartify/app/core/index.dart';
 
 /// Service for browsing the product catalog.
 class ProductService {
@@ -158,20 +157,56 @@ class ProductService {
     }
   }
 
-  /// (Admin/Seller) Creates a new product.
-  Future<ProductModel?> createProduct(Map<String, dynamic> productData) async {
+  // ===== SELLER-SPECIFIC METHODS =====
+
+  /// Get all products for the authenticated seller (admin endpoint)
+  /// GET /products/admin
+  Future<List<ProductModel>> getMyProducts() async {
     try {
-      LogService.info('Creating new product');
+      LogService.info('Fetching seller products');
+      
+      final response = await _apiClient.dio.get('/products/admin');
+      
+      final List<dynamic> productsJson = response.data;
+      final products = productsJson
+          .map((json) => ProductModel.fromJson(json))
+          .toList();
+
+      LogService.info('Fetched ${products.length} seller products');
+      return products;
+    } on DioException catch (e) {
+      LogService.error('Error fetching seller products', {
+        'statusCode': e.response?.statusCode,
+        'error': e.response?.data,
+      });
+      return [];
+    } catch (e) {
+      LogService.error('Unexpected error fetching seller products', e);
+      return [];
+    }
+  }
+
+  /// Create a new product (Step 1: Product data)
+  /// POST /products
+  Future<ProductModel?> createProduct(CreateProductDto dto) async {
+    try {
+      LogService.info('Creating new product', {
+        'name': dto.name,
+        'price': dto.price,
+        'categoryId': dto.categoryId,
+      });
 
       final response = await _apiClient.dio.post(
         '/products',
-        data: productData,
+        data: dto.toJson(),
       );
 
       final product = ProductModel.fromJson(response.data);
-      LogService.info('Successfully created product', {
+      LogService.info('Product created successfully', {
         'productId': product.id,
+        'name': product.name,
       });
+      
       return product;
     } on DioException catch (e) {
       LogService.error('Error creating product', {
@@ -185,32 +220,49 @@ class ProductService {
     }
   }
 
-  /// (Admin/Seller) Uploads images for a product.
+  /// Upload images for a product (Step 2: Images)
+  /// POST /products/:id/images
   Future<ProductModel?> uploadProductImages(
     String productId,
-    List<File> images,
+    List<File> imageFiles,
   ) async {
     try {
       LogService.info('Uploading product images', {
         'productId': productId,
-        'imageCount': images.length,
+        'imageCount': imageFiles.length,
       });
 
-      List<MultipartFile> files = [];
-      for (var image in images) {
-        String fileName = image.path.split('/').last;
-        files.add(await MultipartFile.fromFile(image.path, filename: fileName));
+      // Create FormData with multiple files
+      final formData = FormData();
+      
+      for (int i = 0; i < imageFiles.length; i++) {
+        final file = imageFiles[i];
+        final fileName = file.path.split('/').last;
+        
+        formData.files.add(MapEntry(
+          'files',
+          await MultipartFile.fromFile(
+            file.path,
+            filename: fileName,
+          ),
+        ));
       }
-      FormData formData = FormData.fromMap({"files": files});
 
       final response = await _apiClient.dio.post(
         '/products/$productId/images',
         data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+        ),
       );
 
-      final product = ProductModel.fromJson(response.data);
-      LogService.info('Successfully uploaded product images');
-      return product;
+      final updatedProduct = ProductModel.fromJson(response.data);
+      LogService.info('Product images uploaded successfully', {
+        'productId': productId,
+        'imageCount': updatedProduct.images.length,
+      });
+      
+      return updatedProduct;
     } on DioException catch (e) {
       LogService.error('Error uploading product images', {
         'productId': productId,
@@ -222,5 +274,81 @@ class ProductService {
       LogService.error('Unexpected error uploading product images', e);
       return null;
     }
+  }
+
+  /// Update an existing product
+  /// PATCH /products/:id
+  Future<ProductModel?> updateProduct(
+    String productId,
+    UpdateProductDto dto,
+  ) async {
+    try {
+      LogService.info('Updating product', {
+        'productId': productId,
+        'hasUpdates': dto.hasUpdates,
+      });
+
+      if (!dto.hasUpdates) {
+        LogService.warning('No updates provided for product', {
+          'productId': productId,
+        });
+        return null;
+      }
+
+      final response = await _apiClient.dio.patch(
+        '/products/$productId',
+        data: dto.toJson(),
+      );
+
+      final updatedProduct = ProductModel.fromJson(response.data);
+      LogService.info('Product updated successfully', {
+        'productId': productId,
+        'name': updatedProduct.name,
+      });
+      
+      return updatedProduct;
+    } on DioException catch (e) {
+      LogService.error('Error updating product', {
+        'productId': productId,
+        'statusCode': e.response?.statusCode,
+        'error': e.response?.data,
+      });
+      return null;
+    } catch (e) {
+      LogService.error('Unexpected error updating product', e);
+      return null;
+    }
+  }
+
+  /// Delete a product
+  /// DELETE /products/:id
+  Future<bool> deleteProduct(String productId) async {
+    try {
+      LogService.info('Deleting product', {'productId': productId});
+
+      await _apiClient.dio.delete('/products/$productId');
+
+      LogService.info('Product deleted successfully', {
+        'productId': productId,
+      });
+      
+      return true;
+    } on DioException catch (e) {
+      LogService.error('Error deleting product', {
+        'productId': productId,
+        'statusCode': e.response?.statusCode,
+        'error': e.response?.data,
+      });
+      return false;
+    } catch (e) {
+      LogService.error('Unexpected error deleting product', e);
+      return false;
+    }
+  }
+
+  /// Toggle product active status
+  Future<ProductModel?> toggleProductStatus(String productId, bool isActive) async {
+    final dto = UpdateProductDto(isActive: isActive);
+    return updateProduct(productId, dto);
   }
 }
