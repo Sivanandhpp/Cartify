@@ -1,4 +1,3 @@
-import 'package:cartify/app/modules/seller_panel/product_form/controllers/product_form_controller.dart';
 import 'package:cartify/app/modules/seller_panel/seller_home/controllers/seller_home_controller.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +8,5 @@ class SellerDashboardBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<SellerDashboardController>(() => SellerDashboardController());
     Get.lazyPut<SellerHomeController>(() => SellerHomeController());
-    Get.lazyPut<ProductFormController>(() => ProductFormController());
   }
 }

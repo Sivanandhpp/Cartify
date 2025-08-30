@@ -1,5 +1,6 @@
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/core/services/authentication/authentication_service.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class SellerHomeController extends GetxController {
@@ -34,10 +35,7 @@ class SellerHomeController extends GetxController {
 
   void navigateToAddProduct() {
     // Navigate to add product page
-    NotificationService.showInfo(
-      title: 'Navigation',
-      message: 'Navigate to Add Product',
-    );
+    Get.toNamed(Routes.SELLER_CREATE_PRODUCT);
   }
 
   void navigateToViewProducts() {

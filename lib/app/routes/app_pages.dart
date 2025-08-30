@@ -1,5 +1,5 @@
-import 'package:cartify/app/modules/buyer_panel/buyer_categories/views/buyer_categories_view.dart';
 import 'package:get/get.dart';
+
 import '../modules/admin_panel/admin_dashboard/bindings/admin_dashboard_binding.dart';
 import '../modules/admin_panel/admin_dashboard/views/admin_dashboard_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
@@ -8,12 +8,15 @@ import '../modules/authentication/otp_check/bindings/otp_check_binding.dart';
 import '../modules/authentication/otp_check/views/otp_check_view.dart';
 import '../modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
 import '../modules/buyer_panel/buyer_cart/views/buyer_order_status_view.dart';
+import '../modules/buyer_panel/buyer_categories/views/buyer_categories_view.dart';
 import '../modules/buyer_panel/buyer_dashboard/bindings/buyer_dashboard_binding.dart';
 import '../modules/buyer_panel/buyer_dashboard/views/buyer_dashboard_view.dart';
 import '../modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
 import '../modules/buyer_panel/buyer_profile/views/buyer_orders_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/seller_panel/seller_create_product/bindings/seller_create_product_binding.dart';
+import '../modules/seller_panel/seller_create_product/views/seller_create_product_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
@@ -91,6 +94,11 @@ class AppPages {
       name: _Paths.BUYER_ORDERS_VIEW,
       page: () => const BuyerOrdersView(),
       binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_CREATE_PRODUCT,
+      page: () => const SellerCreateProductView(),
+      binding: SellerCreateProductBinding(),
     ),
   ];
 }
