@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/core/services/api_clean_url.dart';
+import 'category_model.dart';
+import 'tag_model.dart';
+import 'discount_model.dart';
 
 /// Product model tailored for the current API response.
 /// Works both for product details and dashboard product list responses.
@@ -29,16 +32,17 @@ class ProductModel {
 
   // Convenience getters for common attributes
   String? get brand => attributes?['brand']?.toString();
-  
+
   double? get offerPrice => _parseDouble(attributes?['offer_price']);
-  
+
   double? get offerPercentage => _parseDouble(attributes?['offer_percentage']);
-  
-  double? get alcoholContent => _parseDouble(attributes?['alcohol_content_abv']);
-  
+
+  double? get alcoholContent =>
+      _parseDouble(attributes?['alcohol_content_abv']);
+
   // Check if product has an offer
   bool get hasOffer => offerPrice != null && offerPrice! > 0;
-  
+
   // Get discount percentage (from attributes or calculated)
   double get discountPercentage {
     if (offerPercentage != null) return offerPercentage!;
@@ -47,26 +51,26 @@ class ProductModel {
     }
     return 0.0;
   }
-  
+
   // Get effective price (offer price if available, otherwise regular price)
   double get effectivePrice => hasOffer ? offerPrice! : price;
-  
+
   // Display effective price
   String get displayEffectivePrice => '₹${effectivePrice.toStringAsFixed(2)}';
-  
+
   // Display original price (for strikethrough)
   String get displayOriginalPrice => '₹${price.toStringAsFixed(2)}';
-  
+
   // Get specific attribute value with type safety
   T? getAttribute<T>(String key) {
     final value = attributes?[key];
     if (value == null) return null;
-    
+
     if (T == String) return value.toString() as T?;
     if (T == double) return _parseDouble(value) as T?;
     if (T == int) return _parseInt(value) as T?;
     if (T == bool) return (value == true || value == 'true') as T?;
-    
+
     return value as T?;
   }
 
@@ -79,6 +83,9 @@ class ProductModel {
 
   /// Nested category object if response includes it
   final CategoryModel? category;
+
+  final List<TagModel> tags;
+  final List<DiscountModel> discounts;
 
   ProductModel({
     required this.id,
@@ -95,6 +102,8 @@ class ProductModel {
     this.createdAt,
     this.updatedAt,
     this.category,
+    this.tags = const [],
+    this.discounts = const [],
   }) : images = images ?? [];
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -115,6 +124,16 @@ class ProductModel {
       category: json['category'] is Map
           ? CategoryModel.fromJson(Map<String, dynamic>.from(json['category']))
           : null,
+      tags:
+          (json['tags'] as List<dynamic>?)
+              ?.map((e) => TagModel.fromJson(e))
+              .toList() ??
+          [],
+      discounts:
+          (json['discounts'] as List<dynamic>?)
+              ?.map((e) => DiscountModel.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 
@@ -134,6 +153,8 @@ class ProductModel {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'category': category?.toJson(),
+      'tags': tags.map((e) => e.toJson()).toList(),
+      'discounts': discounts.map((e) => e.toJson()).toList(),
     };
   }
 

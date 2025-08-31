@@ -7,6 +7,8 @@ class CategoryModel {
   final String name;
   final String? imageUrl;
   final String? parentId;
+  final bool isActive;
+  final String userId;
   final List<CategoryModel> children;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -16,6 +18,8 @@ class CategoryModel {
     required this.name,
     this.imageUrl,
     this.parentId,
+    required this.isActive,
+    required this.userId,
     this.children = const [],
     this.createdAt,
     this.updatedAt,
@@ -25,8 +29,12 @@ class CategoryModel {
     return CategoryModel(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      imageUrl: ApiCleanUrl.cleanCategoryImageUrl(json['image_url']?.toString()),
+      imageUrl: ApiCleanUrl.cleanCategoryImageUrl(
+        json['image_url']?.toString(),
+      ),
       parentId: json['parent_id']?.toString(),
+      isActive: json['is_active'] ?? true,
+      userId: json['user_id'] ?? '',
       children:
           (json['children'] as List<dynamic>?)
               ?.map(
@@ -46,6 +54,8 @@ class CategoryModel {
       'name': name,
       'image_url': imageUrl,
       'parent_id': parentId,
+      'is_active': isActive,
+      'user_id': userId,
       'children': children.map((child) => child.toJson()).toList(),
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),

@@ -20,9 +20,13 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
               child: Form(
                 key: controller.formKey,
                 child: Obx(
-                  () => IndexedStack(
+                  () => IndexedStack(  // Fixed: Use IndexedStack for simplicity
                     index: controller.currentStep.value,
-                    children: [_buildStep1(), _buildStep2(), _buildStep3()],
+                    children: [
+                      _buildStep1(),
+                      _buildStep2(),
+                      _buildStep3(),
+                    ],
                   ),
                 ),
               ),
@@ -92,36 +96,18 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           children: [
             Row(
               children: [
-                _buildStepIndicator(
-                  0,
-                  'Images & Basic',
-                  controller.currentStep.value >= 0,
-                ),
-                Expanded(
-                  child: _buildProgressLine(controller.currentStep.value >= 1),
-                ),
-                _buildStepIndicator(
-                  1,
-                  'Measurements',
-                  controller.currentStep.value >= 1,
-                ),
-                Expanded(
-                  child: _buildProgressLine(controller.currentStep.value >= 2),
-                ),
-                _buildStepIndicator(
-                  2,
-                  'Details',
-                  controller.currentStep.value >= 2,
-                ),
+                _buildStepIndicator(0, 'Images & Basic', controller.currentStep.value >= 0),
+                Expanded(child: _buildProgressLine(controller.currentStep.value >= 1)),
+                _buildStepIndicator(1, 'Measurements', controller.currentStep.value >= 1),
+                Expanded(child: _buildProgressLine(controller.currentStep.value >= 2)),
+                _buildStepIndicator(2, 'Details', controller.currentStep.value >= 2),
               ],
             ),
             const SizedBox(height: 12),
             LinearProgressIndicator(
               value: controller.progress,
               backgroundColor: AppColors.grey200,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
               minHeight: 4,
             ),
           ],
@@ -254,7 +240,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             SizedBox(height: 4),
             Text(
               'Upload high-quality images for better visibility',
-              style: TextStyle(fontSize: 12, color: AppColors.grey500),
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.grey500,
+              ),
             ),
           ],
         ),
@@ -271,9 +260,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
         itemBuilder: (context, index) {
           return Container(
             width: 150,
-            margin: EdgeInsets.only(
-              right: index < controller.selectedImages.length - 1 ? 12 : 0,
-            ),
+            margin: EdgeInsets.only(right: index < controller.selectedImages.length - 1 ? 12 : 0),
             child: Stack(
               children: [
                 Container(
@@ -312,10 +299,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                     bottom: 8,
                     left: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
@@ -443,8 +427,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                   value: controller.selectedMeasureUnit.value,
                   items: controller.measureUnits,
                   itemBuilder: (unit) => unit.toUpperCase(),
-                  onChanged: (unit) =>
-                      controller.selectedMeasureUnit.value = unit,
+                  onChanged: (unit) => controller.selectedMeasureUnit.value = unit,
                   icon: Icons.straighten,
                 ),
               ),
@@ -588,7 +571,9 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             (entry) => Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.grey300)),
+                border: Border(
+                  top: BorderSide(color: AppColors.grey300),
+                ),
               ),
               child: Row(
                 children: [
@@ -609,10 +594,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                   ),
                   IconButton(
                     onPressed: () => controller.removeAttribute(entry.key),
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: AppColors.error,
-                    ),
+                    icon: const Icon(Icons.delete_outline, color: AppColors.error),
                   ),
                 ],
               ),
@@ -717,7 +699,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(fontSize: 14, color: AppColors.grey600),
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.grey600,
+            ),
           ),
           const SizedBox(height: 20),
           child,
@@ -752,10 +737,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }
@@ -784,10 +766,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        prefixIcon: Icon(
-          icon,
-          color: enabled ? AppColors.grey500 : AppColors.grey400,
-        ),
+        prefixIcon: Icon(icon, color: enabled ? AppColors.grey500 : AppColors.grey400),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.grey300),
@@ -804,10 +783,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.grey200),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }

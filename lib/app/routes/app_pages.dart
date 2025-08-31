@@ -19,6 +19,7 @@ import '../modules/seller_panel/seller_create_product/bindings/seller_create_pro
 import '../modules/seller_panel/seller_create_product/views/seller_create_product_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
+import '../modules/seller_panel/seller_products/views/seller_products_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -99,6 +100,11 @@ class AppPages {
       name: _Paths.SELLER_CREATE_PRODUCT,
       page: () => const SellerCreateProductView(),
       binding: SellerCreateProductBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_PRODUCTS,
+      page: () => const SellerProductsView(),
+      binding: SellerDashboardBinding(),
     ),
   ];
 }

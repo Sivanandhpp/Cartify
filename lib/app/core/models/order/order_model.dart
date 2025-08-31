@@ -1,6 +1,5 @@
 // lib/app/core/models/order/order_model.dart
 
-import 'package:cartify/app/core/models/user/address_model.dart';
 import 'package:cartify/app/core/models/order/order_item_model.dart';
 import 'package:cartify/app/core/services/log_service.dart';
 
@@ -10,7 +9,7 @@ class OrderModel {
   final String userId;
   final List<OrderItem> items;
   final double totalAmount;
-  final Address shippingAddress;
+  final ShippingAddress shippingAddress;
   final OrderStatus status;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -31,20 +30,24 @@ class OrderModel {
       return OrderModel(
         id: json['id']?.toString() ?? '',
         userId: json['user_id']?.toString() ?? '',
-        items: (json['items'] as List<dynamic>?)
-                ?.map((item) => OrderItem.fromJson(item as Map<String, dynamic>))
+        items:
+            (json['items'] as List<dynamic>?)
+                ?.map(
+                  (item) => OrderItem.fromJson(item as Map<String, dynamic>),
+                )
                 .toList() ??
             [],
         // Safe parsing for total_amount (handle both string and number)
         totalAmount: _parseDouble(json['total_amount']) ?? 0.0,
-        shippingAddress: Address.fromOrderShippingJson(
+        shippingAddress: ShippingAddress.fromJson(
           json['shipping_address'] as Map<String, dynamic>? ?? {},
         ),
         status: OrderStatus.values.firstWhere(
           (e) => e.toString().split('.').last == json['status'],
           orElse: () => OrderStatus.PENDING,
         ),
-        createdAt: DateTime.tryParse(json['created_at']?.toString() ?? '') ??
+        createdAt:
+            DateTime.tryParse(json['created_at']?.toString() ?? '') ??
             DateTime.now(),
         updatedAt: json['updated_at'] != null
             ? DateTime.tryParse(json['updated_at'].toString())
@@ -63,13 +66,13 @@ class OrderModel {
   /// Helper method to safely parse double values from API response
   static double? _parseDouble(dynamic value) {
     if (value == null) return null;
-    
+
     if (value is double) return value;
     if (value is int) return value.toDouble();
     if (value is String) {
       return double.tryParse(value);
     }
-    
+
     return null;
   }
 
@@ -102,6 +105,55 @@ class OrderModel {
   /// Get count of items by status
   int getItemCountByStatus(OrderItemStatus status) {
     return items.where((item) => item.status == status).length;
+  }
+}
+
+class ShippingAddress {
+  final String recipientName;
+  final String phone;
+  final String street;
+  final String city;
+  final String state;
+  final String pincode;
+  final String addressType;
+
+  ShippingAddress({
+    required this.recipientName,
+    required this.phone,
+    required this.street,
+    required this.city,
+    required this.state,
+    required this.pincode,
+    required this.addressType,
+  });
+
+  factory ShippingAddress.fromJson(Map<String, dynamic> json) {
+    return ShippingAddress(
+      recipientName: json['recipient_name'] ?? '',
+      phone: json['phone'] ?? '',
+      street: json['street'] ?? '',
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
+      pincode: json['pincode'] ?? '',
+      addressType: json['address_type'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'recipient_name': recipientName,
+      'phone': phone,
+      'street': street,
+      'city': city,
+      'state': state,
+      'pincode': pincode,
+      'address_type': addressType,
+    };
+  }
+    /// Gets formatted address string for display
+  String get formattedAddress {
+    final parts = [street, city, state, pincode];
+    return parts.join(', ');
   }
 }
 

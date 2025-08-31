@@ -19,7 +19,7 @@ class SellerCreateProductController extends GetxController {
   // Form key
   final formKey = GlobalKey<FormState>();
 
-  // Page controller for navigation - make it nullable initially
+  // Page controller for navigation - Fixed initialization
   PageController? _pageController;
   PageController get pageController {
     _pageController ??= PageController();
@@ -58,7 +58,7 @@ class SellerCreateProductController extends GetxController {
     measureAmountController.dispose();
     attributeKeyController.dispose();
     attributeValueController.dispose();
-    _pageController?.dispose();
+    _pageController?.dispose();  // Fixed: Proper disposal
     super.onClose();
   }
 
@@ -153,12 +153,12 @@ class SellerCreateProductController extends GetxController {
     attributes.remove(key);
   }
 
-  // Step navigation - Fixed approach
+  // Step navigation - Fixed with safety checks
   void nextStep() {
     if (currentStep.value < 2) {
       if (validateCurrentStep()) {
         currentStep.value++;
-        // Use a post-frame callback to ensure the widget is built
+        // Fixed: Check if controller is attached before animating
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_pageController != null && _pageController!.hasClients) {
             _pageController!.animateToPage(
@@ -175,7 +175,7 @@ class SellerCreateProductController extends GetxController {
   void previousStep() {
     if (currentStep.value > 0) {
       currentStep.value--;
-      // Use a post-frame callback to ensure the widget is built
+      // Fixed: Same safety check
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_pageController != null && _pageController!.hasClients) {
           _pageController!.animateToPage(
@@ -185,13 +185,6 @@ class SellerCreateProductController extends GetxController {
           );
         }
       });
-    }
-  }
-
-  // Alternative method: Direct step change without animation for now
-  void goToStep(int step) {
-    if (step >= 0 && step <= 2) {
-      currentStep.value = step;
     }
   }
 
@@ -289,7 +282,7 @@ class SellerCreateProductController extends GetxController {
     return true;
   }
 
-  // Create product
+  // Create product - Fixed to handle new model fields
   Future<void> createProduct() async {
     if (!formKey.currentState!.validate() || !validateCurrentStep()) {
       return;
@@ -298,7 +291,7 @@ class SellerCreateProductController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Create product DTO
+      // Create product DTO - Fixed: Use correct field names
       final dto = CreateProductDto(
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),

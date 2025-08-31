@@ -1,5 +1,6 @@
 import 'package:cartify/app/modules/seller_panel/seller_dashboard/views/widgets/bottom_nav_bar.dart';
 import 'package:cartify/app/modules/seller_panel/seller_home/views/seller_home_view.dart';
+import 'package:cartify/app/modules/seller_panel/seller_products/views/seller_products_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class SellerDashboardView extends GetView<SellerDashboardController> {
         physics: const ClampingScrollPhysics(),
         children: const [
           SellerHomeView(),
+          SellerProductsView()
           // SellerCategoriesView(),
           // SellerWishlistView(),
           // SellerOffersView(),

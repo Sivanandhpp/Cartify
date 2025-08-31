@@ -22,10 +22,22 @@ Widget buildBottomNavBar() {
       unselectedFontSize: 12,
       items: [
         const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        const BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
-        const BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Wishlist'),
-        const BottomNavigationBarItem(icon: Icon(Icons.local_offer), label: 'Offers'),
-        const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.category),
+          label: 'Categories',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.production_quantity_limits),
+          label: 'Products',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.local_offer),
+          label: 'Offers',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
       ],
     ),
   );

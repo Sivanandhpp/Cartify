@@ -8,10 +8,11 @@ class UserModel {
   final String phoneNumber;
   final String? name;
   final String? email;
-  final String role;
+  final String role; // enum: 'buyer', 'seller', 'admin'
   final String? profilePhotoUrl;
   final bool isActive;
-  final DateTime createdAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   UserModel({
     required this.id,
@@ -21,22 +22,26 @@ class UserModel {
     required this.role,
     this.profilePhotoUrl,
     required this.isActive,
-    required this.createdAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   /// Creates a [UserModel] from a JSON object.
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
-      phoneNumber: json['phone_number'],
+      id: json['id'] ?? '',
+      phoneNumber: json['phone_number'] ?? '',
       name: json['name'],
       email: json['email'],
-      role: json['role'],
-      profilePhotoUrl: ApiCleanUrl.cleanProfilePictureUrl(json['profile_photo_url']),
+      role: json['role'] ?? 'buyer',
+      profilePhotoUrl: ApiCleanUrl.cleanImageUrl(json['profile_photo_url']),
       isActive: json['is_active'] ?? true,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 
@@ -50,10 +55,12 @@ class UserModel {
       'role': role,
       'profile_photo_url': profilePhotoUrl,
       'is_active': isActive,
-      'created_at': createdAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 
   /// Check if user has a valid profile picture
-  bool get hasProfilePicture => profilePhotoUrl != null && profilePhotoUrl!.isNotEmpty;
+  bool get hasProfilePicture =>
+      profilePhotoUrl != null && profilePhotoUrl!.isNotEmpty;
 }

@@ -1,0 +1,276 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/seller_products_controller.dart';
+import 'widgets/seller_product_card.dart';
+
+class SellerProductsView extends GetView<SellerProductsController> {
+  const SellerProductsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text('My Products'),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        actions: [
+          IconButton(
+            onPressed: controller.addNewProduct,
+            icon: const Icon(Icons.add),
+            tooltip: 'Add Product',
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Statistics Cards
+          _buildStatisticsSection(),
+          
+          // Search and Filter Section
+          _buildSearchAndFilterSection(),
+          
+          // Products List
+          Expanded(
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              
+              if (controller.filteredProducts.isEmpty) {
+                return _buildEmptyState();
+              }
+              
+              return RefreshIndicator(
+                onRefresh: controller.refreshProducts,
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  itemCount: controller.filteredProducts.length,
+                  itemBuilder: (context, index) {
+                    final product = controller.filteredProducts[index];
+                    return SellerProductCard(
+                      product: product,
+                      onEdit: () => controller.editProduct(product),
+                      onDelete: () => controller.deleteProduct(product),
+                      onToggleStatus: () => controller.toggleProductStatus(product),
+                    );
+                  },
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller.addNewProduct,
+        child: const Icon(Icons.add),
+        tooltip: 'Add New Product',
+      ),
+    );
+  }
+
+  Widget _buildStatisticsSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Obx(() => Row(
+        children: [
+          Expanded(
+            child: _buildStatCard(
+              'Total',
+              controller.totalProducts.value.toString(),
+              Icons.inventory,
+              Colors.blue,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildStatCard(
+              'Active',
+              controller.activeProducts.value.toString(),
+              Icons.visibility,
+              Colors.green,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildStatCard(
+              'Inactive',
+              controller.inactiveProducts.value.toString(),
+              Icons.visibility_off,
+              Colors.orange,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildStatCard(
+              'Low Stock',
+              controller.lowStockProducts.value.toString(),
+              Icons.warning,
+              Colors.red,
+            ),
+          ),
+        ],
+      )),
+    );
+  }
+
+  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchAndFilterSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Column(
+        children: [
+          // Search Bar
+          TextField(
+            onChanged: controller.searchProducts,
+            decoration: InputDecoration(
+              hintText: 'Search products...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: Colors.blue),
+              ),
+              filled: true,
+              fillColor: Colors.grey[50],
+            ),
+          ),
+          
+          const SizedBox(height: 12),
+          
+          // Filter Chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                // Category Filter
+                Obx(() => _buildFilterChip(
+                  'Category',
+                  controller.selectedCategory.value,
+                  ['All', 'Electronics', 'Clothing', 'Food', 'Sports'],
+                  controller.updateCategoryFilter,
+                )),
+                
+                const SizedBox(width: 8),
+                
+                // Status Filter
+                Obx(() => _buildFilterChip(
+                  'Status',
+                  controller.selectedStatus.value,
+                  ['All', 'Active', 'Inactive'],
+                  controller.updateStatusFilter,
+                )),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(
+    String label,
+    String selectedValue,
+    List<String> options,
+    Function(String) onSelected,
+  ) {
+    return PopupMenuButton<String>(
+      onSelected: onSelected,
+      child: Chip(
+        label: Text('$label: $selectedValue'),
+        deleteIcon: const Icon(Icons.arrow_drop_down, size: 18),
+        onDeleted: () {},
+        backgroundColor: selectedValue != 'All' ? Colors.blue[100] : Colors.grey[200],
+      ),
+      itemBuilder: (context) => options.map((option) =>
+        PopupMenuItem(
+          value: option,
+          child: Text(option),
+        ),
+      ).toList(),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.inventory_2_outlined,
+            size: 64,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No products found',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add your first product to get started',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: controller.addNewProduct,
+            icon: const Icon(Icons.add),
+            label: const Text('Add Product'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
