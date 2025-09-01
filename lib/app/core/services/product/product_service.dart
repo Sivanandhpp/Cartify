@@ -351,4 +351,19 @@ class ProductService {
     final dto = UpdateProductDto(isActive: isActive);
     return updateProduct(productId, dto);
   }
+
+  /// GET /tags: Fetch all available tags
+  Future<List<TagModel>> getTags() async {
+    try {
+      final response = await _apiClient.dio.get('/tags');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => TagModel.fromJson(json)).toList();
+      }
+      throw Exception('Failed to fetch tags');
+    } on DioException catch (e) {
+      LogService.error('Error fetching tags: ${e.response?.data}');
+      throw e;
+    }
+  }
 }

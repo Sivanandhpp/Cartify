@@ -5,10 +5,11 @@ class CreateProductDto {
   final double price;
   final int stockQuantity;
   final String categoryId;
-  final List<String>? tags;
+  final List<String>? tags; // Array of tag names
   final String? measureUnitCode;
   final double? measureAmount;
   final Map<String, dynamic>? attributes;
+  final List<Map<String, dynamic>>? discounts; // Array of discount objects
 
   CreateProductDto({
     required this.name,
@@ -20,6 +21,7 @@ class CreateProductDto {
     this.measureUnitCode,
     this.measureAmount,
     this.attributes,
+    this.discounts,
   });
 
   Map<String, dynamic> toJson() {
@@ -33,6 +35,7 @@ class CreateProductDto {
       'measure_unit_code': measureUnitCode,
       'measure_amount': measureAmount,
       'attributes': attributes,
+      'discounts': discounts,
     };
   }
 
