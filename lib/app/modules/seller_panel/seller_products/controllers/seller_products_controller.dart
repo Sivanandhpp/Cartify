@@ -1,20 +1,24 @@
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class SellerProductsController extends GetxController {
+  // Services
+  final ProductService _productService = Get.find<ProductService>();
+
   // Observable lists
   final RxList<ProductModel> products = <ProductModel>[].obs;
   final RxList<ProductModel> filteredProducts = <ProductModel>[].obs;
-  
+
   // Loading states
   final RxBool isLoading = false.obs;
   final RxBool isRefreshing = false.obs;
-  
+
   // Search and filter
   final RxString searchQuery = ''.obs;
   final RxString selectedCategory = 'All'.obs;
   final RxString selectedStatus = 'All'.obs;
-  
+
   // Statistics
   final RxInt totalProducts = 0.obs;
   final RxInt activeProducts = 0.obs;
@@ -25,9 +29,13 @@ class SellerProductsController extends GetxController {
   void onInit() {
     super.onInit();
     loadProducts();
-    
+
     // Listen to search changes
-    debounce(searchQuery, (_) => filterProducts(), time: const Duration(milliseconds: 500));
+    debounce(
+      searchQuery,
+      (_) => filterProducts(),
+      time: const Duration(milliseconds: 500),
+    );
   }
 
   @override
@@ -40,20 +48,50 @@ class SellerProductsController extends GetxController {
     super.onClose();
   }
 
-  // Load products (mock data for demo)
+  // Load products from API (replaces mock data)
   Future<void> loadProducts() async {
     try {
       isLoading.value = true;
-      
-      // Simulate API call delay
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // Mock data - replace with actual API call
-      filteredProducts.value = products;
-      
-      updateStatistics();
+
+      LogService.info('Loading seller products from API');
+
+      // Actual API call to GET /products/admin
+      final fetchedProducts = await _productService.getMyProducts();
+
+      if (fetchedProducts.isNotEmpty) {
+        products.assignAll(fetchedProducts);
+        filteredProducts.assignAll(fetchedProducts);
+
+        LogService.info(
+          'Successfully loaded ${fetchedProducts.length} products',
+        );
+
+        updateStatistics();
+
+        NotificationService.showSuccess(
+          title: 'Products Loaded',
+          message: 'Found ${fetchedProducts.length} products in your inventory',
+        );
+      } else {
+        // Handle empty result
+        products.clear();
+        filteredProducts.clear();
+        updateStatistics();
+
+        LogService.info('No products found for seller');
+      }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load products');
+      LogService.error('Failed to load seller products', e);
+
+      NotificationService.showError(
+        title: 'Loading Failed',
+        message: 'Failed to load your products. Please try again.',
+      );
+
+      // Clear products on error
+      products.clear();
+      filteredProducts.clear();
+      updateStatistics();
     } finally {
       isLoading.value = false;
     }
@@ -63,9 +101,58 @@ class SellerProductsController extends GetxController {
   Future<void> refreshProducts() async {
     try {
       isRefreshing.value = true;
+      LogService.info('Refreshing seller products');
+
       await loadProducts();
+
+      LogService.info('Products refreshed successfully');
+    } catch (e) {
+      LogService.error('Failed to refresh products', e);
+
+      NotificationService.showError(
+        title: 'Refresh Failed',
+        message: 'Failed to refresh products. Please try again.',
+      );
     } finally {
       isRefreshing.value = false;
+    }
+  }
+
+  // Load products by category (optional filter)
+  Future<void> loadProductsByCategory(String categoryId) async {
+    try {
+      isLoading.value = true;
+
+      LogService.info('Loading seller products by category', {
+        'categoryId': categoryId,
+      });
+
+      // Note: If your ProductService doesn't have getMyProductsByCategory,
+      // you can modify the getMyProducts method to accept categoryId parameter
+      // For now, we'll load all and filter locally
+      await loadProducts();
+
+      // Filter by category locally if needed
+      if (categoryId != 'All') {
+        final categoryFiltered = products
+            .where(
+              (product) =>
+                  product.categoryId == categoryId ||
+                  product.category?.id == categoryId,
+            )
+            .toList();
+
+        filteredProducts.assignAll(categoryFiltered);
+      }
+    } catch (e) {
+      LogService.error('Failed to load products by category', e);
+
+      NotificationService.showError(
+        title: 'Loading Failed',
+        message: 'Failed to load products for selected category.',
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -76,32 +163,52 @@ class SellerProductsController extends GetxController {
 
   // Filter products based on search, category, and status
   void filterProducts() {
-    List<ProductModel> filtered = products;
-    
+    List<ProductModel> filtered = List.from(products);
+
     // Filter by search query
     if (searchQuery.value.isNotEmpty) {
-      filtered = filtered.where((product) =>
-        product.name?.toLowerCase().contains(searchQuery.value.toLowerCase()) == true ||
-        product.description?.toLowerCase().contains(searchQuery.value.toLowerCase()) == true
-      ).toList();
+      filtered = filtered
+          .where(
+            (product) =>
+                product.name.toLowerCase().contains(
+                  searchQuery.value.toLowerCase(),
+                ) ||
+                (product.description?.toLowerCase().contains(
+                      searchQuery.value.toLowerCase(),
+                    ) ??
+                    false),
+          )
+          .toList();
     }
-    
+
     // Filter by category
     if (selectedCategory.value != 'All') {
-      filtered = filtered.where((product) =>
-        product.categoryId == selectedCategory.value
-      ).toList();
+      filtered = filtered
+          .where(
+            (product) =>
+                product.categoryId == selectedCategory.value ||
+                product.category?.id == selectedCategory.value,
+          )
+          .toList();
     }
-    
+
     // Filter by status
     if (selectedStatus.value != 'All') {
       bool isActive = selectedStatus.value == 'Active';
-      filtered = filtered.where((product) =>
-        product.isActive == isActive
-      ).toList();
+      filtered = filtered
+          .where((product) => product.isActive == isActive)
+          .toList();
     }
-    
-    filteredProducts.value = filtered;
+
+    filteredProducts.assignAll(filtered);
+
+    LogService.debug('Filtered products', {
+      'originalCount': products.length,
+      'filteredCount': filtered.length,
+      'searchQuery': searchQuery.value,
+      'selectedCategory': selectedCategory.value,
+      'selectedStatus': selectedStatus.value,
+    });
   }
 
   // Update category filter
@@ -116,64 +223,168 @@ class SellerProductsController extends GetxController {
     filterProducts();
   }
 
-  // Toggle product status
-  void toggleProductStatus(ProductModel product) {
-    final index = products.indexWhere((p) => p.id == product.id);
-    if (index != -1) {
-      products[index] = product.copyWith(isActive: !(product.isActive ?? false));
-      filterProducts();
-      updateStatistics();
-      
-      Get.snackbar(
-        'Success',
-        'Product status updated successfully',
-        snackPosition: SnackPosition.BOTTOM,
+  // Toggle product status (with API call)
+  Future<void> toggleProductStatus(ProductModel product) async {
+    try {
+      final newStatus = !(product.isActive ?? false);
+
+      LogService.info('Toggling product status', {
+        'productId': product.id,
+        'currentStatus': product.isActive,
+        'newStatus': newStatus,
+      });
+
+      // Call API to update product status
+      final updatedProduct = await _productService.toggleProductStatus(
+        product.id,
+        newStatus,
+      );
+
+      if (updatedProduct != null) {
+        // Update local product list
+        final index = products.indexWhere((p) => p.id == product.id);
+        if (index != -1) {
+          products[index] = updatedProduct;
+          filterProducts();
+          updateStatistics();
+
+          NotificationService.showSuccess(
+            title: 'Status Updated',
+            message: 'Product status updated successfully',
+          );
+
+          LogService.info('Product status updated successfully', {
+            'productId': product.id,
+            'newStatus': updatedProduct.isActive,
+          });
+        }
+      } else {
+        throw Exception('Failed to update product status');
+      }
+    } catch (e) {
+      LogService.error('Failed to toggle product status', {
+        'productId': product.id,
+        'error': e.toString(),
+      });
+
+      NotificationService.showError(
+        title: 'Update Failed',
+        message: 'Failed to update product status. Please try again.',
       );
     }
   }
 
-  // Delete product
-  void deleteProduct(ProductModel product) {
+  // Delete product (with API call)
+  Future<void> deleteProduct(ProductModel product) async {
     Get.defaultDialog(
       title: 'Delete Product',
-      middleText: 'Are you sure you want to delete "${product.name}"?',
+      middleText:
+          'Are you sure you want to delete "${product.name}"? This action cannot be undone.',
       textCancel: 'Cancel',
       textConfirm: 'Delete',
-      confirmTextColor: Get.theme.colorScheme.onError,
-      buttonColor: Get.theme.colorScheme.error,
-      onConfirm: () {
-        products.removeWhere((p) => p.id == product.id);
-        filterProducts();
-        updateStatistics();
-        Get.back();
-        
-        Get.snackbar(
-          'Success',
-          'Product deleted successfully',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+      confirmTextColor: AppColors.white,
+      buttonColor: AppColors.error,
+      onConfirm: () async {
+        Get.back(); // Close dialog first
+
+        try {
+          LogService.info('Deleting product', {
+            'productId': product.id,
+            'productName': product.name,
+          });
+
+          final success = await _productService.deleteProduct(product.id);
+
+          if (success) {
+            // Remove from local lists
+            products.removeWhere((p) => p.id == product.id);
+            filterProducts();
+            updateStatistics();
+
+            NotificationService.showSuccess(
+              title: 'Product Deleted',
+              message: 'Product "${product.name}" deleted successfully',
+            );
+
+            LogService.info('Product deleted successfully', {
+              'productId': product.id,
+            });
+          } else {
+            throw Exception('Failed to delete product');
+          }
+        } catch (e) {
+          LogService.error('Failed to delete product', {
+            'productId': product.id,
+            'error': e.toString(),
+          });
+
+          NotificationService.showError(
+            title: 'Delete Failed',
+            message: 'Failed to delete product. Please try again.',
+          );
+        }
       },
     );
   }
 
   // Edit product
   void editProduct(ProductModel product) {
+    LogService.info('Navigating to edit product', {
+      'productId': product.id,
+      'productName': product.name,
+    });
+
     // Navigate to edit product screen
     Get.toNamed('/seller/products/edit', arguments: product);
   }
 
   // Add new product
   void addNewProduct() {
-    // Navigate to add product screen
-    Get.toNamed('/seller/products/add');
+    LogService.info('Navigating to add new product');
+
+    // Navigate to add product screen (your existing create product flow)
+    Get.toNamed(Routes.SELLER_CREATE_PRODUCT);
   }
 
-  // Update statistics
+  // Update statistics based on current products
   void updateStatistics() {
     totalProducts.value = products.length;
     activeProducts.value = products.where((p) => p.isActive == true).length;
     inactiveProducts.value = products.where((p) => p.isActive == false).length;
-    lowStockProducts.value = products.where((p) => (p.stockQuantity ?? 0) < 10).length;
+    lowStockProducts.value = products.where((p) => p.stockQuantity < 10).length;
+
+    LogService.debug('Updated product statistics', {
+      'total': totalProducts.value,
+      'active': activeProducts.value,
+      'inactive': inactiveProducts.value,
+      'lowStock': lowStockProducts.value,
+    });
   }
 
+  // Get products by status (helper method)
+  List<ProductModel> getProductsByStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'active':
+        return products.where((p) => p.isActive == true).toList();
+      case 'inactive':
+        return products.where((p) => p.isActive == false).toList();
+      case 'low_stock':
+        return products.where((p) => p.stockQuantity < 10).toList();
+      default:
+        return products.toList();
+    }
+  }
+
+  // Get products by category (helper method)
+  List<ProductModel> getProductsByCategory(String categoryId) {
+    if (categoryId == 'All') return products.toList();
+
+    return products
+        .where(
+          (product) =>
+              product.categoryId == categoryId ||
+              product.category?.id == categoryId,
+        )
+        .toList();
+  }
 }
