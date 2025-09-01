@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cartify/app/core/widgets/app_dropdown.dart';
 import 'package:cartify/app/core/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                 key: controller.formKey,
                 child: Obx(
                   () => IndexedStack(
-                    // Fixed: Use IndexedStack for simplicity
+                    // Use IndexedStack for simplicity
                     index: controller.currentStep.value,
                     children: [
                       _buildStep1(), // Product Basics
@@ -500,7 +499,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                       flex: 3,
                       child: AppTextField(
                         controller: controller.measureAmountController,
-                        label: 'Measure Amount (Optional)',
+                        label: 'Amount',
                         hint: 'e.g., 500',
                         icon: Icons.straighten,
                         keyboardType: TextInputType.number,
@@ -512,7 +511,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                       child: Obx(
                         () => AppDropdown<String>(
                           label: 'Unit',
-                          hint: 'Select unit',
+                          hint: 'Unit',
                           value: controller.selectedMeasureUnit.value,
                           items: controller.measureUnits,
                           itemBuilder: (unit) => unit.toUpperCase(),
@@ -548,7 +547,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
               Expanded(
                 child: AppTextField(
                   controller: controller.attributeKeyController,
-                  label: 'Attribute Name',
+                  label: 'Name',
                   hint: 'e.g., Color',
                   icon: Icons.label_outline,
                 ),
@@ -557,7 +556,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
               Expanded(
                 child: AppTextField(
                   controller: controller.attributeValueController,
-                  label: 'Attribute Value',
+                  label: 'Value',
                   hint: 'e.g., Blue',
                   icon: Icons.text_fields,
                 ),
@@ -815,7 +814,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                           Expanded(
                             child: AppTextField(
                               controller: controller.discountAmountController,
-                              label: 'Discount Amount (₹)',
+                              label: 'Amount (₹)',
                               hint: 'e.g., 50.00',
                               icon: Icons.currency_rupee,
                               keyboardType: TextInputType.number,
@@ -825,7 +824,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                           Expanded(
                             child: AppTextField(
                               controller: controller.discountPercentController,
-                              label: 'Discount Percentage (%)',
+                              label: 'Percentage (%)',
                               hint: 'e.g., 10.5',
                               icon: Icons.percent,
                               keyboardType: TextInputType.number,
@@ -990,6 +989,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
         color: AppColors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
@@ -1003,42 +1003,25 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           children: [
             if (controller.canGoPrevious)
               Expanded(
-                child: OutlinedButton(
+                child: AppButton.outlined(
+                  text: 'Previous',
                   onPressed: controller.previousStep,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text('Previous'),
+                  icon: Icons.arrow_back_ios,
                 ),
               ),
             if (controller.canGoPrevious) const SizedBox(width: 12),
             Expanded(
               flex: controller.canGoPrevious ? 1 : 2,
-              child: controller.isLoading.value
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: controller.isLastStep
-                          ? controller.createProduct
-                          : controller.nextStep,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        controller.isLastStep ? 'Create Product' : 'Next',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+              child: AppButton(
+                text: controller.isLastStep ? 'Submit' : 'Next',
+                onPressed: controller.isLastStep
+                    ? controller.createProduct
+                    : controller.nextStep,
+                isLoading: controller.isLoading.value,
+                icon: controller.isLastStep
+                    ? Icons.check
+                    : Icons.arrow_forward_ios,
+              ),
             ),
           ],
         ),
@@ -1087,57 +1070,4 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       ),
     );
   }
-
-
-  // Widget AppDropdown<T>({
-  //   required String label,
-  //   required String hint,
-  //   required T? value,
-  //   required List<T> items,
-  //   required String Function(T) itemBuilder,
-  //   required void Function(T?) onChanged,
-  //   required IconData icon,
-  //   bool enabled = true,
-  // }) {
-  //   return DropdownButtonFormField<T>(
-  //     value: value,
-  //     items: items
-  //         .map(
-  //           (item) => DropdownMenuItem<T>(
-  //             value: item,
-  //             child: Text(itemBuilder(item)),
-  //           ),
-  //         )
-  //         .toList(),
-  //     onChanged: enabled ? onChanged : null,
-  //     decoration: InputDecoration(
-  //       labelText: label,
-  //       hintText: hint,
-  //       prefixIcon: Icon(
-  //         icon,
-  //         color: enabled ? AppColors.grey500 : AppColors.grey400,
-  //       ),
-  //       border: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(12),
-  //         borderSide: const BorderSide(color: AppColors.grey300),
-  //       ),
-  //       enabledBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(12),
-  //         borderSide: const BorderSide(color: AppColors.grey300),
-  //       ),
-  //       focusedBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(12),
-  //         borderSide: const BorderSide(color: AppColors.primary, width: 2),
-  //       ),
-  //       disabledBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(12),
-  //         borderSide: const BorderSide(color: AppColors.grey200),
-  //       ),
-  //       contentPadding: const EdgeInsets.symmetric(
-  //         horizontal: 16,
-  //         vertical: 16,
-  //       ),
-  //     ),
-  //   );
-  // }
 }
