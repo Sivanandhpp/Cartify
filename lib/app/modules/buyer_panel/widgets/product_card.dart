@@ -170,16 +170,16 @@ class ProductCard extends StatelessWidget {
                 ),
               ],
               // Alcohol Content - Using attributes
-              if (product.alcoholContent != null) ...[
-                Text(
-                  'ABV: ${product.alcoholContent!.toStringAsFixed(1)}%',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.orange[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+              // if (product.alcoholContent != null) ...[
+              //   Text(
+              //     'ABV: ${product.alcoholContent!.toStringAsFixed(1)}%',
+              //     style: TextStyle(
+              //       fontSize: 11,
+              //       color: Colors.orange[700],
+              //       fontWeight: FontWeight.w500,
+              //     ),
+              //   ),
+              // ],
             ],
           ),
           // Price Section - Using attributes
@@ -223,7 +223,7 @@ class ProductCard extends StatelessWidget {
               ),
           ],
         ),
-
+        
         // Discount Percentage
         if (product.hasOffer && !isOutOfStock) ...[
           const SizedBox(height: 2),

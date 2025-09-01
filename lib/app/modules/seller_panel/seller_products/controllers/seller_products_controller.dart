@@ -49,7 +49,6 @@ class SellerProductsController extends GetxController {
       await Future.delayed(const Duration(seconds: 1));
       
       // Mock data - replace with actual API call
-      products.value = _generateMockProducts();
       filteredProducts.value = products;
       
       updateStatistics();
@@ -174,62 +173,7 @@ class SellerProductsController extends GetxController {
     totalProducts.value = products.length;
     activeProducts.value = products.where((p) => p.isActive == true).length;
     inactiveProducts.value = products.where((p) => p.isActive == false).length;
-    lowStockProducts.value = products.where((p) => (p.stock ?? 0) < 10).length;
+    lowStockProducts.value = products.where((p) => (p.stockQuantity ?? 0) < 10).length;
   }
 
-  // Generate mock products for demo
-  List<ProductModel> _generateMockProducts() {
-    return [
-      ProductModel(
-        id: '1',
-        name: 'Wireless Bluetooth Headphones',
-        description: 'High-quality wireless headphones with noise cancellation',
-        price: 2999.99,
-        stockQuantity: 25,
-        isActive: true,
-        categoryId: 'Electronics',
-        images: ['https://via.placeholder.com/300x300?text=Headphones'],
-      ),
-      ProductModel(
-        id: '2',
-        name: 'Smart Fitness Watch',
-        description: 'Track your fitness goals with this advanced smartwatch',
-        price: 5999.99,
-        stock: 5,
-        isActive: true,
-        categoryId: 'Electronics',
-        images: ['https://via.placeholder.com/300x300?text=Watch'],
-      ),
-      ProductModel(
-        id: '3',
-        name: 'Organic Cotton T-Shirt',
-        description: 'Comfortable and eco-friendly cotton t-shirt',
-        price: 799.99,
-        stock: 0,
-        isActive: false,
-        categoryId: 'Clothing',
-        images: ['https://via.placeholder.com/300x300?text=TShirt'],
-      ),
-      ProductModel(
-        id: '4',
-        name: 'Premium Coffee Beans',
-        description: 'Freshly roasted premium coffee beans from South America',
-        price: 1299.99,
-        stock: 50,
-        isActive: true,
-        categoryId: 'Food',
-        images: ['https://via.placeholder.com/300x300?text=Coffee'],
-      ),
-      ProductModel(
-        id: '5',
-        name: 'Yoga Mat',
-        description: 'Non-slip yoga mat perfect for home workouts',
-        price: 1499.99,
-        stock: 15,
-        isActive: true,
-        categoryId: 'Sports',
-        images: ['https://via.placeholder.com/300x300?text=YogaMat'],
-      ),
-    ];
-  }
 }

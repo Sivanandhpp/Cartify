@@ -345,19 +345,19 @@ class ProductBottomSheet extends StatelessWidget {
   }
 
   Widget _buildSpecifications() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Specifications',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(
-          '• Alcohol Content: ${product.alcoholContent}%',
-          style: const TextStyle(fontSize: 16),
+          'add content',
+          style: TextStyle(fontSize: 16),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
       ],
     );
   }

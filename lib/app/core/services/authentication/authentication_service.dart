@@ -74,6 +74,8 @@ class AuthenticationService {
 
   /// Logs the user out by calling the logout endpoint and always clearing local tokens/user data.
   Future<void> logout() async {
+    LogService.warning('11User logged out - Starting logout process');
+
     bool networkFailed = false;
     try {
       // Try to inform the backend to invalidate the refresh token.
@@ -91,7 +93,7 @@ class AuthenticationService {
         message: 'Logged out locally. Could not reach server.',
       );
     }
-    Get.find<BuyerDashboardController>().resetDashboard();
+    // Get.find<BuyerDashboardController>().resetDashboard();
     Get.offAllNamed(Routes.SPLASH);
   }
 

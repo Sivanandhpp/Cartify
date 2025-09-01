@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/core/services/api_clean_url.dart';
+import 'package:get/get.dart';
 import 'category_model.dart';
 import 'tag_model.dart';
 import 'discount_model.dart';
@@ -30,30 +31,84 @@ class ProductModel {
   /// Arbitrary attributes (size, color, origin, etc.)
   final Map<String, dynamic>? attributes;
 
-  // Convenience getters for common attributes
+  /// Average rating parsed to double (string in API)
+  final double averageRating;
+
+  /// Product active status (optional, not in every response)
+  final bool? isActive;
+
+  final String? categoryId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  /// Nested category object if response includes it
+  final CategoryModel? category;
+
+  final List<TagModel> tags;
+  final List<DiscountModel> discounts;
+
   String? get brand => attributes?['brand']?.toString();
 
-  double? get offerPrice => _parseDouble(attributes?['offer_price']);
+  // Check if product has an offer (based on active discounts)
+  bool get hasOffer {
+    final now = DateTime.now();
+    return discounts.any((discount) {
+      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
+      return discount.isActive && isValidFrom && isValidUpto;
+    });
+  }
 
-  double? get offerPercentage => _parseDouble(attributes?['offer_percentage']);
+  // Get offer price (calculated from active discounts)
+  double? get offerPrice {
+    if (!hasOffer) return null;
+    double currentPrice = price;
+    final now = DateTime.now();
 
-  double? get alcoholContent =>
-      _parseDouble(attributes?['alcohol_content_abv']);
+    // First, apply percentage discounts
+    for (final discount in discounts) {
+      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
+      if (discount.isActive && isValidFrom && isValidUpto && discount.discountPercent != null) {
+        currentPrice *= (1 - discount.discountPercent! / 100);
+      }
+    }
 
-  // Check if product has an offer
-  bool get hasOffer => offerPrice != null && offerPrice! > 0;
+    // Then, apply amount discounts
+    for (final discount in discounts) {
+      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
+      if (discount.isActive && isValidFrom && isValidUpto && discount.discountAmount != null) {
+        currentPrice -= discount.discountAmount!;
+        if (currentPrice < 0) currentPrice = 0; // Prevent negative prices
+      }
+    }
 
-  // Get discount percentage (from attributes or calculated)
+    return currentPrice < price ? currentPrice : null;
+  }
+
+  // Get offer percentage (from the first active percentage discount)
+  double? get offerPercentage {
+    final now = DateTime.now();
+    final activePercentDiscount = discounts.firstWhereOrNull((discount) {
+      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
+      return discount.isActive && isValidFrom && isValidUpto && discount.discountPercent != null;
+    });
+    return activePercentDiscount?.discountPercent;
+  }
+
+  // Get discount percentage (from offerPercentage or calculated from offerPrice)
   double get discountPercentage {
     if (offerPercentage != null) return offerPercentage!;
-    if (hasOffer && offerPrice! < price) {
+    if (hasOffer && offerPrice != null) {
       return ((price - offerPrice!) / price) * 100;
     }
     return 0.0;
   }
 
   // Get effective price (offer price if available, otherwise regular price)
-  double get effectivePrice => hasOffer ? offerPrice! : price;
+  double get effectivePrice => hasOffer && offerPrice != null ? offerPrice! : price;
 
   // Display effective price
   String get displayEffectivePrice => '₹${effectivePrice.toStringAsFixed(2)}';
@@ -74,19 +129,6 @@ class ProductModel {
     return value as T?;
   }
 
-  /// Average rating parsed to double (string in API)
-  final double averageRating;
-
-  final String? categoryId;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-
-  /// Nested category object if response includes it
-  final CategoryModel? category;
-
-  final List<TagModel> tags;
-  final List<DiscountModel> discounts;
-
   ProductModel({
     required this.id,
     required this.name,
@@ -98,6 +140,7 @@ class ProductModel {
     List<String>? images,
     this.attributes,
     required this.averageRating,
+    this.isActive,
     this.categoryId,
     this.createdAt,
     this.updatedAt,
@@ -118,6 +161,7 @@ class ProductModel {
       images: ApiCleanUrl.cleanImageUrls(json['images'] ?? json['image_urls']),
       attributes: _parseAttributes(json['attributes']),
       averageRating: _parseDouble(json['average_rating']),
+      isActive: json['is_active'] as bool?, // Added: Parse isActive safely
       categoryId: json['category_id']?.toString(),
       createdAt: _parseDateTime(json['created_at']),
       updatedAt: _parseDateTime(json['updated_at']),
@@ -149,6 +193,7 @@ class ProductModel {
       'images': images,
       'attributes': attributes,
       'average_rating': averageRating.toStringAsFixed(2),
+      'is_active': isActive, // Added: Include isActive in JSON
       'category_id': categoryId,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
@@ -170,6 +215,47 @@ class ProductModel {
 
   /// Price formatted for UI (example, returns string; adapt to currency formatter)
   String get displayPrice => price.toStringAsFixed(2);
+
+  /// Create a copy with updated fields
+  ProductModel copyWith({
+    String? id,
+    String? name,
+    String? description,
+    double? price,
+    int? stockQuantity,
+    String? measureUnitCode,
+    double? measureAmount,
+    List<String>? images,
+    Map<String, dynamic>? attributes,
+    double? averageRating,
+    bool? isActive,
+    String? categoryId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    CategoryModel? category,
+    List<TagModel>? tags,
+    List<DiscountModel>? discounts,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      stockQuantity: stockQuantity ?? this.stockQuantity,
+      measureUnitCode: measureUnitCode ?? this.measureUnitCode,
+      measureAmount: measureAmount ?? this.measureAmount,
+      images: images ?? this.images,
+      attributes: attributes ?? this.attributes,
+      averageRating: averageRating ?? this.averageRating,
+      isActive: isActive ?? this.isActive,
+      categoryId: categoryId ?? this.categoryId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      category: category ?? this.category,
+      tags: tags ?? this.tags,
+      discounts: discounts ?? this.discounts,
+    );
+  }
 
   // -----------------------
   // Parsing helpers

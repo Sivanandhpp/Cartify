@@ -1,9 +1,10 @@
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/services/authentication/authentication_service.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class SellerHomeController extends GetxController {
+  final AuthenticationService authService =
+          Get.find<AuthenticationService>();
   // Dashboard stats
   final totalProducts = 245.obs;
   final totalOrders = 89.obs;
@@ -55,8 +56,18 @@ class SellerHomeController extends GetxController {
   }
 
   logout() async {
-    LogService.warning('User logged out');
-    final AuthenticationService authService = Get.find<AuthenticationService>();
-    await authService.logout();
+    try {
+      LogService.warning('User logged out - Starting logout process');
+      
+      LogService.info('AuthenticationService found, calling logout');
+      await authService.logout();
+      LogService.info('Logout completed successfully');
+    } catch (e) {
+      LogService.error('Logout failed in SellerHomeController: $e');
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to logout',
+      );
+    }
   }
 }

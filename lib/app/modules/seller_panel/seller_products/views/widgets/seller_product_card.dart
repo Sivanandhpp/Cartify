@@ -67,7 +67,7 @@ class SellerProductCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: onToggleStatus,
-                      child: Text(product.isActive ? 'Deactivate' : 'Activate'),  // Fixed: Use isActive
+                      child: Text(product.isActive == true ? 'Deactivate' : 'Activate'),  // Fixed: Use isActive
                     ),
                   ),
                 const SizedBox(width: 8),

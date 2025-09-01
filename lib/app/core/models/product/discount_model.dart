@@ -1,11 +1,13 @@
+import 'package:cartify/app/core/index.dart';
+
 class DiscountModel {
   final String id;
   final String productId;
-  final double? discountAmount;
-  final double? discountPercent;
+  final double? discountAmount; // Amount to subtract from price
+  final double? discountPercent; // Percentage to apply
   final bool isActive;
-  final DateTime validFrom;
-  final DateTime validUpto;
+  final DateTime? validFrom;
+  final DateTime? validUpto;
   final String createdBy;
 
   DiscountModel({
@@ -14,21 +16,21 @@ class DiscountModel {
     this.discountAmount,
     this.discountPercent,
     required this.isActive,
-    required this.validFrom,
-    required this.validUpto,
+    this.validFrom,
+    this.validUpto,
     required this.createdBy,
   });
 
   factory DiscountModel.fromJson(Map<String, dynamic> json) {
     return DiscountModel(
-      id: json['id'] ?? '',
-      productId: json['product_id'] ?? '',
-      discountAmount: json['discount_amount']?.toDouble(),
-      discountPercent: json['discount_percent']?.toDouble(),
-      isActive: json['is_active'] ?? true,
-      validFrom: DateTime.parse(json['valid_from']),
-      validUpto: DateTime.parse(json['valid_upto']),
-      createdBy: json['created_by'] ?? '',
+      id: json['id']?.toString() ?? '',
+      productId: json['product_id']?.toString() ?? '',
+      discountAmount: _parseDouble(json['discount_amount']), // Safe parsing
+      discountPercent: _parseDouble(json['discount_percent']), // Safe parsing
+      isActive: json['is_active'] as bool? ?? false,
+      validFrom: DateTime.tryParse(json['valid_from']?.toString() ?? ''),
+      validUpto: DateTime.tryParse(json['valid_upto']?.toString() ?? ''),
+      createdBy: json['created_by']?.toString() ?? '',
     );
   }
 
@@ -39,9 +41,17 @@ class DiscountModel {
       'discount_amount': discountAmount,
       'discount_percent': discountPercent,
       'is_active': isActive,
-      'valid_from': validFrom.toIso8601String(),
-      'valid_upto': validUpto.toIso8601String(),
+      'valid_from': validFrom?.toIso8601String(),
+      'valid_upto': validUpto?.toIso8601String(),
       'created_by': createdBy,
     };
+  }
+
+  // Helper for safe double parsing (handles strings, numbers, and null)
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
   }
 }
