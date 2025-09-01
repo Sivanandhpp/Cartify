@@ -16,6 +16,7 @@ class SellerCreateProductController extends GetxController {
   final measureAmountController = TextEditingController();
   final attributeKeyController = TextEditingController();
   final attributeValueController = TextEditingController();
+  final stockQuantityController = TextEditingController();
 
   // Discount controllers
   final discountAmountController = TextEditingController();
@@ -82,6 +83,7 @@ class SellerCreateProductController extends GetxController {
     nameController.dispose();
     priceController.dispose();
     descriptionController.dispose();
+    stockQuantityController.dispose();
     measureAmountController.dispose();
     attributeKeyController.dispose();
     attributeValueController.dispose();
@@ -280,7 +282,7 @@ class SellerCreateProductController extends GetxController {
 
   // Step navigation - Fixed with safety checks
   void nextStep() {
-    if (currentStep.value < 3) {
+    if (currentStep.value < 2) {
       if (validateCurrentStep()) {
         currentStep.value++;
         // Fixed: Check if controller is attached before animating
@@ -322,8 +324,6 @@ class SellerCreateProductController extends GetxController {
         return validateStep2();
       case 2:
         return validateStep3(); // Tags and discounts (optional, so always true)
-      case 3:
-        return validateStep4(); // Description
       default:
         return false;
     }
@@ -363,10 +363,10 @@ class SellerCreateProductController extends GetxController {
       return false;
     }
 
-    if (selectedCategory.value == null) {
+    if (descriptionController.text.trim().isEmpty) {
       NotificationService.showError(
-        title: 'Category Required',
-        message: 'Please select a category',
+        title: 'Description Required',
+        message: 'Please enter product description',
       );
       return false;
     }
@@ -375,6 +375,31 @@ class SellerCreateProductController extends GetxController {
   }
 
   bool validateStep2() {
+    if (selectedCategory.value == null) {
+      NotificationService.showError(
+        title: 'Category Required',
+        message: 'Please select a category',
+      );
+      return false;
+    }
+
+    if (stockQuantityController.text.trim().isEmpty) {
+      NotificationService.showError(
+        title: 'Stock Quantity Required',
+        message: 'Please enter stock quantity',
+      );
+      return false;
+    }
+
+    final stockQty = int.tryParse(stockQuantityController.text);
+    if (stockQty == null || stockQty < 0) {
+      NotificationService.showError(
+        title: 'Invalid Stock Quantity',
+        message: 'Please enter a valid stock quantity',
+      );
+      return false;
+    }
+
     if (measureAmountController.text.trim().isNotEmpty) {
       final amount = double.tryParse(measureAmountController.text);
       if (amount == null || amount <= 0) {
@@ -400,17 +425,6 @@ class SellerCreateProductController extends GetxController {
   bool validateStep3() {
     // Tags and discounts are optional, so always valid
     // You can add custom validation here if needed
-    return true;
-  }
-
-  bool validateStep4() {
-    if (descriptionController.text.trim().isEmpty) {
-      NotificationService.showError(
-        title: 'Description Required',
-        message: 'Please enter product description',
-      );
-      return false;
-    }
     return true;
   }
 
@@ -457,7 +471,7 @@ class SellerCreateProductController extends GetxController {
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
         price: double.parse(priceController.text),
-        stockQuantity: 100, // Default stock quantity
+        stockQuantity: int.parse(stockQuantityController.text),
         categoryId: selectedSubCategory.value?.id ?? selectedCategory.value!.id,
         tags: selectedTags
             .map((tag) => tag.name)
@@ -512,6 +526,7 @@ class SellerCreateProductController extends GetxController {
     nameController.clear();
     priceController.clear();
     descriptionController.clear();
+    stockQuantityController.clear();
     measureAmountController.clear();
     attributeKeyController.clear();
     attributeValueController.clear();
@@ -525,21 +540,22 @@ class SellerCreateProductController extends GetxController {
     selectedSubCategory.value = null;
     selectedMeasureUnit.value = null;
     attributes.clear();
+    hasDiscount.value = false;
   }
 
   // Helper getters
-  bool get canGoNext => currentStep.value < 3; // Changed from 2 to 3
+  bool get canGoNext => currentStep.value < 2; // Changed from 3 to 2
   bool get canGoPrevious => currentStep.value > 0;
-  bool get isLastStep => currentStep.value == 3;
+  bool get isLastStep => currentStep.value == 2; // Changed from 3 to 2
 
   String get stepTitle {
     switch (currentStep.value) {
       case 0:
-        return 'Basic Information';
+        return 'Product Basics';
       case 1:
-        return 'Measurements';
+        return 'Categorization & Details';
       case 2:
-        return 'Details & Attributes';
+        return 'Discounts & Availability';
       default:
         return '';
     }
@@ -548,11 +564,11 @@ class SellerCreateProductController extends GetxController {
   String get stepDescription {
     switch (currentStep.value) {
       case 0:
-        return 'Add images, name, price, and category';
+        return 'Give your product a name, price, and first look';
       case 1:
-        return 'Add measure amount and unit';
+        return 'Organize your product and define key details';
       case 2:
-        return 'Add description and custom attributes';
+        return 'Set special offers and time period';
       default:
         return '';
     }

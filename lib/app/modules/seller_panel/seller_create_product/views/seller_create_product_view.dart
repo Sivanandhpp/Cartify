@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cartify/app/core/widgets/app_dropdown.dart';
+import 'package:cartify/app/core/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cartify/app/core/index.dart';
@@ -24,10 +26,9 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                     // Fixed: Use IndexedStack for simplicity
                     index: controller.currentStep.value,
                     children: [
-                      _buildStep1(),
-                      _buildStep2(),
-                      _buildStep3(),
-                      _buildStep4(),
+                      _buildStep1(), // Product Basics
+                      _buildStep2(), // Categorization & Details
+                      _buildStep3(), // Discounts & Availability
                     ],
                   ),
                 ),
@@ -91,7 +92,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
 
   Widget _buildProgressIndicator() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       color: AppColors.white,
       child: Obx(
         () => Column(
@@ -118,14 +119,6 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                   2,
                   'Tags & Discounts',
                   controller.currentStep.value >= 2,
-                ),
-                Expanded(
-                  child: _buildProgressLine(controller.currentStep.value >= 3),
-                ),
-                _buildStepIndicator(
-                  3,
-                  'Details',
-                  controller.currentStep.value >= 3,
                 ),
               ],
             ),
@@ -199,13 +192,72 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Product Images Section
           _buildImageSection(),
-          const SizedBox(height: 24),
-          _buildBasicInfoSection(),
-          const SizedBox(height: 24),
-          _buildCategorySection(),
+
+          const SizedBox(height: 20),
+
+          // Basic Information Section
+          _buildSectionCard(
+            title: 'Basic Information',
+            subtitle: 'Enter product name, price, and description',
+            child: Column(
+              children: [
+                // Product Name
+                AppTextField(
+                  controller: controller.nameController,
+                  label: 'Product Name',
+                  hint: 'e.g., Premium Cotton T-Shirt',
+                  icon: Icons.shopping_bag_outlined,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Product name is required';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                // Price
+                AppTextField(
+                  controller: controller.priceController,
+                  label: 'Price (₹)',
+                  hint: 'e.g., 599',
+                  icon: Icons.currency_rupee,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Price is required';
+                    }
+                    final price = double.tryParse(value);
+                    if (price == null || price <= 0) {
+                      return 'Please enter a valid price';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                // Description
+                AppTextField(
+                  controller: controller.descriptionController,
+                  label: 'Description',
+                  hint: 'Enter detailed product description...',
+                  icon: Icons.description,
+                  maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Description is required';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -369,31 +421,6 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
     );
   }
 
-  Widget _buildBasicInfoSection() {
-    return _buildSectionCard(
-      title: 'Basic Information',
-      subtitle: 'Enter product name and price',
-      child: Column(
-        children: [
-          _buildTextField(
-            controller: controller.nameController,
-            label: 'Product Name',
-            hint: 'e.g., Premium Cotton T-Shirt',
-            icon: Icons.shopping_bag_outlined,
-          ),
-          const SizedBox(height: 16),
-          _buildTextField(
-            controller: controller.priceController,
-            label: 'Price (₹)',
-            hint: 'e.g., 599',
-            icon: Icons.currency_rupee,
-            keyboardType: TextInputType.number,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCategorySection() {
     return _buildSectionCard(
       title: 'Category',
@@ -401,7 +428,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       child: Column(
         children: [
           Obx(
-            () => _buildDropdown<CategoryModel>(
+            () => AppDropdown<CategoryModel>(
               label: 'Category',
               hint: 'Select a category',
               value: controller.selectedCategory.value,
@@ -413,7 +440,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           ),
           const SizedBox(height: 16),
           Obx(
-            () => _buildDropdown<CategoryModel>(
+            () => AppDropdown<CategoryModel>(
               label: 'Subcategory',
               hint: 'Select a subcategory',
               value: controller.selectedSubCategory.value,
@@ -432,320 +459,78 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
   Widget _buildStep2() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
-      child: _buildSectionCard(
-        title: 'Measurements',
-        subtitle: 'Add product measurements (optional)',
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: _buildTextField(
-                controller: controller.measureAmountController,
-                label: 'Amount',
-                hint: 'e.g., 500',
-                icon: Icons.straighten,
-                keyboardType: TextInputType.number,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 2,
-              child: Obx(
-                () => _buildDropdown<String>(
-                  label: 'Unit',
-                  hint: 'Select unit',
-                  value: controller.selectedMeasureUnit.value,
-                  items: controller.measureUnits,
-                  itemBuilder: (unit) => unit.toUpperCase(),
-                  onChanged: (unit) =>
-                      controller.selectedMeasureUnit.value = unit,
-                  icon: Icons.straighten,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStep3() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          // Tags Section
-          _buildSectionCard(
-            title: 'Product Tags',
-            subtitle: 'Select relevant tags for your product',
-            child: Column(
-              children: [
-                // Available Tags
-                Obx(() {
-                  if (controller.isLoadingTags.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (controller.availableTags.isEmpty) {
-                    return const Text('No tags available');
-                  }
-
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: controller.availableTags.map((tag) {
-                      final isSelected = controller.selectedTags.contains(tag);
-                      return FilterChip(
-                        label: Text(tag.name),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          controller.toggleTagSelection(tag);
-                        },
-                        selectedColor: Colors.blue.withOpacity(0.3),
-                        checkmarkColor: Colors.blue,
-                      );
-                    }).toList(),
-                  );
-                }),
-
-                const SizedBox(height: 16),
-
-                // Selected Tags
-                Obx(() {
-                  if (controller.selectedTags.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selected Tags (${controller.selectedTags.length})',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: controller.selectedTags.map((tag) {
-                          return Chip(
-                            label: Text(tag.name),
-                            onDeleted: () => controller.removeSelectedTag(tag),
-                            deleteIcon: const Icon(Icons.close, size: 18),
-                            backgroundColor: Colors.blue.withOpacity(0.1),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  );
-                }),
-              ],
-            ),
-          ),
+          // Category Section
+          _buildCategorySection(),
 
           const SizedBox(height: 20),
 
-          // Discount Section
+          // Stock & Measurements Section
           _buildSectionCard(
-            title: 'Product Discount',
-            subtitle: 'Add optional discount for your product',
+            title: 'Stock & Measurements',
+            subtitle: 'Define quantity and product measurements',
             child: Column(
               children: [
-                // Toggle Discount
-                Obx(
-                  () => SwitchListTile(
-                    title: const Text('Add Discount'),
-                    subtitle: const Text('Enable discount for this product'),
-                    value: controller.hasDiscount.value,
-                    onChanged: (value) => controller.toggleDiscount(),
-                    contentPadding: EdgeInsets.zero,
-                  ),
+                // Stock Quantity
+                AppTextField(
+                  controller: controller.stockQuantityController,
+                  label: 'Stock Quantity',
+                  hint: 'e.g., 100',
+                  icon: Icons.inventory,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Stock quantity is required';
+                    }
+                    final qty = int.tryParse(value);
+                    if (qty == null || qty < 0) {
+                      return 'Please enter a valid quantity';
+                    }
+                    return null;
+                  },
                 ),
 
-                // Discount Fields - Fixed: Separate Obx for discount fields
-                Obx(() {
-                  if (!controller.hasDiscount.value) {
-                    return const SizedBox.shrink();
-                  }
+                const SizedBox(height: 16),
 
-                  return Column(
-                    children: [
-                      const SizedBox(height: 16),
-
-                      // Discount Amount and Percentage
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              controller: controller.discountAmountController,
-                              label: 'Discount Amount (₹)',
-                              hint: 'e.g., 50.00',
-                              icon: Icons.currency_rupee,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildTextField(
-                              controller: controller.discountPercentController,
-                              label: 'Discount Percentage (%)',
-                              hint: 'e.g., 10.5',
-                              icon: Icons.percent,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Discount Validity Dates
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              controller:
-                                  controller.discountValidFromController,
-                              label: 'Valid From',
-                              hint: 'Select start date',
-                              icon: Icons.calendar_today,
-                              readOnly: true,
-                              onTap: () => controller.selectDiscountDate(true),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildTextField(
-                              controller:
-                                  controller.discountValidUptoController,
-                              label: 'Valid Until',
-                              hint: 'Select end date',
-                              icon: Icons.calendar_today,
-                              readOnly: true,
-                              onTap: () => controller.selectDiscountDate(false),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Live Price Preview - Fixed: Create reactive streams for text controllers
-                      _buildLivePricePreview(),
-                    ],
-                  );
-                }),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Add this new method to handle the live price preview properly
-  Widget _buildLivePricePreview() {
-    return StreamBuilder<String>(
-      stream: Stream.periodic(const Duration(milliseconds: 100), (_) {
-        return '${controller.priceController.text}|${controller.discountAmountController.text}|${controller.discountPercentController.text}';
-      }).distinct(),
-      builder: (context, snapshot) {
-        final price = double.tryParse(controller.priceController.text) ?? 0.0;
-        final discountAmount =
-            double.tryParse(controller.discountAmountController.text) ?? 0.0;
-        final discountPercent =
-            double.tryParse(controller.discountPercentController.text) ?? 0.0;
-
-        if (price > 0 && (discountAmount > 0 || discountPercent > 0)) {
-          final finalPrice = price - discountAmount;
-          return Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.green.withOpacity(0.3)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Measurements Row
+                Row(
                   children: [
-                    Text(
-                      'Original Price: ₹${price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        color: Colors.grey,
+                    Expanded(
+                      flex: 3,
+                      child: AppTextField(
+                        controller: controller.measureAmountController,
+                        label: 'Measure Amount (Optional)',
+                        hint: 'e.g., 500',
+                        icon: Icons.straighten,
+                        keyboardType: TextInputType.number,
                       ),
                     ),
-                    Text(
-                      'Final Price: ₹${finalPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                        fontSize: 16,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: Obx(
+                        () => AppDropdown<String>(
+                          label: 'Unit',
+                          hint: 'Select unit',
+                          value: controller.selectedMeasureUnit.value,
+                          items: controller.measureUnits,
+                          itemBuilder: (unit) => unit.toUpperCase(),
+                          onChanged: (unit) =>
+                              controller.selectedMeasureUnit.value = unit,
+                          icon: Icons.straighten,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                if (discountPercent > 0)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      '${discountPercent.toStringAsFixed(1)}% OFF',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
               ],
-            ),
-          );
-        }
-        return const SizedBox.shrink();
-      },
-    );
-  }
-
-  Widget _buildStep4() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          // Description section
-          _buildSectionCard(
-            title: 'Product Description',
-            subtitle: 'Provide detailed description of your product',
-            child: _buildTextField(
-              controller: controller.descriptionController,
-              label: 'Description',
-              hint: 'Enter detailed product description...',
-              icon: Icons.description,
-              maxLines: 5,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Description is required';
-                }
-                return null;
-              },
             ),
           ),
 
           const SizedBox(height: 20),
 
-          // Existing attributes section
+          // Custom Attributes Section
           _buildAttributesSection(),
         ],
       ),
@@ -761,7 +546,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           Row(
             children: [
               Expanded(
-                child: _buildTextField(
+                child: AppTextField(
                   controller: controller.attributeKeyController,
                   label: 'Attribute Name',
                   hint: 'e.g., Color',
@@ -770,7 +555,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildTextField(
+                child: AppTextField(
                   controller: controller.attributeValueController,
                   label: 'Attribute Value',
                   hint: 'e.g., Blue',
@@ -880,6 +665,326 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
     );
   }
 
+  Widget _buildStep3() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          // Tags Section
+          _buildSectionCard(
+            title: 'Product Tags',
+            subtitle: 'Select relevant tags for your product',
+            child: Column(
+              children: [
+                // Available Tags
+                Obx(() {
+                  if (controller.isLoadingTags.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (controller.availableTags.isEmpty) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'No tags available',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    );
+                  }
+
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: controller.availableTags.map((tag) {
+                      final isSelected = controller.selectedTags.contains(tag);
+                      return FilterChip(
+                        label: Text(tag.name),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          controller.toggleTagSelection(tag);
+                        },
+                        selectedColor: AppColors.primary.withOpacity(0.2),
+                        checkmarkColor: AppColors.primary,
+                        backgroundColor: Colors.grey[100],
+                      );
+                    }).toList(),
+                  );
+                }),
+
+                const SizedBox(height: 16),
+
+                // Selected Tags Display
+                Obx(() {
+                  if (controller.selectedTags.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selected Tags (${controller.selectedTags.length})',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: AppColors.grey700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: controller.selectedTags.map((tag) {
+                          return Chip(
+                            label: Text(
+                              tag.name,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            onDeleted: () => controller.removeSelectedTag(tag),
+                            deleteIcon: const Icon(Icons.close, size: 16),
+                            backgroundColor: AppColors.primary.withOpacity(0.1),
+                            deleteIconColor: AppColors.primary,
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Discount Section
+          _buildSectionCard(
+            title: 'Special Offers',
+            subtitle: 'Add optional discount with validity period',
+            child: Column(
+              children: [
+                // Enable Discount Toggle
+                Obx(
+                  () => Container(
+                    decoration: BoxDecoration(
+                      color: controller.hasDiscount.value
+                          ? AppColors.primary.withOpacity(0.1)
+                          : Colors.grey[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: controller.hasDiscount.value
+                            ? AppColors.primary.withOpacity(0.3)
+                            : Colors.grey[300]!,
+                      ),
+                    ),
+                    child: SwitchListTile(
+                      title: const Text(
+                        'Enable Discount',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: const Text(
+                        'Add special pricing for this product',
+                      ),
+                      value: controller.hasDiscount.value,
+                      onChanged: (value) => controller.toggleDiscount(),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      activeColor: AppColors.primary,
+                    ),
+                  ),
+                ),
+
+                // Discount Fields
+                Obx(() {
+                  if (!controller.hasDiscount.value) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Column(
+                    children: [
+                      const SizedBox(height: 20),
+
+                      // Discount Amount and Percentage Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppTextField(
+                              controller: controller.discountAmountController,
+                              label: 'Discount Amount (₹)',
+                              hint: 'e.g., 50.00',
+                              icon: Icons.currency_rupee,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AppTextField(
+                              controller: controller.discountPercentController,
+                              label: 'Discount Percentage (%)',
+                              hint: 'e.g., 10.5',
+                              icon: Icons.percent,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Validity Period Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppTextField(
+                              controller:
+                                  controller.discountValidFromController,
+                              label: 'Valid From',
+                              hint: 'Select start date',
+                              icon: Icons.calendar_today,
+                              readOnly: true,
+                              onTap: () => controller.selectDiscountDate(true),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AppTextField(
+                              controller:
+                                  controller.discountValidUptoController,
+                              label: 'Valid Until',
+                              hint: 'Select end date',
+                              icon: Icons.calendar_today,
+                              readOnly: true,
+                              onTap: () => controller.selectDiscountDate(false),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Live Price Preview
+                      _buildLivePricePreview(),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Update _buildLivePricePreview method for better UI
+  Widget _buildLivePricePreview() {
+    return StreamBuilder<String>(
+      stream: Stream.periodic(const Duration(milliseconds: 300), (_) {
+        return '${controller.priceController.text}|${controller.discountAmountController.text}|${controller.discountPercentController.text}';
+      }).distinct(),
+      builder: (context, snapshot) {
+        final price = double.tryParse(controller.priceController.text) ?? 0.0;
+        final discountAmount =
+            double.tryParse(controller.discountAmountController.text) ?? 0.0;
+        final discountPercent =
+            double.tryParse(controller.discountPercentController.text) ?? 0.0;
+
+        if (price > 0 && (discountAmount > 0 || discountPercent > 0)) {
+          final finalPrice = price - discountAmount;
+          final savings = price - finalPrice;
+          final savingsPercent = (savings / price) * 100;
+
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.green[50]!, Colors.green[100]!],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.green[300]!),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Original Price',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          '₹${price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Icon(Icons.arrow_forward, color: Colors.grey[600]),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Sale Price',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                        Text(
+                          '₹${finalPrice.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    'You Save ₹${savings.toStringAsFixed(2)} (${savingsPercent.toStringAsFixed(1)}% OFF)',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
   Widget _buildBottomActions() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -983,97 +1088,56 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    TextInputType? keyboardType,
-    int maxLines = 1,
-    bool readOnly = false,
-    VoidCallback? onTap,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      readOnly: readOnly,
-      onTap: onTap,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.grey500),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey300),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-    );
-  }
 
-  Widget _buildDropdown<T>({
-    required String label,
-    required String hint,
-    required T? value,
-    required List<T> items,
-    required String Function(T) itemBuilder,
-    required void Function(T?) onChanged,
-    required IconData icon,
-    bool enabled = true,
-  }) {
-    return DropdownButtonFormField<T>(
-      value: value,
-      items: items
-          .map(
-            (item) => DropdownMenuItem<T>(
-              value: item,
-              child: Text(itemBuilder(item)),
-            ),
-          )
-          .toList(),
-      onChanged: enabled ? onChanged : null,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(
-          icon,
-          color: enabled ? AppColors.grey500 : AppColors.grey400,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey300),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey200),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-      ),
-    );
-  }
+  // Widget AppDropdown<T>({
+  //   required String label,
+  //   required String hint,
+  //   required T? value,
+  //   required List<T> items,
+  //   required String Function(T) itemBuilder,
+  //   required void Function(T?) onChanged,
+  //   required IconData icon,
+  //   bool enabled = true,
+  // }) {
+  //   return DropdownButtonFormField<T>(
+  //     value: value,
+  //     items: items
+  //         .map(
+  //           (item) => DropdownMenuItem<T>(
+  //             value: item,
+  //             child: Text(itemBuilder(item)),
+  //           ),
+  //         )
+  //         .toList(),
+  //     onChanged: enabled ? onChanged : null,
+  //     decoration: InputDecoration(
+  //       labelText: label,
+  //       hintText: hint,
+  //       prefixIcon: Icon(
+  //         icon,
+  //         color: enabled ? AppColors.grey500 : AppColors.grey400,
+  //       ),
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(12),
+  //         borderSide: const BorderSide(color: AppColors.grey300),
+  //       ),
+  //       enabledBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(12),
+  //         borderSide: const BorderSide(color: AppColors.grey300),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(12),
+  //         borderSide: const BorderSide(color: AppColors.primary, width: 2),
+  //       ),
+  //       disabledBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(12),
+  //         borderSide: const BorderSide(color: AppColors.grey200),
+  //       ),
+  //       contentPadding: const EdgeInsets.symmetric(
+  //         horizontal: 16,
+  //         vertical: 16,
+  //       ),
+  //     ),
+  //   );
+  // }
 }
