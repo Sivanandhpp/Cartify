@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cartify/app/core/models/product/create_product_dto.dart';
+import 'package:cartify/app/core/models/product/tag_model.dart';
 import 'package:cartify/app/core/widgets/app_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,12 @@ class SellerCreateProductController extends GetxController {
   final attributeKeyController = TextEditingController();
   final attributeValueController = TextEditingController();
 
+  // Discount controllers
+  final discountAmountController = TextEditingController();
+  final discountPercentController = TextEditingController();
+  final discountValidFromController = TextEditingController();
+  final discountValidUptoController = TextEditingController();
+
   // Form key
   final formKey = GlobalKey<FormState>();
 
@@ -29,16 +36,31 @@ class SellerCreateProductController extends GetxController {
   // Observable states
   final currentStep = 0.obs;
   final isLoading = false.obs;
+  final isLoadingTags = false.obs;
   final selectedImages = <File>[].obs;
   final categories = <CategoryModel>[].obs;
+  final availableTags = <TagModel>[].obs;
+  final selectedTags = <TagModel>[].obs;
   final selectedCategory = Rxn<CategoryModel>();
   final selectedSubCategory = Rxn<CategoryModel>();
   final selectedMeasureUnit = Rxn<String>();
   final attributes = <String, String>{}.obs;
+  final hasDiscount = false.obs;
 
   // Available measure units
   final measureUnits = [
-    'kg', 'g', 'mg', 'l', 'ml', 'pcs', 'dozen', 'm', 'cm', 'inch', 'sq_ft', 'sq_m'
+    'kg',
+    'g',
+    'mg',
+    'l',
+    'ml',
+    'pcs',
+    'dozen',
+    'm',
+    'cm',
+    'inch',
+    'sq_ft',
+    'sq_m',
   ].obs;
 
   // Progress indicator
@@ -48,6 +70,11 @@ class SellerCreateProductController extends GetxController {
   void onInit() {
     super.onInit();
     loadCategories();
+    loadAvailableTags();
+
+    // Add discount calculation listeners
+    discountAmountController.addListener(_calculateDiscountPercent);
+    discountPercentController.addListener(_calculateDiscountAmount);
   }
 
   @override
@@ -58,7 +85,11 @@ class SellerCreateProductController extends GetxController {
     measureAmountController.dispose();
     attributeKeyController.dispose();
     attributeValueController.dispose();
-    _pageController?.dispose();  // Fixed: Proper disposal
+    discountAmountController.dispose();
+    discountPercentController.dispose();
+    discountValidFromController.dispose();
+    discountValidUptoController.dispose();
+    _pageController?.dispose(); // Fixed: Proper disposal
     super.onClose();
   }
 
@@ -77,6 +108,24 @@ class SellerCreateProductController extends GetxController {
       );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  // Load available tags
+  Future<void> loadAvailableTags() async {
+    try {
+      isLoadingTags.value = true;
+      final tags = await _productService.getTags();
+      availableTags.assignAll(tags.where((tag) => tag.isActive).toList());
+      LogService.info('Loaded ${availableTags.length} available tags');
+    } catch (e) {
+      LogService.error('Error loading tags', e);
+      NotificationService.showError(
+        title: 'Error',
+        message: 'Failed to load tags',
+      );
+    } finally {
+      isLoadingTags.value = false;
     }
   }
 
@@ -118,6 +167,19 @@ class SellerCreateProductController extends GetxController {
     return selectedCategory.value?.children ?? [];
   }
 
+  // Tag management
+  void toggleTagSelection(TagModel tag) {
+    if (selectedTags.contains(tag)) {
+      selectedTags.remove(tag);
+    } else {
+      selectedTags.add(tag);
+    }
+  }
+
+  void removeSelectedTag(TagModel tag) {
+    selectedTags.remove(tag);
+  }
+
   // Attribute management
   void addAttribute() {
     final key = attributeKeyController.text.trim();
@@ -153,9 +215,72 @@ class SellerCreateProductController extends GetxController {
     attributes.remove(key);
   }
 
+  // Discount calculation methods
+  void _calculateDiscountPercent() {
+    if (discountAmountController.text.isEmpty || priceController.text.isEmpty) {
+      return;
+    }
+
+    final price = double.tryParse(priceController.text);
+    final amount = double.tryParse(discountAmountController.text);
+
+    if (price != null && amount != null && price > 0) {
+      final percent = (amount / price) * 100;
+      discountPercentController.removeListener(_calculateDiscountAmount);
+      discountPercentController.text = percent.toStringAsFixed(1);
+      discountPercentController.addListener(_calculateDiscountAmount);
+    }
+  }
+
+  void _calculateDiscountAmount() {
+    if (discountPercentController.text.isEmpty ||
+        priceController.text.isEmpty) {
+      return;
+    }
+
+    final price = double.tryParse(priceController.text);
+    final percent = double.tryParse(discountPercentController.text);
+
+    if (price != null && percent != null && percent >= 0 && percent <= 100) {
+      final amount = (price * percent) / 100;
+      discountAmountController.removeListener(_calculateDiscountPercent);
+      discountAmountController.text = amount.toStringAsFixed(2);
+      discountAmountController.addListener(_calculateDiscountPercent);
+    }
+  }
+
+  void toggleDiscount() {
+    hasDiscount.value = !hasDiscount.value;
+    if (!hasDiscount.value) {
+      discountAmountController.clear();
+      discountPercentController.clear();
+      discountValidFromController.clear();
+      discountValidUptoController.clear();
+    }
+  }
+
+  // Date picker for discount validity
+  Future<void> selectDiscountDate(bool isFromDate) async {
+    final DateTime? picked = await showDatePicker(
+      context: Get.context!,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+
+    if (picked != null) {
+      final formattedDate = picked.toIso8601String().split('T')[0];
+      if (isFromDate) {
+        discountValidFromController.text = formattedDate;
+      } else {
+        discountValidUptoController.text = formattedDate;
+      }
+    }
+  }
+
   // Step navigation - Fixed with safety checks
   void nextStep() {
-    if (currentStep.value < 2) {
+    if (currentStep.value < 3) {
       if (validateCurrentStep()) {
         currentStep.value++;
         // Fixed: Check if controller is attached before animating
@@ -196,7 +321,9 @@ class SellerCreateProductController extends GetxController {
       case 1:
         return validateStep2();
       case 2:
-        return validateStep3();
+        return validateStep3(); // Tags and discounts (optional, so always true)
+      case 3:
+        return validateStep4(); // Description
       default:
         return false;
     }
@@ -271,6 +398,12 @@ class SellerCreateProductController extends GetxController {
   }
 
   bool validateStep3() {
+    // Tags and discounts are optional, so always valid
+    // You can add custom validation here if needed
+    return true;
+  }
+
+  bool validateStep4() {
     if (descriptionController.text.trim().isEmpty) {
       NotificationService.showError(
         title: 'Description Required',
@@ -278,7 +411,6 @@ class SellerCreateProductController extends GetxController {
       );
       return false;
     }
-
     return true;
   }
 
@@ -291,6 +423,35 @@ class SellerCreateProductController extends GetxController {
     try {
       isLoading.value = true;
 
+      // Prepare discount data
+      List<Map<String, dynamic>>? discounts;
+      if (hasDiscount.value &&
+          (discountAmountController.text.isNotEmpty ||
+              discountPercentController.text.isNotEmpty)) {
+        final discount = <String, dynamic>{};
+
+        if (discountAmountController.text.isNotEmpty) {
+          discount['discount_amount'] = double.parse(
+            discountAmountController.text,
+          );
+        }
+        if (discountPercentController.text.isNotEmpty) {
+          discount['discount_percent'] = double.parse(
+            discountPercentController.text,
+          );
+        }
+        if (discountValidFromController.text.isNotEmpty) {
+          discount['valid_from'] =
+              '${discountValidFromController.text}T00:00:00.000Z';
+        }
+        if (discountValidUptoController.text.isNotEmpty) {
+          discount['valid_upto'] =
+              '${discountValidUptoController.text}T23:59:59.000Z';
+        }
+
+        discounts = [discount];
+      }
+
       // Create product DTO - Fixed: Use correct field names
       final dto = CreateProductDto(
         name: nameController.text.trim(),
@@ -298,11 +459,17 @@ class SellerCreateProductController extends GetxController {
         price: double.parse(priceController.text),
         stockQuantity: 100, // Default stock quantity
         categoryId: selectedSubCategory.value?.id ?? selectedCategory.value!.id,
+        tags: selectedTags
+            .map((tag) => tag.name)
+            .toList(), // Add selected tag names
         measureUnitCode: selectedMeasureUnit.value,
         measureAmount: measureAmountController.text.trim().isNotEmpty
             ? double.parse(measureAmountController.text)
             : null,
-        attributes: attributes.isNotEmpty ? Map<String, dynamic>.from(attributes) : null,
+        attributes: attributes.isNotEmpty
+            ? Map<String, dynamic>.from(attributes)
+            : null,
+        discounts: discounts, // Add discounts
       );
 
       // Step 1: Create product
@@ -329,7 +496,6 @@ class SellerCreateProductController extends GetxController {
       // Reset form and navigate back
       resetForm();
       Get.back();
-
     } catch (e) {
       LogService.error('Error creating product', e);
       NotificationService.showError(
@@ -349,7 +515,12 @@ class SellerCreateProductController extends GetxController {
     measureAmountController.clear();
     attributeKeyController.clear();
     attributeValueController.clear();
+    discountAmountController.clear();
+    discountPercentController.clear();
+    discountValidFromController.clear();
+    discountValidUptoController.clear();
     selectedImages.clear();
+    selectedTags.clear();
     selectedCategory.value = null;
     selectedSubCategory.value = null;
     selectedMeasureUnit.value = null;
@@ -357,9 +528,9 @@ class SellerCreateProductController extends GetxController {
   }
 
   // Helper getters
-  bool get canGoNext => currentStep.value < 2;
+  bool get canGoNext => currentStep.value < 3; // Changed from 2 to 3
   bool get canGoPrevious => currentStep.value > 0;
-  bool get isLastStep => currentStep.value == 2;
+  bool get isLastStep => currentStep.value == 3;
 
   String get stepTitle {
     switch (currentStep.value) {

@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:cartify/app/core/models/product/create_product_dto.dart';
+import 'package:cartify/app/core/models/product/tag_model.dart';
 import 'package:cartify/app/core/models/product/update_product_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:cartify/app/core/index.dart';

@@ -20,12 +20,14 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
               child: Form(
                 key: controller.formKey,
                 child: Obx(
-                  () => IndexedStack(  // Fixed: Use IndexedStack for simplicity
+                  () => IndexedStack(
+                    // Fixed: Use IndexedStack for simplicity
                     index: controller.currentStep.value,
                     children: [
                       _buildStep1(),
                       _buildStep2(),
                       _buildStep3(),
+                      _buildStep4(),
                     ],
                   ),
                 ),
@@ -96,18 +98,44 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           children: [
             Row(
               children: [
-                _buildStepIndicator(0, 'Images & Basic', controller.currentStep.value >= 0),
-                Expanded(child: _buildProgressLine(controller.currentStep.value >= 1)),
-                _buildStepIndicator(1, 'Measurements', controller.currentStep.value >= 1),
-                Expanded(child: _buildProgressLine(controller.currentStep.value >= 2)),
-                _buildStepIndicator(2, 'Details', controller.currentStep.value >= 2),
+                _buildStepIndicator(
+                  0,
+                  'Images & Basic',
+                  controller.currentStep.value >= 0,
+                ),
+                Expanded(
+                  child: _buildProgressLine(controller.currentStep.value >= 1),
+                ),
+                _buildStepIndicator(
+                  1,
+                  'Measurements',
+                  controller.currentStep.value >= 1,
+                ),
+                Expanded(
+                  child: _buildProgressLine(controller.currentStep.value >= 2),
+                ),
+                _buildStepIndicator(
+                  2,
+                  'Tags & Discounts',
+                  controller.currentStep.value >= 2,
+                ),
+                Expanded(
+                  child: _buildProgressLine(controller.currentStep.value >= 3),
+                ),
+                _buildStepIndicator(
+                  3,
+                  'Details',
+                  controller.currentStep.value >= 3,
+                ),
               ],
             ),
             const SizedBox(height: 12),
             LinearProgressIndicator(
               value: controller.progress,
               backgroundColor: AppColors.grey200,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.primary,
+              ),
               minHeight: 4,
             ),
           ],
@@ -240,10 +268,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             SizedBox(height: 4),
             Text(
               'Upload high-quality images for better visibility',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.grey500,
-              ),
+              style: TextStyle(fontSize: 12, color: AppColors.grey500),
             ),
           ],
         ),
@@ -260,7 +285,9 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
         itemBuilder: (context, index) {
           return Container(
             width: 150,
-            margin: EdgeInsets.only(right: index < controller.selectedImages.length - 1 ? 12 : 0),
+            margin: EdgeInsets.only(
+              right: index < controller.selectedImages.length - 1 ? 12 : 0,
+            ),
             child: Stack(
               children: [
                 Container(
@@ -299,7 +326,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                     bottom: 8,
                     left: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
@@ -427,7 +457,8 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                   value: controller.selectedMeasureUnit.value,
                   items: controller.measureUnits,
                   itemBuilder: (unit) => unit.toUpperCase(),
-                  onChanged: (unit) => controller.selectedMeasureUnit.value = unit,
+                  onChanged: (unit) =>
+                      controller.selectedMeasureUnit.value = unit,
                   icon: Icons.straighten,
                 ),
               ),
@@ -443,37 +474,280 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          _buildDescriptionSection(),
-          const SizedBox(height: 24),
-          _buildAttributesSection(),
+          // Tags Section
+          _buildSectionCard(
+            title: 'Product Tags',
+            subtitle: 'Select relevant tags for your product',
+            child: Column(
+              children: [
+                // Available Tags
+                Obx(() {
+                  if (controller.isLoadingTags.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (controller.availableTags.isEmpty) {
+                    return const Text('No tags available');
+                  }
+
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: controller.availableTags.map((tag) {
+                      final isSelected = controller.selectedTags.contains(tag);
+                      return FilterChip(
+                        label: Text(tag.name),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          controller.toggleTagSelection(tag);
+                        },
+                        selectedColor: Colors.blue.withOpacity(0.3),
+                        checkmarkColor: Colors.blue,
+                      );
+                    }).toList(),
+                  );
+                }),
+
+                const SizedBox(height: 16),
+
+                // Selected Tags
+                Obx(() {
+                  if (controller.selectedTags.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selected Tags (${controller.selectedTags.length})',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: controller.selectedTags.map((tag) {
+                          return Chip(
+                            label: Text(tag.name),
+                            onDeleted: () => controller.removeSelectedTag(tag),
+                            deleteIcon: const Icon(Icons.close, size: 18),
+                            backgroundColor: Colors.blue.withOpacity(0.1),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Discount Section
+          _buildSectionCard(
+            title: 'Product Discount',
+            subtitle: 'Add optional discount for your product',
+            child: Column(
+              children: [
+                // Toggle Discount
+                Obx(
+                  () => SwitchListTile(
+                    title: const Text('Add Discount'),
+                    subtitle: const Text('Enable discount for this product'),
+                    value: controller.hasDiscount.value,
+                    onChanged: (value) => controller.toggleDiscount(),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+
+                // Discount Fields - Fixed: Separate Obx for discount fields
+                Obx(() {
+                  if (!controller.hasDiscount.value) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Column(
+                    children: [
+                      const SizedBox(height: 16),
+
+                      // Discount Amount and Percentage
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                              controller: controller.discountAmountController,
+                              label: 'Discount Amount (₹)',
+                              hint: 'e.g., 50.00',
+                              icon: Icons.currency_rupee,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildTextField(
+                              controller: controller.discountPercentController,
+                              label: 'Discount Percentage (%)',
+                              hint: 'e.g., 10.5',
+                              icon: Icons.percent,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Discount Validity Dates
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                              controller:
+                                  controller.discountValidFromController,
+                              label: 'Valid From',
+                              hint: 'Select start date',
+                              icon: Icons.calendar_today,
+                              readOnly: true,
+                              onTap: () => controller.selectDiscountDate(true),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildTextField(
+                              controller:
+                                  controller.discountValidUptoController,
+                              label: 'Valid Until',
+                              hint: 'Select end date',
+                              icon: Icons.calendar_today,
+                              readOnly: true,
+                              onTap: () => controller.selectDiscountDate(false),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      // Live Price Preview - Fixed: Create reactive streams for text controllers
+                      _buildLivePricePreview(),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionSection() {
-    return _buildSectionCard(
-      title: 'Description',
-      subtitle: 'Describe your product in detail',
-      child: TextFormField(
-        controller: controller.descriptionController,
-        maxLines: 6,
-        decoration: InputDecoration(
-          hintText: 'Enter detailed product description...',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.grey300),
+  // Add this new method to handle the live price preview properly
+  Widget _buildLivePricePreview() {
+    return StreamBuilder<String>(
+      stream: Stream.periodic(const Duration(milliseconds: 100), (_) {
+        return '${controller.priceController.text}|${controller.discountAmountController.text}|${controller.discountPercentController.text}';
+      }).distinct(),
+      builder: (context, snapshot) {
+        final price = double.tryParse(controller.priceController.text) ?? 0.0;
+        final discountAmount =
+            double.tryParse(controller.discountAmountController.text) ?? 0.0;
+        final discountPercent =
+            double.tryParse(controller.discountPercentController.text) ?? 0.0;
+
+        if (price > 0 && (discountAmount > 0 || discountPercent > 0)) {
+          final finalPrice = price - discountAmount;
+          return Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.green.withOpacity(0.3)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Original Price: ₹${price.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      'Final Price: ₹${finalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                if (discountPercent > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      '${discountPercent.toStringAsFixed(1)}% OFF',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildStep4() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          // Description section
+          _buildSectionCard(
+            title: 'Product Description',
+            subtitle: 'Provide detailed description of your product',
+            child: _buildTextField(
+              controller: controller.descriptionController,
+              label: 'Description',
+              hint: 'Enter detailed product description...',
+              icon: Icons.description,
+              maxLines: 5,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Description is required';
+                }
+                return null;
+              },
+            ),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.grey300),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
-          ),
-          contentPadding: const EdgeInsets.all(16),
-        ),
+
+          const SizedBox(height: 20),
+
+          // Existing attributes section
+          _buildAttributesSection(),
+        ],
       ),
     );
   }
@@ -571,9 +845,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             (entry) => Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: AppColors.grey300),
-                ),
+                border: Border(top: BorderSide(color: AppColors.grey300)),
               ),
               child: Row(
                 children: [
@@ -594,7 +866,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                   ),
                   IconButton(
                     onPressed: () => controller.removeAttribute(entry.key),
-                    icon: const Icon(Icons.delete_outline, color: AppColors.error),
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: AppColors.error,
+                    ),
                   ),
                 ],
               ),
@@ -699,10 +974,7 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.grey600,
-            ),
+            style: const TextStyle(fontSize: 14, color: AppColors.grey600),
           ),
           const SizedBox(height: 20),
           child,
@@ -717,10 +989,18 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
     required String hint,
     required IconData icon,
     TextInputType? keyboardType,
+    int maxLines = 1,
+    bool readOnly = false,
+    VoidCallback? onTap,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      maxLines: maxLines,
+      readOnly: readOnly,
+      onTap: onTap,
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -737,7 +1017,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
     );
   }
@@ -766,7 +1049,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        prefixIcon: Icon(icon, color: enabled ? AppColors.grey500 : AppColors.grey400),
+        prefixIcon: Icon(
+          icon,
+          color: enabled ? AppColors.grey500 : AppColors.grey400,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.grey300),
@@ -783,7 +1069,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.grey200),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
     );
   }
