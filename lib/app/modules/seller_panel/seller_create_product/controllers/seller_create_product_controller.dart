@@ -509,7 +509,7 @@ class SellerCreateProductController extends GetxController {
 
       // Reset form and navigate back
       resetForm();
-      Get.back();
+      // Get.back();
     } catch (e) {
       LogService.error('Error creating product', e);
       NotificationService.showError(
