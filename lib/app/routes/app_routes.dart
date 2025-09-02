@@ -18,6 +18,7 @@ abstract class Routes {
   static const BUYER_ORDERS_VIEW = _Paths.BUYER_ORDERS_VIEW;
   static const SELLER_CREATE_PRODUCT = _Paths.SELLER_CREATE_PRODUCT;
   static const SELLER_PRODUCTS = _Paths.SELLER_PRODUCTS;
+  static const SELLER_ORDERS = _Paths.SELLER_ORDERS;
 }
 
 abstract class _Paths {
@@ -36,4 +37,5 @@ abstract class _Paths {
   static const BUYER_ORDERS_VIEW = '/buyer-orders';
   static const SELLER_CREATE_PRODUCT = '/seller-create-product';
   static const SELLER_PRODUCTS = '/seller-products';
+  static const SELLER_ORDERS = '/seller-orders';
 }

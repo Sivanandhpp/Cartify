@@ -23,8 +23,8 @@ Widget buildBottomNavBar() {
       items: [
         const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         const BottomNavigationBarItem(
-          icon: Icon(Icons.category),
-          label: 'Categories',
+          icon: Icon(Icons.list_alt),
+          label: 'Orders',
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.production_quantity_limits),

@@ -164,7 +164,7 @@ class AddressSelectionSheet extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           AppButton(
-            text: 'Add Your First Address',
+            text: 'Add Address',
             onPressed: () {
               Get.back();
               controller.showAddAddressForm();

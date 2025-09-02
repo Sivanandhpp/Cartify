@@ -1,5 +1,6 @@
 import 'package:cartify/app/modules/seller_panel/seller_dashboard/views/widgets/bottom_nav_bar.dart';
 import 'package:cartify/app/modules/seller_panel/seller_home/views/seller_home_view.dart';
+import 'package:cartify/app/modules/seller_panel/seller_orders/views/seller_orders_view.dart';
 import 'package:cartify/app/modules/seller_panel/seller_products/views/seller_products_view.dart';
 import 'package:flutter/material.dart';
 
@@ -20,23 +21,10 @@ class SellerDashboardView extends GetView<SellerDashboardController> {
         physics: const ClampingScrollPhysics(),
         children: const [
           SellerHomeView(),
+          SellerOrdersView(),
           SellerProductsView()
-          // SellerCategoriesView(),
-          // SellerWishlistView(),
-          // SellerOffersView(),
-          // SellerProfileView(),
         ],
       ),
-      // floating action button right above the bottom navigation bar
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Container(
-      //   padding: const EdgeInsets.all(16),
-      //   color: AppColors.primaryBrand,
-      //   width: double.infinity,
-      //   height: 60,
-      //   child: const Column(children: [Text("1 item")]),
-      // ),
-
       bottomNavigationBar: buildBottomNavBar(),
     );
   }

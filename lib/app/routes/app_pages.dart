@@ -15,7 +15,7 @@ import '../modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
 import '../modules/buyer_panel/buyer_profile/views/buyer_orders_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
-import '../modules/seller_panel/seller_create_product/bindings/seller_create_product_binding.dart';
+import '../modules/seller_panel/seller_orders/views/seller_orders_view.dart';
 import '../modules/seller_panel/seller_create_product/views/seller_create_product_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
@@ -99,11 +99,16 @@ class AppPages {
     GetPage(
       name: _Paths.SELLER_CREATE_PRODUCT,
       page: () => const SellerCreateProductView(),
-      binding: SellerCreateProductBinding(),
+      binding: SellerDashboardBinding(),
     ),
     GetPage(
       name: _Paths.SELLER_PRODUCTS,
       page: () => const SellerProductsView(),
+      binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_ORDERS,
+      page: () => const SellerOrdersView(),
       binding: SellerDashboardBinding(),
     ),
   ];
