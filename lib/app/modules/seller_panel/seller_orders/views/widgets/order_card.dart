@@ -2,7 +2,7 @@ import 'package:cartify/app/core/models/order/order_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cartify/app/core/index.dart';
 
-class OrderCard extends StatelessWidget {
+class OrderCard extends StatefulWidget {
   final OrderModel order;
   final VoidCallback? onAccept;
   final VoidCallback? onMarkShipped;
@@ -25,6 +25,46 @@ class OrderCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<OrderCard> createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard>
+    with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+  late AnimationController _animationController;
+  late Animation<double> _expandAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleExpansion() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
@@ -32,115 +72,181 @@ class OrderCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         children: [
-          // Header Section
-          _buildHeader(),
+          // Header Section (Always visible)
+          _buildExpandableHeader(),
 
-          // Items Section
-          _buildItemsSection(),
+          // Expandable Content
+          SizeTransition(
+            sizeFactor: _expandAnimation,
+            child: Column(
+              children: [
+                // Items Section
+                _buildItemsSection(),
 
-          // Customer Info Section
-          _buildCustomerSection(),
+                // Customer Info Section
+                _buildCustomerSection(),
 
-          // Action Buttons Section
-          _buildActionButtons(),
+                // Action Buttons Section
+                _buildActionButtons(),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildExpandableHeader() {
     final primaryStatus = _getPrimaryStatus();
     final statusColor = _getStatusColor(primaryStatus);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.1),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+    return InkWell(
+      onTap: _toggleExpansion,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: statusColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
         ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Order ID and Date
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Order #${order.id.substring(0, 8)}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Order ID and Date
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Order #${widget.order.id.substring(0, 8)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      AppFormatters.formatDate(order.createdAt),
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        AppFormatters.formatDate(widget.order.createdAt),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              // Status Badge
+                // Status Badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    _getStatusText(primaryStatus),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                // Expand/Collapse Icon
+                const SizedBox(width: 8),
+                AnimatedRotation(
+                  turns: _isExpanded ? 0.5 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.grey[600],
+                    size: 24,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Order Summary (Always visible)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildSummaryItem(
+                  icon: Icons.shopping_cart,
+                  label: '${widget.order.items.length} Items',
+                  color: Colors.blue,
+                ),
+                _buildSummaryItem(
+                  icon: Icons.currency_rupee,
+                  label: '₹${widget.order.sellerAmount.toStringAsFixed(2)}',
+                  color: Colors.green,
+                ),
+                _buildSummaryItem(
+                  icon: Icons.access_time,
+                  label: _getTimeAgo(widget.order.createdAt),
+                  color: Colors.orange,
+                ),
+              ],
+            ),
+
+            // Quick Action Hint (only when collapsed)
+            if (!_isExpanded &&
+                (widget.canAccept ||
+                    widget.canMarkShipped ||
+                    widget.canMarkDelivered))
               Container(
+                margin: const EdgeInsets.only(top: 12),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.circular(20),
+                  color: statusColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: statusColor.withOpacity(0.4)),
                 ),
-                child: Text(
-                  _getStatusText(primaryStatus),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(_getActionIcon(), size: 14, color: statusColor),
+                    const SizedBox(width: 4),
+                    Text(
+                      _getActionHint(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: statusColor,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '• Tap to expand',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[600],
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          // Order Summary
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildSummaryItem(
-                icon: Icons.shopping_cart,
-                label: '${order.items.length} Items',
-                color: Colors.blue,
-              ),
-              _buildSummaryItem(
-                icon: Icons.currency_rupee,
-                label: '₹${order.sellerAmount.toStringAsFixed(2)}',
-                color: Colors.green,
-              ),
-              _buildSummaryItem(
-                icon: Icons.access_time,
-                label: _getTimeAgo(order.createdAt),
-                color: Colors.orange,
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildItemsSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey[200]!)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -166,7 +272,7 @@ class OrderCard extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Items List
-          ...order.items.map((item) => _buildItemRow(item)).toList(),
+          ...widget.order.items.map((item) => _buildItemRow(item)).toList(),
         ],
       ),
     );
@@ -206,7 +312,7 @@ class OrderCard extends StatelessWidget {
             ),
           ),
 
-          // Item Status (using OrderItemStatus if available, otherwise use order status)
+          // Item Status
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -274,7 +380,7 @@ class OrderCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      order.shippingAddress.recipientName,
+                      widget.order.shippingAddress.recipientName,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -282,7 +388,7 @@ class OrderCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      order.shippingAddress.phone,
+                      widget.order.shippingAddress.phone,
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ],
@@ -312,7 +418,7 @@ class OrderCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  order.shippingAddress.formattedAddress,
+                  widget.order.shippingAddress.formattedAddress,
                   style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -331,59 +437,61 @@ class OrderCard extends StatelessWidget {
       child: Column(
         children: [
           // Primary Action Button
-          if (canAccept)
+          if (widget.canAccept)
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 text: 'Accept Order',
-                onPressed: onAccept,
+                onPressed: widget.onAccept,
                 icon: Icons.check_circle_outline,
               ),
             )
-          else if (canMarkShipped)
+          else if (widget.canMarkShipped)
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 text: 'Mark as Shipped',
-                onPressed: onMarkShipped,
+                onPressed: widget.onMarkShipped,
                 icon: Icons.local_shipping_outlined,
               ),
             )
-          else if (canMarkDelivered)
+          else if (widget.canMarkDelivered)
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 text: 'Mark as Delivered',
-                onPressed: onMarkDelivered,
+                onPressed: widget.onMarkDelivered,
                 icon: Icons.done_all,
               ),
             ),
 
           // Secondary Actions
-          if (canAccept || canMarkShipped || canMarkDelivered)
+          if (widget.canAccept ||
+              widget.canMarkShipped ||
+              widget.canMarkDelivered)
             const SizedBox(height: 12),
 
-          // Row(
-          //   children: [
-          //     Expanded(
-          //       child: AppButton.outlined(
-          //         text: 'View Details',
-          //         onPressed: onViewDetails,
-          //         icon: Icons.visibility_outlined,
-          //       ),
-          //     ),
-          //     const SizedBox(width: 12),
-          //     Expanded(
-          //       child: AppButton.outlined(
-          //         text: 'Contact',
-          //         onPressed: () {
-          //           // Contact customer functionality
-          //         },
-          //         icon: Icons.message_outlined,
-          //       ),
-          //     ),
-          //   ],
-          // ),
+          Row(
+            children: [
+              Expanded(
+                child: AppButton.outlined(
+                  text: 'View Details',
+                  onPressed: widget.onViewDetails,
+                  icon: Icons.visibility_outlined,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppButton.outlined(
+                  text: 'Contact',
+                  onPressed: () {
+                    // Contact customer functionality
+                  },
+                  icon: Icons.message_outlined,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -411,10 +519,24 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  // Helper Methods
+  // Helper Methods for Action Hints
+  IconData _getActionIcon() {
+    if (widget.canAccept) return Icons.check_circle_outline;
+    if (widget.canMarkShipped) return Icons.local_shipping_outlined;
+    if (widget.canMarkDelivered) return Icons.done_all;
+    return Icons.info_outline;
+  }
+
+  String _getActionHint() {
+    if (widget.canAccept) return 'Ready to Accept';
+    if (widget.canMarkShipped) return 'Ready to Ship';
+    if (widget.canMarkDelivered) return 'Ready to Deliver';
+    return 'View Details';
+  }
+
+  // Status Helper Methods
   OrderStatus _getPrimaryStatus() {
-    // Use the order's overall status
-    return order.status;
+    return widget.order.status;
   }
 
   Color _getStatusColor(OrderStatus status) {
@@ -447,28 +569,22 @@ class OrderCard extends StatelessWidget {
     }
   }
 
-  // For individual items, check if OrderItem has its own status
   Color _getItemStatusColor(OrderItem item) {
-    // If OrderItem has its own status property, use it
-    // Otherwise, fall back to the order's overall status
     if (item.status != null) {
       return _getOrderItemStatusColor(item.status!);
     } else {
-      return _getStatusColor(order.status);
+      return _getStatusColor(widget.order.status);
     }
   }
 
   String _getItemStatusText(OrderItem item) {
-    // If OrderItem has its own status property, use it
-    // Otherwise, fall back to the order's overall status
     if (item.status != null) {
       return _getOrderItemStatusText(item.status!);
     } else {
-      return _getStatusText(order.status);
+      return _getStatusText(widget.order.status);
     }
   }
 
-  // Handle OrderItemStatus if it exists
   Color _getOrderItemStatusColor(dynamic status) {
     if (status == null) return Colors.grey;
 
@@ -476,7 +592,7 @@ class OrderCard extends StatelessWidget {
     switch (statusString) {
       case 'PENDING':
         return Colors.orange;
-      case 'CONFIRMED':
+      case 'ACCEPTED':
         return Colors.blue;
       case 'SHIPPED':
         return Colors.purple;
@@ -484,6 +600,8 @@ class OrderCard extends StatelessWidget {
         return Colors.green;
       case 'CANCELLED':
         return Colors.red;
+      case 'RETURNED':
+        return Colors.brown;
       default:
         return Colors.grey;
     }
@@ -491,7 +609,6 @@ class OrderCard extends StatelessWidget {
 
   String _getOrderItemStatusText(dynamic status) {
     if (status == null) return 'UNKNOWN';
-
     return status.toString().split('.').last;
   }
 
