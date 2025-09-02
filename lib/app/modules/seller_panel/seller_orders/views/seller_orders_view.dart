@@ -16,18 +16,16 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
       body: Column(
         children: [
           // Statistics Section
-          _buildStatisticsSection(),
-          
+          // _buildStatisticsSection(),
+
           // Search Bar
           _buildSearchBar(),
-          
+
           // Filter Tabs
           _buildFilterTabs(),
-          
+
           // Orders List
-          Expanded(
-            child: _buildOrdersList(),
-          ),
+          Expanded(child: _buildOrdersList()),
         ],
       ),
     );
@@ -48,13 +46,15 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
       actions: [
         IconButton(
           onPressed: controller.refreshOrders,
-          icon: Obx(() => controller.isRefreshing.value
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.refresh)),
+          icon: Obx(
+            () => controller.isRefreshing.value
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh),
+          ),
           tooltip: 'Refresh Orders',
         ),
         IconButton(
@@ -99,51 +99,59 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           Row(
             children: [
               Expanded(
-                child: Obx(() => _buildStatCard(
-                  'Total Orders',
-                  controller.totalOrdersCount.value.toString(),
-                  Icons.shopping_cart_outlined,
-                  Colors.blue,
-                )),
+                child: Obx(
+                  () => _buildStatCard(
+                    'Total Orders',
+                    controller.totalOrdersCount.value.toString(),
+                    Icons.shopping_cart_outlined,
+                    Colors.blue,
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Obx(() => _buildStatCard(
-                  'Pending',
-                  controller.pendingOrdersCount.value.toString(),
-                  Icons.pending_outlined,
-                  Colors.orange,
-                )),
+                child: Obx(
+                  () => _buildStatCard(
+                    'Pending',
+                    controller.pendingOrdersCount.value.toString(),
+                    Icons.pending_outlined,
+                    Colors.orange,
+                  ),
+                ),
               ),
             ],
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           Row(
             children: [
               Expanded(
-                child: Obx(() => _buildStatCard(
-                  'Today\'s Orders',
-                  controller.todaysOrdersCount.value.toString(),
-                  Icons.today_outlined,
-                  Colors.green,
-                )),
+                child: Obx(
+                  () => _buildStatCard(
+                    'Today\'s Orders',
+                    controller.todaysOrdersCount.value.toString(),
+                    Icons.today_outlined,
+                    Colors.green,
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Obx(() => _buildStatCard(
-                  'Revenue',
-                  '₹${controller.totalRevenue.value.toStringAsFixed(0)}',
-                  Icons.currency_rupee,
-                  Colors.purple,
-                )),
+                child: Obx(
+                  () => _buildStatCard(
+                    'Revenue',
+                    '₹${controller.totalRevenue.value.toStringAsFixed(0)}',
+                    Icons.currency_rupee,
+                    Colors.purple,
+                  ),
+                ),
               ),
             ],
           ),
@@ -152,7 +160,12 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -201,32 +214,36 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
 
   Widget _buildFilterTabs() {
     final filters = ['All', 'Pending', 'Confirmed', 'Shipped', 'Delivered'];
-    
+
     return Container(
       margin: const EdgeInsets.all(16),
-      child: Obx(() => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: filters.map((filter) {
-            final isSelected = controller.selectedFilter.value == filter;
-            return Container(
-              margin: const EdgeInsets.only(right: 8),
-              child: FilterChip(
-                label: Text(filter),
-                selected: isSelected,
-                onSelected: (_) => controller.changeFilter(filter),
-                selectedColor: AppColors.primary.withOpacity(0.2),
-                checkmarkColor: AppColors.primary,
-                backgroundColor: Colors.grey[100],
-                labelStyle: TextStyle(
-                  color: isSelected ? AppColors.primary : Colors.grey[700],
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+      child: Obx(
+        () => SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: filters.map((filter) {
+              final isSelected = controller.selectedFilter.value == filter;
+              return Container(
+                margin: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  label: Text(filter),
+                  selected: isSelected,
+                  onSelected: (_) => controller.changeFilter(filter),
+                  selectedColor: AppColors.primary.withOpacity(0.2),
+                  checkmarkColor: AppColors.primary,
+                  backgroundColor: Colors.grey[100],
+                  labelStyle: TextStyle(
+                    color: isSelected ? AppColors.primary : Colors.grey[700],
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         ),
-      )),
+      ),
     );
   }
 
@@ -270,11 +287,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.inbox_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.inbox_outlined, size: 80, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
             'No Orders Found',
@@ -285,12 +298,14 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
             ),
           ),
           const SizedBox(height: 8),
-          Obx(() => Text(
-            controller.selectedFilter.value == 'All'
-                ? 'You don\'t have any orders yet'
-                : 'No ${controller.selectedFilter.value.toLowerCase()} orders found',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-          )),
+          Obx(
+            () => Text(
+              controller.selectedFilter.value == 'All'
+                  ? 'You don\'t have any orders yet'
+                  : 'No ${controller.selectedFilter.value.toLowerCase()} orders found',
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+            ),
+          ),
           const SizedBox(height: 24),
           AppButton.outlined(
             text: 'Refresh',
@@ -311,10 +326,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
           'Are you sure you want to accept order #${order.id.substring(0, 8)}?\n\nThis will confirm the order and notify the customer.',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           AppButton(
             text: 'Accept',
             onPressed: () {
@@ -337,10 +349,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
           'Are you sure you want to mark order #${order.id.substring(0, 8)} as shipped?\n\nThis will update the order status and notify the customer.',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           AppButton(
             text: 'Mark Shipped',
             onPressed: () {
@@ -363,10 +372,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
           'Are you sure you want to mark order #${order.id.substring(0, 8)} as delivered?\n\nThis action cannot be undone.',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           AppButton(
             text: 'Mark Delivered',
             onPressed: () {
