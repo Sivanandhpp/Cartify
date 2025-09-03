@@ -12,13 +12,6 @@ class AppConfig {
 
   /// Base URL for the API server
   /// Change this based on your environment (development, staging, production)
-  // API URL for localhost Backend
-  // static const String baseUrl = 'http://192.168.137.1:3000';
-  // API URL for localhost Backend with emulators
-  // static const String baseUrl = 'http://10.0.2.2:3000';
-  // API URL for public (protected access)
-  // static const String baseUrl = 'http://192.168.185.91:3000';
-  // API URL for public
   static const String baseUrl = 'https://cartify.ultsglobal.com';
 
   /// API request timeout duration in milliseconds
@@ -156,14 +149,11 @@ class AppConfig {
   /// Check if app is running in release mode
   static bool get isReleaseMode => !isDebugMode;
 
-  /// Get API base URL with version
-  static String get apiBaseUrl => '$baseUrl/v1';
-
   /// Get complete image upload endpoint
-  static String get imageUploadUrl => '$apiBaseUrl/upload/image';
+  static String get imageUploadUrl => '$baseUrl/upload/image';
 
   /// Get complete file upload endpoint
-  static String get fileUploadUrl => '$apiBaseUrl/upload/file';
+  static String get fileUploadUrl => '$baseUrl/upload/file';
 
   // 💾 Storage Configuration
   static String get storageKey => '${AppIdentity.packageName}_storage';
