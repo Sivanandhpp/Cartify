@@ -308,6 +308,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
           ),
           const SizedBox(height: 24),
           AppButton.outlined(
+            width: 300,
             text: 'Refresh',
             onPressed: controller.refreshOrders,
             icon: Icons.refresh,

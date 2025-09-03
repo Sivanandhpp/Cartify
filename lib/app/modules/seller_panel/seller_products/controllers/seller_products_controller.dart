@@ -19,16 +19,26 @@ class SellerProductsController extends GetxController {
   final RxString selectedCategory = 'All'.obs;
   final RxString selectedStatus = 'All'.obs;
 
+  // New filter for stock status
+  final RxString selectedStockFilter = 'All'.obs;
+
   // Statistics
   final RxInt totalProducts = 0.obs;
   final RxInt activeProducts = 0.obs;
   final RxInt inactiveProducts = 0.obs;
   final RxInt lowStockProducts = 0.obs;
 
+  // Observable for actual categories
+  final RxList<String> _availableCategories = <String>['All'].obs;
+
+  // Getter for available categories
+  List<String> get availableCategories => _availableCategories.toList();
+
   @override
   void onInit() {
     super.onInit();
     loadProducts();
+    _extractCategories(); // Extract categories from products
 
     // Listen to search changes
     debounce(
@@ -161,6 +171,26 @@ class SellerProductsController extends GetxController {
     searchQuery.value = query;
   }
 
+  /// Extract unique categories from products
+  void _extractCategories() {
+    final categorySet = <String>{'All'};
+print('yyyyyyyyyyyyyyyyyyyyyyyyyyyy');
+    for (final product in products) {
+      print('Product: ${product.name}');
+      if (product.category != null && product.category!.name.isNotEmpty) {
+        print('Category: ${product.category!.name}');
+        categorySet.add(product.category!.name);
+      }
+    }
+
+    _availableCategories.assignAll(categorySet.toList()..sort());
+
+    LogService.debug('Categories extracted', {
+      'categories': _availableCategories.length - 1, // Exclude 'All'
+      'list': _availableCategories.sublist(1), // Show actual categories
+    });
+  }
+
   // Filter products based on search, category, and status
   void filterProducts() {
     List<ProductModel> filtered = List.from(products);
@@ -200,6 +230,30 @@ class SellerProductsController extends GetxController {
           .toList();
     }
 
+    // Apply stock filter
+    if (selectedStockFilter.value != 'All') {
+      switch (selectedStockFilter.value) {
+        case 'In Stock':
+          filtered = filtered
+              .where((product) => product.stockQuantity > 10)
+              .toList();
+          break;
+        case 'Low Stock':
+          filtered = filtered
+              .where(
+                (product) =>
+                    product.stockQuantity > 0 && product.stockQuantity <= 10,
+              )
+              .toList();
+          break;
+        case 'Out of Stock':
+          filtered = filtered
+              .where((product) => product.stockQuantity == 0)
+              .toList();
+          break;
+      }
+    }
+
     filteredProducts.assignAll(filtered);
 
     LogService.debug('Filtered products', {
@@ -208,13 +262,95 @@ class SellerProductsController extends GetxController {
       'searchQuery': searchQuery.value,
       'selectedCategory': selectedCategory.value,
       'selectedStatus': selectedStatus.value,
+      'selectedStockFilter': selectedStockFilter.value,
     });
   }
 
-  // Update category filter
+  /// Update category filter
   void updateCategoryFilter(String category) {
     selectedCategory.value = category;
-    filterProducts();
+    _applyFilters();
+
+    LogService.debug('Category filter updated', {'category': category});
+  }
+
+  /// Update stock filter
+  void updateStockFilter(String stockFilter) {
+    selectedStockFilter.value = stockFilter;
+    _applyFilters();
+
+    LogService.debug('Stock filter updated', {'stockFilter': stockFilter});
+  }
+
+  /// Apply all filters to products
+  void _applyFilters() {
+    List<ProductModel> filtered = List.from(products);
+
+    // Apply search filter
+    if (searchQuery.value.isNotEmpty) {
+      filtered = filtered
+          .where(
+            (product) =>
+                product.name.toLowerCase().contains(
+                  searchQuery.value.toLowerCase(),
+                ) ||
+                (product.category?.name.toLowerCase().contains(
+                      searchQuery.value.toLowerCase(),
+                    ) ??
+                    false),
+          )
+          .toList();
+    }
+
+    // Apply category filter
+    if (selectedCategory.value != 'All') {
+      filtered = filtered
+          .where((product) => product.category?.name == selectedCategory.value)
+          .toList();
+    }
+
+    // Apply status filter
+    if (selectedStatus.value != 'All') {
+      final isActive = selectedStatus.value == 'Active';
+      filtered = filtered
+          .where((product) => (product.isActive ?? true) == isActive)
+          .toList();
+    }
+
+    // Apply stock filter
+    if (selectedStockFilter.value != 'All') {
+      switch (selectedStockFilter.value) {
+        case 'In Stock':
+          filtered = filtered
+              .where((product) => product.stockQuantity > 10)
+              .toList();
+          break;
+        case 'Low Stock':
+          filtered = filtered
+              .where(
+                (product) =>
+                    product.stockQuantity > 0 && product.stockQuantity <= 10,
+              )
+              .toList();
+          break;
+        case 'Out of Stock':
+          filtered = filtered
+              .where((product) => product.stockQuantity == 0)
+              .toList();
+          break;
+      }
+    }
+
+    filteredProducts.assignAll(filtered);
+
+    LogService.debug('Filters applied', {
+      'total': products.length,
+      'filtered': filteredProducts.length,
+      'search': searchQuery.value,
+      'category': selectedCategory.value,
+      'status': selectedStatus.value,
+      'stock': selectedStockFilter.value,
+    });
   }
 
   // Update status filter
@@ -386,5 +522,16 @@ class SellerProductsController extends GetxController {
               product.category?.id == categoryId,
         )
         .toList();
+  }
+
+  /// Reset all filters
+  void resetFilters() {
+    searchQuery.value = '';
+    selectedCategory.value = 'All';
+    selectedStatus.value = 'All';
+    selectedStockFilter.value = 'All';
+    filterProducts();
+
+    LogService.info('All filters reset');
   }
 }

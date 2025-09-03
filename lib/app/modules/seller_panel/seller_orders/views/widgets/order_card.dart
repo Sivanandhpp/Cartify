@@ -122,7 +122,7 @@ class _OrderCardState extends State<OrderCard>
                       Text(
                         'Order #${widget.order.id.substring(0, 8)}',
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -147,12 +147,40 @@ class _OrderCardState extends State<OrderCard>
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: widget.canAccept
-                      ? Text('PENDING')
+                      ? const Text(
+                          'PENDING',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
                       : widget.canMarkShipped
-                      ? Text('ACCEPTED')
+                      ? const Text(
+                          'ACCEPTED',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
                       : widget.canMarkDelivered
-                      ? Text('SHIPPING')
-                      : Text('DELIVERED'),
+                      ? const Text(
+                          'SHIPPING',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : const Text(
+                          'DELIVERED',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
 
                 // Text(

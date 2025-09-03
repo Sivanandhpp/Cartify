@@ -175,15 +175,13 @@ class _SellerProductCardState extends State<SellerProductCard>
         Text(
           widget.product.name,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-
-        const SizedBox(height: 4),
 
         // Category
         if (widget.product.category != null)
@@ -196,15 +194,13 @@ class _SellerProductCardState extends State<SellerProductCard>
             ),
           ),
 
-        const SizedBox(height: 8),
-
         // Price
         Row(
           children: [
             Text(
               '₹${widget.product.price.toStringAsFixed(2)}',
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
               ),
@@ -228,8 +224,6 @@ class _SellerProductCardState extends State<SellerProductCard>
             //   ),
           ],
         ),
-
-        const SizedBox(height: 4),
 
         // Product ID (for reference)
         Text(

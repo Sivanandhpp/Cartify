@@ -185,11 +185,11 @@ class SellerProductsView extends GetView<SellerProductsController> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                // Category Filter
+                // Category Filter - Using actual categories
                 Obx(() => _buildFilterChip(
                   'Category',
                   controller.selectedCategory.value,
-                  ['All', 'Electronics', 'Clothing', 'Food', 'Sports'],
+                  controller.availableCategories, // Using actual categories
                   controller.updateCategoryFilter,
                 )),
                 
@@ -201,6 +201,16 @@ class SellerProductsView extends GetView<SellerProductsController> {
                   controller.selectedStatus.value,
                   ['All', 'Active', 'Inactive'],
                   controller.updateStatusFilter,
+                )),
+                
+                const SizedBox(width: 8),
+                
+                // Stock Filter
+                Obx(() => _buildFilterChip(
+                  'Stock',
+                  controller.selectedStockFilter.value,
+                  ['All', 'In Stock', 'Low Stock', 'Out of Stock'],
+                  controller.updateStockFilter,
                 )),
               ],
             ),
@@ -219,15 +229,42 @@ class SellerProductsView extends GetView<SellerProductsController> {
     return PopupMenuButton<String>(
       onSelected: onSelected,
       child: Chip(
-        label: Text('$label: $selectedValue'),
-        deleteIcon: const Icon(Icons.arrow_drop_down, size: 18),
-        onDeleted: () {},
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$label: $selectedValue',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: selectedValue != 'All' ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.arrow_drop_down,
+              size: 18,
+              color: selectedValue != 'All' ? Colors.blue[700] : Colors.grey[600],
+            ),
+          ],
+        ),
         backgroundColor: selectedValue != 'All' ? Colors.blue[100] : Colors.grey[200],
+        side: BorderSide(
+          color: selectedValue != 'All' ? Colors.blue[300]! : Colors.grey[300]!,
+        ),
       ),
       itemBuilder: (context) => options.map((option) =>
         PopupMenuItem(
           value: option,
-          child: Text(option),
+          child: Row(
+            children: [
+              if (option == selectedValue)
+                Icon(Icons.check, size: 16, color: Colors.blue[700])
+              else
+                const SizedBox(width: 16),
+              const SizedBox(width: 8),
+              Expanded(child: Text(option)),
+            ],
+          ),
         ),
       ).toList(),
     );
@@ -253,13 +290,16 @@ class SellerProductsView extends GetView<SellerProductsController> {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Add your first product to get started',
+          Obx(() => Text(
+            controller.searchQuery.value.isNotEmpty
+                ? 'No products match your search criteria'
+                : 'Add your first product to get started',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[500],
             ),
-          ),
+            textAlign: TextAlign.center,
+          )),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: controller.addNewProduct,
