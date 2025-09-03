@@ -146,15 +146,23 @@ class _OrderCardState extends State<OrderCard>
                     color: statusColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    _getStatusText(primaryStatus),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: widget.canAccept
+                      ? Text('PENDING')
+                      : widget.canMarkShipped
+                      ? Text('ACCEPTED')
+                      : widget.canMarkDelivered
+                      ? Text('SHIPPING')
+                      : Text('DELIVERED'),
                 ),
+
+                // Text(
+                //   _getStatusText(widget.canAccept),
+                //   style: const TextStyle(
+                //     color: Colors.white,
+                //     fontSize: 12,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
 
                 // Expand/Collapse Icon
                 const SizedBox(width: 8),
@@ -471,27 +479,27 @@ class _OrderCardState extends State<OrderCard>
               widget.canMarkDelivered)
             const SizedBox(height: 12),
 
-          Row(
-            children: [
-              Expanded(
-                child: AppButton.outlined(
-                  text: 'View Details',
-                  onPressed: widget.onViewDetails,
-                  icon: Icons.visibility_outlined,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: AppButton.outlined(
-                  text: 'Contact',
-                  onPressed: () {
-                    // Contact customer functionality
-                  },
-                  icon: Icons.message_outlined,
-                ),
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: AppButton.outlined(
+          //         text: 'View Details',
+          //         onPressed: widget.onViewDetails,
+          //         icon: Icons.visibility_outlined,
+          //       ),
+          //     ),
+          //     const SizedBox(width: 12),
+          //     Expanded(
+          //       child: AppButton.outlined(
+          //         text: 'Contact',
+          //         onPressed: () {
+          //           // Contact customer functionality
+          //         },
+          //         icon: Icons.message_outlined,
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

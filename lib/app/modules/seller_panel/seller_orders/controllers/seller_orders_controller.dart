@@ -204,15 +204,17 @@ class SellerOrdersController extends GetxController {
       LogService.business('Accepting order', {'orderId': orderId});
 
       final order = allOrders.firstWhere((o) => o.id == orderId);
-      
+
       bool allUpdated = true;
       for (final item in order.items) {
         if (item.status == OrderItemStatus.PENDING) {
           final updatedItem = await _orderService.updateOrderItemStatus(
             item.id,
-            UpdateOrderItemDto(status: OrderItemStatus.ACCEPTED),  // Changed to ACCEPTED
+            UpdateOrderItemDto(
+              status: OrderItemStatus.ACCEPTED,
+            ), // Changed to ACCEPTED
           );
-          
+
           if (updatedItem == null) {
             allUpdated = false;
             break;
@@ -222,13 +224,16 @@ class SellerOrdersController extends GetxController {
 
       if (allUpdated) {
         await loadOrders();
-        
+
         NotificationService.showSuccess(
           title: 'Order Accepted',
-          message: 'Order #${orderId.substring(0, 8)} has been accepted successfully',
+          message:
+              'Order #${orderId.substring(0, 8)} has been accepted successfully',
         );
 
-        LogService.business('Order accepted successfully', {'orderId': orderId});
+        LogService.business('Order accepted successfully', {
+          'orderId': orderId,
+        });
       } else {
         throw Exception('Failed to update all order items');
       }
@@ -251,15 +256,16 @@ class SellerOrdersController extends GetxController {
       LogService.business('Marking order as shipped', {'orderId': orderId});
 
       final order = allOrders.firstWhere((o) => o.id == orderId);
-      
+
       bool allUpdated = true;
       for (final item in order.items) {
-        if (item.status == OrderItemStatus.ACCEPTED) {  // Changed from CONFIRMED to ACCEPTED
+        if (item.status == OrderItemStatus.ACCEPTED) {
+          // Changed from CONFIRMED to ACCEPTED
           final updatedItem = await _orderService.updateOrderItemStatus(
             item.id,
             UpdateOrderItemDto(status: OrderItemStatus.SHIPPED),
           );
-          
+
           if (updatedItem == null) {
             allUpdated = false;
             break;
@@ -269,13 +275,16 @@ class SellerOrdersController extends GetxController {
 
       if (allUpdated) {
         await loadOrders();
-        
+
         NotificationService.showSuccess(
           title: 'Order Shipped',
-          message: 'Order #${orderId.substring(0, 8)} has been marked as shipped',
+          message:
+              'Order #${orderId.substring(0, 8)} has been marked as shipped',
         );
 
-        LogService.business('Order marked as shipped successfully', {'orderId': orderId});
+        LogService.business('Order marked as shipped successfully', {
+          'orderId': orderId,
+        });
       } else {
         throw Exception('Failed to update all order items');
       }
@@ -348,16 +357,18 @@ class SellerOrdersController extends GetxController {
       LogService.business('Cancelling order', {'orderId': orderId});
 
       final order = allOrders.firstWhere((o) => o.id == orderId);
-      
+
       bool allUpdated = true;
       for (final item in order.items) {
         // Only allow cancellation of pending or accepted orders
-        if (item.status == OrderItemStatus.PENDING || item.status == OrderItemStatus.ACCEPTED) {  // Changed from CONFIRMED
+        if (item.status == OrderItemStatus.PENDING ||
+            item.status == OrderItemStatus.ACCEPTED) {
+          // Changed from CONFIRMED
           final updatedItem = await _orderService.updateOrderItemStatus(
             item.id,
             UpdateOrderItemDto(status: OrderItemStatus.CANCELLED),
           );
-          
+
           if (updatedItem == null) {
             allUpdated = false;
             break;
@@ -367,13 +378,15 @@ class SellerOrdersController extends GetxController {
 
       if (allUpdated) {
         await loadOrders();
-        
+
         NotificationService.showSuccess(
           title: 'Order Cancelled',
           message: 'Order #${orderId.substring(0, 8)} has been cancelled',
         );
 
-        LogService.business('Order cancelled successfully', {'orderId': orderId});
+        LogService.business('Order cancelled successfully', {
+          'orderId': orderId,
+        });
       } else {
         throw Exception('Failed to cancel all order items');
       }
@@ -573,10 +586,10 @@ class SellerOrdersController extends GetxController {
   List<String> get filterOptions => [
     'All',
     'Pending',
-    'Accepted',      // Changed from 'Confirmed' to 'Accepted'
+    'Accepted', // Changed from 'Confirmed' to 'Accepted'
     'Shipped',
     'Delivered',
     'Cancelled',
-    'Returned',      // Added 'Returned' option
+    'Returned', // Added 'Returned' option
   ];
 }

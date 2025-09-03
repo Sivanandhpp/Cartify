@@ -3,7 +3,7 @@ import 'package:cartify/app/core/widgets/app_image.dart';
 import 'package:cartify/app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class SellerProductCard extends StatelessWidget {
+class SellerProductCard extends StatefulWidget {
   final ProductModel product;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
@@ -18,10 +18,50 @@ class SellerProductCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<SellerProductCard> createState() => _SellerProductCardState();
+}
+
+class _SellerProductCardState extends State<SellerProductCard>
+    with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+  late AnimationController _animationController;
+  late Animation<double> _expandAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleExpansion() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isActive = product.isActive ?? true;
-    final isLowStock = product.stockQuantity < 10;
-    final isOutOfStock = product.stockQuantity == 0;
+    final isActive = widget.product.isActive ?? true;
+    final isLowStock = widget.product.stockQuantity < 10;
+    final isOutOfStock = widget.product.stockQuantity == 0;
 
     return Card(
       elevation: 2,
@@ -37,34 +77,62 @@ class SellerProductCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Header Section with Image and Basic Info
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Product Image
-                  _buildProductImage(),
+            // Header Section with Image and Basic Info (Always visible)
+            InkWell(
+              onTap: _toggleExpansion,
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Product Image
+                    _buildProductImage(),
 
-                  const SizedBox(width: 16),
+                    const SizedBox(width: 16),
 
-                  // Product Details
-                  Expanded(child: _buildProductDetails()),
+                    // Product Details
+                    Expanded(child: _buildProductDetails()),
 
-                  // Status and Actions
-                  _buildActionsColumn(isActive),
-                ],
+                    // Status and Actions
+                    // _buildActionsColumn(isActive),
+
+                    // Expand/Collapse Icon
+                    const SizedBox(width: 8),
+                    AnimatedRotation(
+                      turns: _isExpanded ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.grey[600],
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 
-            // Additional Info Section
-            _buildAdditionalInfo(isLowStock, isOutOfStock),
+            // Expandable Content
+            SizeTransition(
+              sizeFactor: _expandAnimation,
+              child: Column(
+                children: [
+                  _buildActionsColumn(isActive),
 
-            // Tags Section (if available)
-            if (product.tags?.isNotEmpty == true) _buildTagsSection(),
+                  // Additional Info Section
+                  _buildAdditionalInfo(isLowStock, isOutOfStock),
 
-            // Discount Section (if available)
-            if (product.discounts?.isNotEmpty == true) _buildDiscountSection(),
+                  // Tags Section (if available)
+                  if (widget.product.tags?.isNotEmpty == true)
+                    _buildTagsSection(),
+
+                  // Discount Section (if available)
+                  if (widget.product.discounts?.isNotEmpty == true)
+                    _buildDiscountSection(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -73,8 +141,8 @@ class SellerProductCard extends StatelessWidget {
 
   Widget _buildProductImage() {
     return Container(
-      width: 80,
-      height: 80,
+      width: 60,
+      height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
@@ -88,20 +156,12 @@ class SellerProductCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: AppImage.network(
-          url: product.images?.isNotEmpty == true ? product.images!.first : '',
-          width: 80,
-          height: 80,
+          url: widget.product.images?.isNotEmpty == true
+              ? widget.product.images!.first
+              : '',
+          width: 60,
+          height: 60,
           fit: BoxFit.cover,
-          errorWidget: Container(
-            width: 80,
-            height: 80,
-            color: Colors.grey[200],
-            child: Icon(
-              Icons.image_outlined,
-              color: Colors.grey[400],
-              size: 32,
-            ),
-          ),
         ),
       ),
     );
@@ -113,7 +173,7 @@ class SellerProductCard extends StatelessWidget {
       children: [
         // Product Name
         Text(
-          product.name,
+          widget.product.name,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -126,9 +186,9 @@ class SellerProductCard extends StatelessWidget {
         const SizedBox(height: 4),
 
         // Category
-        if (product.category != null)
+        if (widget.product.category != null)
           Text(
-            product.category!.name,
+            widget.product.category!.name,
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey[600],
@@ -142,30 +202,30 @@ class SellerProductCard extends StatelessWidget {
         Row(
           children: [
             Text(
-              '₹${product.price.toStringAsFixed(2)}',
+              '₹${widget.product.price.toStringAsFixed(2)}',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
               ),
             ),
-            if (product.discounts?.isNotEmpty == true)
-              Container(
-                margin: const EdgeInsets.only(left: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  '${_getDiscountPercentage()}% OFF',
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+            // if (widget.product.discounts?.isNotEmpty == true)
+            //   Container(
+            //     margin: const EdgeInsets.only(left: 8),
+            //     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            //     decoration: BoxDecoration(
+            //       color: Colors.red,
+            //       borderRadius: BorderRadius.circular(4),
+            //     ),
+            //     child: Text(
+            //       '${_getDiscountPercentage()}% OFF',
+            //       style: const TextStyle(
+            //         fontSize: 10,
+            //         color: Colors.white,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
 
@@ -173,7 +233,7 @@ class SellerProductCard extends StatelessWidget {
 
         // Product ID (for reference)
         Text(
-          'ID: ${product.id.substring(0, 8)}...',
+          'ID: ${widget.product.id.substring(0, 8)}...',
           style: TextStyle(
             fontSize: 10,
             color: Colors.grey[500],
@@ -185,77 +245,75 @@ class SellerProductCard extends StatelessWidget {
   }
 
   Widget _buildActionsColumn(bool isActive) {
-    return Column(
-      children: [
-        // Active/Inactive Toggle
-        Container(
-          decoration: BoxDecoration(
-            color: isActive ? Colors.green[50] : Colors.grey[100],
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: isActive ? Colors.green[300]! : Colors.grey[300]!,
+    return
+    // Action Buttons Row
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Product Options',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          Container(
+            decoration: BoxDecoration(
+              color: isActive ? Colors.green[50] : Colors.grey[100],
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isActive ? Colors.green[300]! : Colors.grey[300]!,
+              ),
+            ),
+            child: Switch(
+              value: isActive,
+              onChanged: widget.onToggleStatus != null
+                  ? (_) => widget.onToggleStatus!()
+                  : null,
+              activeColor: Colors.green,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
-          child: Switch(
-            value: isActive,
-            onChanged: onToggleStatus != null ? (_) => onToggleStatus!() : null,
-            activeColor: Colors.green,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        // Action Buttons Row
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Edit Button
-            if (onEdit != null)
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit_outlined),
-                  color: Colors.blue[700],
-                  iconSize: 20,
-                  padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(
-                    minWidth: 36,
-                    minHeight: 36,
-                  ),
-                  tooltip: 'Edit Product',
-                ),
+          const SizedBox(width: 8),
+          // Edit Button
+          if (widget.onEdit != null)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(8),
               ),
-
-            const SizedBox(width: 8),
-
-            // Delete Button
-            if (onDelete != null)
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.red[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete_outline),
-                  color: Colors.red[700],
-                  iconSize: 20,
-                  padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(
-                    minWidth: 36,
-                    minHeight: 36,
-                  ),
-                  tooltip: 'Delete Product',
-                ),
+              child: IconButton(
+                onPressed: widget.onEdit,
+                icon: const Icon(Icons.edit_outlined),
+                color: Colors.blue[700],
+                iconSize: 20,
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                tooltip: 'Edit Product',
               ),
-          ],
-        ),
-      ],
+            ),
+
+          const SizedBox(width: 8),
+
+          // Delete Button
+          if (widget.onDelete != null)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                onPressed: widget.onDelete,
+                icon: const Icon(Icons.delete_outline),
+                color: Colors.red[700],
+                iconSize: 20,
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                tooltip: 'Delete Product',
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -273,7 +331,7 @@ class SellerProductCard extends StatelessWidget {
             child: _buildInfoItem(
               icon: Icons.inventory_2_outlined,
               label: 'Stock',
-              value: '${product.stockQuantity}',
+              value: '${widget.product.stockQuantity}',
               valueColor: _getStockColor(),
               badge: isOutOfStock
                   ? 'OUT OF STOCK'
@@ -285,13 +343,14 @@ class SellerProductCard extends StatelessWidget {
           ),
 
           // Measurements (if available)
-          if (product.measureAmount != null && product.measureUnitCode != null)
+          if (widget.product.measureAmount != null &&
+              widget.product.measureUnitCode != null)
             Expanded(
               child: _buildInfoItem(
                 icon: Icons.straighten,
                 label: 'Measure',
                 value:
-                    '${product.measureAmount} ${product.measureUnitCode?.toUpperCase()}',
+                    '${widget.product.measureAmount} ${widget.product.measureUnitCode?.toUpperCase()}',
                 valueColor: Colors.grey[700]!,
               ),
             ),
@@ -299,12 +358,12 @@ class SellerProductCard extends StatelessWidget {
           // Status
           Expanded(
             child: _buildInfoItem(
-              icon: product.isActive == true
+              icon: widget.product.isActive == true
                   ? Icons.visibility
                   : Icons.visibility_off,
               label: 'Status',
-              value: product.isActive == true ? 'Active' : 'Inactive',
-              valueColor: product.isActive == true
+              value: widget.product.isActive == true ? 'Active' : 'Inactive',
+              valueColor: widget.product.isActive == true
                   ? Colors.green
                   : Colors.orange,
             ),
@@ -398,7 +457,7 @@ class SellerProductCard extends StatelessWidget {
           Wrap(
             spacing: 6,
             runSpacing: 4,
-            children: product.tags!.map((tag) {
+            children: widget.product.tags!.map((tag) {
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
@@ -423,7 +482,7 @@ class SellerProductCard extends StatelessWidget {
   }
 
   Widget _buildDiscountSection() {
-    final discount = product.discounts!.first;
+    final discount = widget.product.discounts!.first;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -484,20 +543,20 @@ class SellerProductCard extends StatelessWidget {
 
   // Helper Methods
   Color _getStockColor() {
-    final stock = product.stockQuantity;
+    final stock = widget.product.stockQuantity;
     if (stock == 0) return Colors.red;
     if (stock < 10) return Colors.orange;
     return Colors.green;
   }
 
   double _getDiscountPercentage() {
-    if (product.discounts?.isNotEmpty == true) {
-      final discount = product.discounts!.first;
+    if (widget.product.discounts?.isNotEmpty == true) {
+      final discount = widget.product.discounts!.first;
       if (discount.discountPercent != null) {
         return discount.discountPercent!;
       }
       if (discount.discountAmount != null) {
-        return (discount.discountAmount! / product.price) * 100;
+        return (discount.discountAmount! / widget.product.price) * 100;
       }
     }
     return 0.0;
