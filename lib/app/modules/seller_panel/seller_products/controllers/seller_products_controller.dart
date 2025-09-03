@@ -1,4 +1,5 @@
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/core/widgets/app_dialog.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
@@ -174,7 +175,7 @@ class SellerProductsController extends GetxController {
   /// Extract unique categories from products
   void _extractCategories() {
     final categorySet = <String>{'All'};
-print('yyyyyyyyyyyyyyyyyyyyyyyyyyyy');
+    print('yyyyyyyyyyyyyyyyyyyyyyyyyyyy');
     for (final product in products) {
       print('Product: ${product.name}');
       if (product.category != null && product.category!.name.isNotEmpty) {
@@ -412,14 +413,13 @@ print('yyyyyyyyyyyyyyyyyyyyyyyyyyyy');
 
   // Delete product (with API call)
   Future<void> deleteProduct(ProductModel product) async {
-    Get.defaultDialog(
+
+    AppDialog(
       title: 'Delete Product',
-      middleText:
+      content:
           'Are you sure you want to delete "${product.name}"? This action cannot be undone.',
-      textCancel: 'Cancel',
-      textConfirm: 'Delete',
-      confirmTextColor: AppColors.white,
-      buttonColor: AppColors.error,
+      confirmText: 'Delete',
+      confirmButtonColor: AppColors.error,
       onConfirm: () async {
         Get.back(); // Close dialog first
 
@@ -460,7 +460,8 @@ print('yyyyyyyyyyyyyyyyyyyyyyyyyyyy');
           );
         }
       },
-    );
+      onCancel: () => Get.back(),
+    ).show();
   }
 
   // Edit product

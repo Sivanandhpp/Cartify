@@ -65,8 +65,8 @@ class SellerProductsView extends GetView<SellerProductsController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.addNewProduct,
-        child: const Icon(Icons.add),
         tooltip: 'Add New Product',
+        child: const Icon(Icons.add),
       ),
     );
   }

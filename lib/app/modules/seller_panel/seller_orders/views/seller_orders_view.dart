@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:cartify/app/core/index.dart';
 import '../controllers/seller_orders_controller.dart';
 import 'widgets/order_card.dart';
+import 'package:cartify/app/core/widgets/app_dialog.dart'; // Add this import
 
 class SellerOrdersView extends GetView<SellerOrdersController> {
   const SellerOrdersView({super.key});
@@ -318,73 +319,46 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
     );
   }
 
-  // Confirmation Dialogs
+  // Confirmation Dialogs - Updated to use AppDialog
   void _showAcceptConfirmation(OrderModel order) {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Accept Order'),
-        content: Text(
+    AppDialog(
+      title: 'Accept Order',
+      content:
           'Are you sure you want to accept order #${order.id.substring(0, 8)}?\n\nThis will confirm the order and notify the customer.',
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-          AppButton(
-            text: 'Accept',
-            onPressed: () {
-              Get.back();
-              controller.acceptOrder(order.id);
-            },
-            width: 100,
-            height: 40,
-          ),
-        ],
-      ),
-    );
+      confirmText: 'Accept',
+      onConfirm: () {
+        Get.back();
+        controller.acceptOrder(order.id);
+      },
+      onCancel: () => Get.back(),
+    ).show();
   }
 
   void _showShippedConfirmation(OrderModel order) {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Mark as Shipped'),
-        content: Text(
+    AppDialog(
+      title: 'Mark as Shipped',
+      content:
           'Are you sure you want to mark order #${order.id.substring(0, 8)} as shipped?\n\nThis will update the order status and notify the customer.',
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-          AppButton(
-            text: 'Mark Shipped',
-            onPressed: () {
-              Get.back();
-              controller.markAsShipped(order.id);
-            },
-            width: 120,
-            height: 40,
-          ),
-        ],
-      ),
-    );
+      confirmText: 'Mark Shipped',
+      onConfirm: () {
+        Get.back();
+        controller.markAsShipped(order.id);
+      },
+      onCancel: () => Get.back(),
+    ).show();
   }
 
   void _showDeliveredConfirmation(OrderModel order) {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Mark as Delivered'),
-        content: Text(
+    AppDialog(
+      title: 'Mark as Delivered',
+      content:
           'Are you sure you want to mark order #${order.id.substring(0, 8)} as delivered?\n\nThis action cannot be undone.',
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-          AppButton(
-            text: 'Mark Delivered',
-            onPressed: () {
-              Get.back();
-              controller.markAsDelivered(order.id);
-            },
-            width: 140,
-            height: 40,
-          ),
-        ],
-      ),
-    );
+      confirmText: 'Mark Delivered',
+      onConfirm: () {
+        Get.back();
+        controller.markAsDelivered(order.id);
+      },
+      onCancel: () => Get.back(),
+    ).show();
   }
 }
