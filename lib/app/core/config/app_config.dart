@@ -12,12 +12,14 @@ class AppConfig {
 
   /// Base URL for the API server
   /// Change this based on your environment (development, staging, production)
-  // API URL for local
+  // API URL for localhost Backend
   // static const String baseUrl = 'http://192.168.137.1:3000';
-  // API URL for emulators
+  // API URL for localhost Backend with emulators
   // static const String baseUrl = 'http://10.0.2.2:3000';
+  // API URL for public (protected access)
+  // static const String baseUrl = 'http://192.168.185.91:3000';
   // API URL for public
-  static const String baseUrl = 'http://192.168.185.91:3000';
+  static const String baseUrl = 'https://cartify.ultsglobal.com';
 
   /// API request timeout duration in milliseconds
   static const int requestTimeout = 60000; // 60 seconds
