@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -99,6 +101,11 @@ class ChartSectionWidget extends StatelessWidget {
               );
             }
 
+            // Calculate axis values
+            final axisValues = _calculateYAxisValues();
+            final maxY = axisValues['maxY']!;
+            final interval = axisValues['interval']!;
+
             return SizedBox(
               height: 200,
               child: LineChart(
@@ -106,9 +113,7 @@ class ChartSectionWidget extends StatelessWidget {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    horizontalInterval: controller.monthlyRevenue.value > 0
-                        ? controller.monthlyRevenue.value / 4
-                        : 100,
+                    horizontalInterval: interval,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(color: Colors.grey[200]!, strokeWidth: 1);
                     },
@@ -118,12 +123,10 @@ class ChartSectionWidget extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 60,
-                        interval: controller.monthlyRevenue.value > 0
-                            ? controller.monthlyRevenue.value / 4
-                            : 100,
+                        interval: interval,
                         getTitlesWidget: (value, meta) {
                           return Text(
-                            '₹${(value / 1000).toStringAsFixed(0)}K',
+                            _formatYAxisLabel(value),
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 12,
@@ -159,12 +162,7 @@ class ChartSectionWidget extends StatelessWidget {
                   minX: 1,
                   maxX: 10,
                   minY: 0,
-                  maxY: controller.revenueData.isNotEmpty
-                      ? controller.revenueData
-                                .map((e) => e.amount)
-                                .reduce((a, b) => a > b ? a : b) *
-                            1.2
-                      : 100,
+                  maxY: maxY,
                   lineBarsData: [
                     LineChartBarData(
                       spots: controller.revenueData.map((data) {
@@ -179,17 +177,7 @@ class ChartSectionWidget extends StatelessWidget {
                       ),
                       barWidth: 4,
                       isStrokeCapRound: true,
-                      dotData: FlDotData(
-                        show: false,
-                        getDotPainter: (spot, percent, barData, index) {
-                          return FlDotCirclePainter(
-                            radius: 4,
-                            color: Colors.white,
-                            strokeWidth: 2,
-                            strokeColor: AppColors.primary,
-                          );
-                        },
-                      ),
+                      dotData: const FlDotData(show: false),
                       belowBarData: BarAreaData(
                         show: true,
                         gradient: LinearGradient(
@@ -221,6 +209,55 @@ class ChartSectionWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Calculates Y-axis values with dynamic scaling based on revenue magnitude
+  Map<String, double> _calculateYAxisValues() {
+    if (controller.revenueData.isEmpty) {
+      return {'maxY': 200.0, 'interval': 50.0}; // default
+    }
+
+    // Step 1: find max revenue
+    final maxRevenue = controller.revenueData
+        .map((e) => e.amount)
+        .reduce((a, b) => a > b ? a : b);
+
+    // Step 2: add 20% buffer
+    final requiredMax = maxRevenue * 1.2;
+
+    // Step 3: find order of magnitude
+    final magnitude = pow(10, (log(requiredMax) / ln10).floor()).toDouble();
+
+    // Step 4: choose a "nice" step (1, 2, or 5 × magnitude)
+    double niceStep;
+    if (requiredMax / magnitude <= 1) {
+      niceStep = 1 * magnitude;
+    } else if (requiredMax / magnitude <= 2) {
+      niceStep = 2 * magnitude;
+    } else if (requiredMax / magnitude <= 5) {
+      niceStep = 5 * magnitude;
+    } else {
+      niceStep = 10 * magnitude;
+    }
+
+    // Step 5: compute maxY (rounded up to nearest niceStep)
+    final maxY = ((requiredMax / niceStep).ceil() * niceStep);
+
+    // Step 6: interval for 5 labels
+    final interval = maxY / 4;
+
+    return {'maxY': maxY.toDouble(), 'interval': interval.toDouble()};
+  }
+
+  /// Formats Y-axis labels appropriately based on value magnitude
+  String _formatYAxisLabel(double value) {
+    if (value >= 1000000) {
+      return '${(value / 1000000).toStringAsFixed(1)}M';
+    } else if (value >= 1000) {
+      return '${(value / 1000).toInt()}K';
+    } else {
+      return value.toInt().toString();
+    }
   }
 
   Widget _buildChartShimmer() {
