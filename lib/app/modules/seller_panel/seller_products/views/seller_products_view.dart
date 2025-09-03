@@ -27,7 +27,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
       body: Column(
         children: [
           // Statistics Cards
-          _buildStatisticsSection(),
+          // _buildStatisticsSection(),
           
           // Search and Filter Section
           _buildSearchAndFilterSection(),
