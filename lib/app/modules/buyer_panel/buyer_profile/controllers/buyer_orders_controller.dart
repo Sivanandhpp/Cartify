@@ -1,3 +1,4 @@
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
@@ -50,7 +51,7 @@ class BuyerOrdersController extends GetxController {
     LogService.business('Viewing order details', {'orderId': orderId});
 
     // Navigate to order details page
-    Get.toNamed('/buyer/order-details', arguments: orderId);
+    Get.toNamed(Routes.BUYER_ORDER_STATUS, arguments: orderId);
   }
 
   /// Cancel an order

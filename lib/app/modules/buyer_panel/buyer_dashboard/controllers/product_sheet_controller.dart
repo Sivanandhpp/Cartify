@@ -1,6 +1,7 @@
 import 'package:cartify/app/core/models/product/product_model.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_cart/controllers/buyer_cart_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/views/widgets/product_sheet.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -83,7 +84,7 @@ class ProductSheetController extends GetxController {
     isAddingToCart.value = true;
     cartController.incrementQuantity(product.id).then((_) {
       isAddingToCart.value = false;
-      Get.toNamed('/buyer-cart');
+      Get.toNamed(Routes.BUYER_CART);
     });
   }
 

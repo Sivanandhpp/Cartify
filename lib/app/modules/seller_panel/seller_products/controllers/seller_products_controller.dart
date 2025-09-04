@@ -413,7 +413,6 @@ class SellerProductsController extends GetxController {
 
   // Delete product (with API call)
   Future<void> deleteProduct(ProductModel product) async {
-
     AppDialog(
       title: 'Delete Product',
       content:
@@ -472,7 +471,7 @@ class SellerProductsController extends GetxController {
     });
 
     // Navigate to edit product screen
-    Get.toNamed('/seller/products/edit', arguments: product);
+    Get.toNamed(Routes.SELLER_CREATE_PRODUCT, arguments: product);
   }
 
   // Add new product

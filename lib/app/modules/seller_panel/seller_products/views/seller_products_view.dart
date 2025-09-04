@@ -1,3 +1,4 @@
+import 'package:cartify/app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/seller_products_controller.dart';
@@ -9,40 +10,40 @@ class SellerProductsView extends GetView<SellerProductsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('My Products'),
+        title: const Text(
+          'My Products',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         foregroundColor: Colors.black,
-        actions: [
-          IconButton(
-            onPressed: controller.addNewProduct,
-            icon: const Icon(Icons.add),
-            tooltip: 'Add Product',
-          ),
-        ],
       ),
       body: Column(
         children: [
           // Statistics Cards
           // _buildStatisticsSection(),
-          
+
           // Search and Filter Section
           _buildSearchAndFilterSection(),
-          
+
           // Products List
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               }
-              
+
               if (controller.filteredProducts.isEmpty) {
                 return _buildEmptyState();
               }
-              
+
               return RefreshIndicator(
                 onRefresh: controller.refreshProducts,
                 child: ListView.builder(
@@ -54,7 +55,8 @@ class SellerProductsView extends GetView<SellerProductsController> {
                       product: product,
                       onEdit: () => controller.editProduct(product),
                       onDelete: () => controller.deleteProduct(product),
-                      onToggleStatus: () => controller.toggleProductStatus(product),
+                      onToggleStatus: () =>
+                          controller.toggleProductStatus(product),
                     );
                   },
                 ),
@@ -75,49 +77,56 @@ class SellerProductsView extends GetView<SellerProductsController> {
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.white,
-      child: Obx(() => Row(
-        children: [
-          Expanded(
-            child: _buildStatCard(
-              'Total',
-              controller.totalProducts.value.toString(),
-              Icons.inventory,
-              Colors.blue,
+      child: Obx(
+        () => Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                'Total',
+                controller.totalProducts.value.toString(),
+                Icons.inventory,
+                Colors.blue,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard(
-              'Active',
-              controller.activeProducts.value.toString(),
-              Icons.visibility,
-              Colors.green,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                'Active',
+                controller.activeProducts.value.toString(),
+                Icons.visibility,
+                Colors.green,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard(
-              'Inactive',
-              controller.inactiveProducts.value.toString(),
-              Icons.visibility_off,
-              Colors.orange,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                'Inactive',
+                controller.inactiveProducts.value.toString(),
+                Icons.visibility_off,
+                Colors.orange,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard(
-              'Low Stock',
-              controller.lowStockProducts.value.toString(),
-              Icons.warning,
-              Colors.red,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildStatCard(
+                'Low Stock',
+                controller.lowStockProducts.value.toString(),
+                Icons.warning,
+                Colors.red,
+              ),
             ),
-          ),
-        ],
-      )),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -137,13 +146,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
               color: color,
             ),
           ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-            ),
-          ),
+          Text(title, style: TextStyle(fontSize: 12, color: color)),
         ],
       ),
     );
@@ -177,41 +180,47 @@ class SellerProductsView extends GetView<SellerProductsController> {
               fillColor: Colors.grey[50],
             ),
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           // Filter Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 // Category Filter - Using actual categories
-                Obx(() => _buildFilterChip(
-                  'Category',
-                  controller.selectedCategory.value,
-                  controller.availableCategories, // Using actual categories
-                  controller.updateCategoryFilter,
-                )),
-                
+                Obx(
+                  () => _buildFilterChip(
+                    'Category',
+                    controller.selectedCategory.value,
+                    controller.availableCategories, // Using actual categories
+                    controller.updateCategoryFilter,
+                  ),
+                ),
+
                 const SizedBox(width: 8),
-                
+
                 // Status Filter
-                Obx(() => _buildFilterChip(
-                  'Status',
-                  controller.selectedStatus.value,
-                  ['All', 'Active', 'Inactive'],
-                  controller.updateStatusFilter,
-                )),
-                
+                Obx(
+                  () => _buildFilterChip(
+                    'Status',
+                    controller.selectedStatus.value,
+                    ['All', 'Active', 'Inactive'],
+                    controller.updateStatusFilter,
+                  ),
+                ),
+
                 const SizedBox(width: 8),
-                
+
                 // Stock Filter
-                Obx(() => _buildFilterChip(
-                  'Stock',
-                  controller.selectedStockFilter.value,
-                  ['All', 'In Stock', 'Low Stock', 'Out of Stock'],
-                  controller.updateStockFilter,
-                )),
+                Obx(
+                  () => _buildFilterChip(
+                    'Stock',
+                    controller.selectedStockFilter.value,
+                    ['All', 'In Stock', 'Low Stock', 'Out of Stock'],
+                    controller.updateStockFilter,
+                  ),
+                ),
               ],
             ),
           ),
@@ -236,37 +245,45 @@ class SellerProductsView extends GetView<SellerProductsController> {
               '$label: $selectedValue',
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: selectedValue != 'All' ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: selectedValue != 'All'
+                    ? FontWeight.w600
+                    : FontWeight.normal,
               ),
             ),
             const SizedBox(width: 4),
             Icon(
               Icons.arrow_drop_down,
               size: 18,
-              color: selectedValue != 'All' ? Colors.blue[700] : Colors.grey[600],
+              color: selectedValue != 'All'
+                  ? Colors.blue[700]
+                  : Colors.grey[600],
             ),
           ],
         ),
-        backgroundColor: selectedValue != 'All' ? Colors.blue[100] : Colors.grey[200],
+        backgroundColor: selectedValue != 'All'
+            ? Colors.blue[100]
+            : Colors.grey[200],
         side: BorderSide(
           color: selectedValue != 'All' ? Colors.blue[300]! : Colors.grey[300]!,
         ),
       ),
-      itemBuilder: (context) => options.map((option) =>
-        PopupMenuItem(
-          value: option,
-          child: Row(
-            children: [
-              if (option == selectedValue)
-                Icon(Icons.check, size: 16, color: Colors.blue[700])
-              else
-                const SizedBox(width: 16),
-              const SizedBox(width: 8),
-              Expanded(child: Text(option)),
-            ],
-          ),
-        ),
-      ).toList(),
+      itemBuilder: (context) => options
+          .map(
+            (option) => PopupMenuItem(
+              value: option,
+              child: Row(
+                children: [
+                  if (option == selectedValue)
+                    Icon(Icons.check, size: 16, color: Colors.blue[700])
+                  else
+                    const SizedBox(width: 16),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(option)),
+                ],
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -275,11 +292,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.inventory_2_outlined,
-            size: 64,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
             'No products found',
@@ -290,16 +303,15 @@ class SellerProductsView extends GetView<SellerProductsController> {
             ),
           ),
           const SizedBox(height: 8),
-          Obx(() => Text(
-            controller.searchQuery.value.isNotEmpty
-                ? 'No products match your search criteria'
-                : 'Add your first product to get started',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
+          Obx(
+            () => Text(
+              controller.searchQuery.value.isNotEmpty
+                  ? 'No products match your search criteria'
+                  : 'Add your first product to get started',
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          )),
+          ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: controller.addNewProduct,

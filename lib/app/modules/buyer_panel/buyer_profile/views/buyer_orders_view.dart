@@ -1,4 +1,5 @@
 import 'package:cartify/app/core/models/order/order_item_model.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
@@ -59,7 +60,7 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
                 const SizedBox(height: 24),
                 AppButton(
                   text: 'Start Shopping',
-                  onPressed: () => Get.offAllNamed('/buyer/dashboard'),
+                  onPressed: () => Get.offAllNamed(Routes.BUYER_DASHBOARD),
                 ),
               ],
             ),

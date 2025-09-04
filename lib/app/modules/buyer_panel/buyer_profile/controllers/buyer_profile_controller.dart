@@ -2,6 +2,7 @@
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_edit_profile_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/widgets/profile_menu_section.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -130,16 +131,12 @@ class BuyerProfileController extends GetxController {
   // Navigation methods
   void navigateToOrders() {
     LogService.info('Navigating to orders');
-    Get.toNamed('buyer-orders');
-    // TODO: Implement navigation
+Get.toNamed(Routes.BUYER_ORDERS_VIEW);    
     // Get.toNamed(Routes.ORDERS);
   }
 
   void navigateToAddresses() {
-    LogService.info('Navigating to addresses');
-    Get.toNamed('buyer-address');
-    // TODO: Implement navigation
-    // Get.toNamed(Routes.ADDRESSES);
+    Get.toNamed(Routes.BUYER_ADDRESS_VIEW);
   }
 
   void navigateToPaymentMethods() {

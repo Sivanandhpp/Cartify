@@ -1,6 +1,7 @@
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_home/views/buyer_home_appbar.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/buyer_home_controller.dart';
@@ -65,9 +66,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                   print('Location tapped');
                 },
                 onCartTap: () {
-                  // Handle cart tap
-                  Get.toNamed('/buyer-cart');
-                  print('Cart tapped');
+                  Get.toNamed(Routes.BUYER_CART);
                 },
                 onSearchChanged: (value) {
                   // Handle search

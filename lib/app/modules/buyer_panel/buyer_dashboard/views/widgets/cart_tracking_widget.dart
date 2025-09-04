@@ -1,5 +1,6 @@
 // Local imports (relative)
 import 'package:cartify/app/modules/buyer_panel/buyer_cart/controllers/buyer_cart_controller.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/index.dart';
@@ -112,7 +113,7 @@ Widget buildCartTrackingWidget() {
 
             const Spacer(),
             ElevatedButton(
-              onPressed: () => Get.toNamed('/buyer-cart'),
+              onPressed: () => Get.toNamed(Routes.BUYER_CART),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(

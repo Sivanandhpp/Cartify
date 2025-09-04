@@ -1,5 +1,6 @@
 import 'package:cartify/app/core/models/order/order_item_model.dart';
 import 'package:cartify/app/core/models/order/update_order_item_dto.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cartify/app/core/index.dart';
@@ -454,7 +455,7 @@ class SellerOrdersController extends GetxController {
 
     // Navigate to order details page with order data
     final order = allOrders.firstWhere((o) => o.id == orderId);
-    Get.toNamed('/seller/order-details', arguments: order);
+    Get.toNamed(Routes.BUYER_ORDER_STATUS,arguments: order);
   }
 
   /// Helper methods

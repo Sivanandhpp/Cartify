@@ -54,7 +54,7 @@ class SplashController extends GetxController {
         break;
       case 'buyer':
       default:
-        Get.offAllNamed('/buyer-dashboard');
+        Get.offAllNamed(Routes.BUYER_DASHBOARD);
         break;
     }
   }

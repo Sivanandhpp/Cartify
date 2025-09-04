@@ -115,7 +115,7 @@ class ChartSectionWidget extends StatelessWidget {
                     drawVerticalLine: false,
                     horizontalInterval: interval,
                     getDrawingHorizontalLine: (value) {
-                      return FlLine(color: Colors.grey[200]!, strokeWidth: 1);
+                      return FlLine(color: Colors.grey[200]!, strokeWidth: 2);
                     },
                   ),
                   titlesData: FlTitlesData(

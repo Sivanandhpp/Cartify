@@ -1,3 +1,4 @@
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/index.dart';
@@ -74,11 +75,11 @@ class BuyerOrderStatusController extends GetxController
   }
 
   void goToOrderHistory() {
-    Get.offAllNamed('/buyer-orders');
+    Get.toNamed(Routes.BUYER_ORDERS_VIEW);
   }
 
   void backToShopping() {
-    Get.offAllNamed('/buyer-dashboard');
+    Get.offAllNamed(Routes.BUYER_DASHBOARD);
   }
 
   String get statusTitle {
