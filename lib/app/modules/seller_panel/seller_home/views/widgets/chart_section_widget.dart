@@ -130,7 +130,7 @@ class ChartSectionWidget extends StatelessWidget {
               );
             }
 
-            // Calculate axis values
+            // Calculate axis values safely
             final axisValues = _calculateYAxisValues();
             final maxY = axisValues['maxY']!;
             final interval = axisValues['interval']!;
@@ -242,40 +242,55 @@ class ChartSectionWidget extends StatelessWidget {
 
   /// Calculates Y-axis values with dynamic scaling based on revenue magnitude
   Map<String, double> _calculateYAxisValues() {
-    if (controller.revenueData.isEmpty) {
-      return {'maxY': 200.0, 'interval': 50.0}; // default
+    try {
+      if (controller.revenueData.isEmpty) {
+        return {'maxY': 200.0, 'interval': 50.0}; // default
+      }
+
+      // Step 1: find max revenue
+      final maxRevenue = controller.revenueData
+          .map((e) => e.amount)
+          .reduce((a, b) => a > b ? a : b);
+
+      // Handle case where maxRevenue is 0 or negative
+      if (maxRevenue <= 0) {
+        return {'maxY': 200.0, 'interval': 50.0}; // default for zero revenue
+      }
+
+      // Step 2: add 20% buffer
+      final requiredMax = maxRevenue * 1.2;
+
+      // Step 3: find order of magnitude safely
+      final logValue = log(requiredMax) / ln10;
+      if (logValue.isNaN || logValue.isInfinite) {
+        return {'maxY': 200.0, 'interval': 50.0}; // fallback
+      }
+
+      final magnitude = pow(10, logValue.floor()).toDouble();
+
+      // Step 4: choose a "nice" step (1, 2, or 5 × magnitude)
+      double niceStep;
+      if (requiredMax / magnitude <= 1) {
+        niceStep = 1 * magnitude;
+      } else if (requiredMax / magnitude <= 2) {
+        niceStep = 2 * magnitude;
+      } else if (requiredMax / magnitude <= 5) {
+        niceStep = 5 * magnitude;
+      } else {
+        niceStep = 10 * magnitude;
+      }
+
+      // Step 5: compute maxY (rounded up to nearest niceStep)
+      final maxY = ((requiredMax / niceStep).ceil() * niceStep);
+
+      // Step 6: interval for 5 labels
+      final interval = maxY / 4;
+
+      return {'maxY': maxY.toDouble(), 'interval': interval.toDouble()};
+    } catch (e) {
+      // Fallback to default values if any calculation fails
+      return {'maxY': 200.0, 'interval': 50.0};
     }
-
-    // Step 1: find max revenue
-    final maxRevenue = controller.revenueData
-        .map((e) => e.amount)
-        .reduce((a, b) => a > b ? a : b);
-
-    // Step 2: add 20% buffer
-    final requiredMax = maxRevenue * 1.2;
-
-    // Step 3: find order of magnitude
-    final magnitude = pow(10, (log(requiredMax) / ln10).floor()).toDouble();
-
-    // Step 4: choose a "nice" step (1, 2, or 5 × magnitude)
-    double niceStep;
-    if (requiredMax / magnitude <= 1) {
-      niceStep = 1 * magnitude;
-    } else if (requiredMax / magnitude <= 2) {
-      niceStep = 2 * magnitude;
-    } else if (requiredMax / magnitude <= 5) {
-      niceStep = 5 * magnitude;
-    } else {
-      niceStep = 10 * magnitude;
-    }
-
-    // Step 5: compute maxY (rounded up to nearest niceStep)
-    final maxY = ((requiredMax / niceStep).ceil() * niceStep);
-
-    // Step 6: interval for 5 labels
-    final interval = maxY / 4;
-
-    return {'maxY': maxY.toDouble(), 'interval': interval.toDouble()};
   }
 
   /// Formats Y-axis labels appropriately based on value magnitude
@@ -302,7 +317,7 @@ class ChartSectionWidget extends StatelessWidget {
               child: Stack(
                 children: [
                   // Horizontal grid lines
-                  for (int i = 0; i < 4; i++)
+                  for (int i = 0; i < 5; i++)
                     Positioned(
                       top: i * 40.0,
                       left: 0,
