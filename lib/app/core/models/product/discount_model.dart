@@ -1,4 +1,3 @@
-import 'package:cartify/app/core/index.dart';
 
 class DiscountModel {
   final String id;

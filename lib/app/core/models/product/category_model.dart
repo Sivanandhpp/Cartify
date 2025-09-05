@@ -1,4 +1,3 @@
-import 'package:cartify/app/core/config/app_config.dart';
 import 'package:cartify/app/core/services/api_clean_url.dart';
 
 /// Represents a product category with hierarchical structure

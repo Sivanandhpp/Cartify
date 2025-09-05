@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_spacing.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_text_styles.dart';
 
 /// Primary button widget with consistent styling, loading state, and optional icon.
 /// Supports both filled and outlined variants.
