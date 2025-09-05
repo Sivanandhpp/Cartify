@@ -1,117 +1,89 @@
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/core/widgets/app_dialog.dart';
+import 'package:cartify/app/modules/seller_panel/seller_dashboard/controllers/seller_data_controller.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class SellerProductsController extends GetxController {
-  // Services
+  // ===================== DEPENDENCIES =====================
+  final SellerDataController _dataController = Get.find<SellerDataController>();
   final ProductService _productService = Get.find<ProductService>();
 
-  // Observable lists
-  final RxList<ProductModel> products = <ProductModel>[].obs;
+  // ===================== UI STATE =====================
   final RxList<ProductModel> filteredProducts = <ProductModel>[].obs;
-
-  // Loading states
-  final RxBool isLoading = false.obs;
   final RxBool isRefreshing = false.obs;
 
-  // Search and filter
+  // ===================== FILTERS =====================
   final RxString searchQuery = ''.obs;
   final RxString selectedCategory = 'All'.obs;
   final RxString selectedStatus = 'All'.obs;
-
-  // New filter for stock status
   final RxString selectedStockFilter = 'All'.obs;
 
-  // Statistics
-  final RxInt totalProducts = 0.obs;
-  final RxInt activeProducts = 0.obs;
-  final RxInt inactiveProducts = 0.obs;
-  final RxInt lowStockProducts = 0.obs;
+  // ===================== COMPUTED PROPERTIES =====================
 
-  // Observable for actual categories
-  final RxList<String> _availableCategories = <String>['All'].obs;
+  /// Get products from centralized data controller
+  List<ProductModel> get products => _dataController.products;
 
-  // Getter for available categories
-  List<String> get availableCategories => _availableCategories.toList();
+  /// Get loading state from centralized data controller
+  bool get isLoading => _dataController.isLoading.value;
+
+  /// Get available categories from centralized data controller
+  List<String> get availableCategories => _dataController.extractedCategories;
+
+  /// Statistics computed from filtered products
+  int get totalProducts => products.length;
+  int get activeProducts => products.where((p) => p.isActive == true).length;
+  int get inactiveProducts => products.where((p) => p.isActive == false).length;
+  int get lowStockProducts =>
+      products.where((p) => p.stockQuantity < 10).length;
+
+  // ===================== LIFECYCLE METHODS =====================
 
   @override
   void onInit() {
     super.onInit();
-    loadProducts();
+    _initializeController();
+  }
 
-    // Listen to search changes
+  /// Initialize controller and set up listeners
+  void _initializeController() {
+    // Ensure data is loaded (will use cache if available)
+    _ensureDataLoaded();
+
+    // Listen to data changes from centralized controller
+    ever(_dataController.products, (_) => _applyFilters());
+
+    // Listen to search changes with debounce
     debounce(
       searchQuery,
       (_) => _applyFilters(),
       time: const Duration(milliseconds: 500),
     );
+
+    // Apply initial filters
+    _applyFilters();
   }
 
-  // Load products from API (replaces mock data)
-  Future<void> loadProducts() async {
-    try {
-      isLoading.value = true;
-
-      LogService.info('Loading seller products from API');
-
-      // Actual API call to GET /products/admin
-      final fetchedProducts = await _productService.getMyProducts();
-
-      if (fetchedProducts.isNotEmpty) {
-        products.assignAll(fetchedProducts);
-        _extractCategories(); // Extract categories after loading products
-        _applyFilters(); // Apply filters after loading
-
-        LogService.info(
-          'Successfully loaded ${fetchedProducts.length} products',
-        );
-
-        updateStatistics();
-
-        NotificationService.showSuccess(
-          title: 'Products Loaded',
-          message: 'Found ${fetchedProducts.length} products in your inventory',
-        );
-      } else {
-        // Handle empty result
-        products.clear();
-        filteredProducts.clear();
-        _availableCategories.assignAll(['All']); // Reset categories
-        updateStatistics();
-
-        LogService.info('No products found for seller');
-      }
-    } catch (e) {
-      LogService.error('Failed to load seller products', e);
-
-      NotificationService.showError(
-        title: 'Loading Failed',
-        message: 'Failed to load your products. Please try again.',
-      );
-
-      // Clear products on error
-      products.clear();
-      filteredProducts.clear();
-      _availableCategories.assignAll(['All']); // Reset categories
-      updateStatistics();
-    } finally {
-      isLoading.value = false;
+  /// Ensure data is loaded, fetch if not available
+  Future<void> _ensureDataLoaded() async {
+    if (!_dataController.isDataLoaded.value) {
+      await _dataController.fetchAllData();
     }
   }
 
-  // Refresh products
+  // ===================== DATA OPERATIONS =====================
+
+  /// Refresh products using centralized data controller
   Future<void> refreshProducts() async {
     try {
       isRefreshing.value = true;
       LogService.info('Refreshing seller products');
 
-      await loadProducts();
+      await _dataController.refreshProducts();
 
       LogService.info('Products refreshed successfully');
     } catch (e) {
       LogService.error('Failed to refresh products', e);
-
       NotificationService.showError(
         title: 'Refresh Failed',
         message: 'Failed to refresh products. Please try again.',
@@ -121,124 +93,16 @@ class SellerProductsController extends GetxController {
     }
   }
 
-  // Load products by category (optional filter)
-  Future<void> loadProductsByCategory(String categoryId) async {
-    try {
-      isLoading.value = true;
+  // ===================== FILTERING METHODS =====================
 
-      LogService.info('Loading seller products by category', {
-        'categoryId': categoryId,
-      });
-
-      // Note: If your ProductService doesn't have getMyProductsByCategory,
-      // you can modify the getMyProducts method to accept categoryId parameter
-      // For now, we'll load all and filter locally
-      await loadProducts();
-
-      // Filter by category locally if needed
-      if (categoryId != 'All') {
-        final categoryFiltered = products
-            .where(
-              (product) =>
-                  product.categoryId == categoryId ||
-                  product.category?.id == categoryId,
-            )
-            .toList();
-
-        filteredProducts.assignAll(categoryFiltered);
-      }
-    } catch (e) {
-      LogService.error('Failed to load products by category', e);
-
-      NotificationService.showError(
-        title: 'Loading Failed',
-        message: 'Failed to load products for selected category.',
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // Search products
-  void searchProducts(String query) {
-    searchQuery.value = query;
-  }
-
-  /// Extract unique categories from products
-  void _extractCategories() {
-    final categorySet = <String>{'All'};
-    for (final product in products) {
-      if (product.category != null && product.category!.name.isNotEmpty) {
-        categorySet.add(product.category!.name);
-      }
-    }
-
-    _availableCategories.assignAll(categorySet.toList()..sort());
-
-    LogService.debug('Categories extracted', {
-      'categories': _availableCategories.length - 1, // Exclude 'All'
-      'list': _availableCategories.sublist(1), // Show actual categories
-    });
-  }
-
-  /// Apply all filters to products
+  /// Apply all filters using centralized filtering logic
   void _applyFilters() {
-    List<ProductModel> filtered = List.from(products);
-
-    // Apply search filter
-    if (searchQuery.value.isNotEmpty) {
-      filtered = filtered
-          .where(
-            (product) =>
-                product.name.toLowerCase().contains(
-                  searchQuery.value.toLowerCase(),
-                ) ||
-                (product.category?.name.toLowerCase().contains(
-                      searchQuery.value.toLowerCase(),
-                    ) ??
-                    false),
-          )
-          .toList();
-    }
-
-    // Apply category filter
-    if (selectedCategory.value != 'All') {
-      filtered = filtered
-          .where((product) => product.category?.name == selectedCategory.value)
-          .toList();
-    }
-
-    // Apply status filter
-    if (selectedStatus.value != 'All') {
-      final isActive = selectedStatus.value == 'Active';
-      filtered = filtered
-          .where((product) => (product.isActive ?? true) == isActive)
-          .toList();
-    }
-
-    // Apply stock filter
-    if (selectedStockFilter.value != 'All') {
-      switch (selectedStockFilter.value) {
-        case 'In Stock':
-          filtered = filtered
-              .where((product) => product.stockQuantity > 10)
-              .toList();
-          break;
-        case 'Low Stock':
-          filtered = filtered
-              .where(
-                (product) =>
-                    product.stockQuantity > 0 && product.stockQuantity <= 10,
-              )
-              .toList();
-          break;
-        case 'Out of Stock':
-          filtered = filtered
-              .where((product) => product.stockQuantity == 0)
-              .toList();
-          break;
-      }
-    }
+    final filtered = _dataController.getFilteredProducts(
+      category: selectedCategory.value,
+      status: selectedStatus.value,
+      stockFilter: selectedStockFilter.value,
+      searchQuery: searchQuery.value,
+    );
 
     filteredProducts.assignAll(filtered);
 
@@ -256,25 +120,42 @@ class SellerProductsController extends GetxController {
   void updateCategoryFilter(String category) {
     selectedCategory.value = category;
     _applyFilters();
-
     LogService.debug('Category filter updated', {'category': category});
+  }
+
+  /// Update status filter
+  void updateStatusFilter(String status) {
+    selectedStatus.value = status;
+    _applyFilters();
+    LogService.debug('Status filter updated', {'status': status});
   }
 
   /// Update stock filter
   void updateStockFilter(String stockFilter) {
     selectedStockFilter.value = stockFilter;
     _applyFilters();
-
     LogService.debug('Stock filter updated', {'stockFilter': stockFilter});
   }
 
-  // Update status filter
-  void updateStatusFilter(String status) {
-    selectedStatus.value = status;
-    _applyFilters();
+  /// Search products
+  void searchProducts(String query) {
+    searchQuery.value = query;
+    // Filter will be applied automatically due to debounce listener
   }
 
-  // Toggle product status (with API call)
+  /// Reset all filters
+  void resetFilters() {
+    searchQuery.value = '';
+    selectedCategory.value = 'All';
+    selectedStatus.value = 'All';
+    selectedStockFilter.value = 'All';
+    _applyFilters();
+    LogService.info('All filters reset');
+  }
+
+  // ===================== PRODUCT OPERATIONS =====================
+
+  /// Toggle product status with API call and data refresh
   Future<void> toggleProductStatus(ProductModel product) async {
     try {
       final newStatus = !(product.isActive ?? false);
@@ -285,30 +166,24 @@ class SellerProductsController extends GetxController {
         'newStatus': newStatus,
       });
 
-      // Call API to update product status
       final updatedProduct = await _productService.toggleProductStatus(
         product.id,
         newStatus,
       );
 
       if (updatedProduct != null) {
-        // Update local product list
-        final index = products.indexWhere((p) => p.id == product.id);
-        if (index != -1) {
-          products[index] = updatedProduct;
-          _applyFilters();
-          updateStatistics();
+        // Refresh centralized data to reflect changes across all screens
+        await _dataController.refreshProducts();
 
-          NotificationService.showSuccess(
-            title: 'Status Updated',
-            message: 'Product status updated successfully',
-          );
+        NotificationService.showSuccess(
+          title: 'Status Updated',
+          message: 'Product status updated successfully',
+        );
 
-          LogService.info('Product status updated successfully', {
-            'productId': product.id,
-            'newStatus': updatedProduct.isActive,
-          });
-        }
+        LogService.info('Product status updated successfully', {
+          'productId': product.id,
+          'newStatus': updatedProduct.isActive,
+        });
       } else {
         throw Exception('Failed to update product status');
       }
@@ -325,7 +200,7 @@ class SellerProductsController extends GetxController {
     }
   }
 
-  // Delete product (with API call)
+  /// Delete product with confirmation dialog
   Future<void> deleteProduct(ProductModel product) async {
     AppDialog(
       title: 'Delete Product',
@@ -345,10 +220,8 @@ class SellerProductsController extends GetxController {
           final success = await _productService.deleteProduct(product.id);
 
           if (success) {
-            // Remove from local lists
-            products.removeWhere((p) => p.id == product.id);
-            _applyFilters();
-            updateStatistics();
+            // Refresh centralized data to reflect changes across all screens
+            await _dataController.refreshProducts();
 
             NotificationService.showSuccess(
               title: 'Product Deleted',
@@ -377,41 +250,27 @@ class SellerProductsController extends GetxController {
     ).show();
   }
 
-  // Edit product
+  // ===================== NAVIGATION METHODS =====================
+
+  /// Navigate to edit product screen
   void editProduct(ProductModel product) {
     LogService.info('Navigating to edit product', {
       'productId': product.id,
       'productName': product.name,
     });
 
-    // Navigate to edit product screen
     Get.toNamed(Routes.SELLER_CREATE_PRODUCT, arguments: product);
   }
 
-  // Add new product
+  /// Navigate to add new product screen
   void addNewProduct() {
     LogService.info('Navigating to add new product');
-
-    // Navigate to add product screen (your existing create product flow)
     Get.toNamed(Routes.SELLER_CREATE_PRODUCT);
   }
 
-  // Update statistics based on current products
-  void updateStatistics() {
-    totalProducts.value = products.length;
-    activeProducts.value = products.where((p) => p.isActive == true).length;
-    inactiveProducts.value = products.where((p) => p.isActive == false).length;
-    lowStockProducts.value = products.where((p) => p.stockQuantity < 10).length;
+  // ===================== HELPER METHODS =====================
 
-    LogService.debug('Updated product statistics', {
-      'total': totalProducts.value,
-      'active': activeProducts.value,
-      'inactive': inactiveProducts.value,
-      'lowStock': lowStockProducts.value,
-    });
-  }
-
-  // Get products by status (helper method)
+  /// Get products by status
   List<ProductModel> getProductsByStatus(String status) {
     switch (status.toLowerCase()) {
       case 'active':
@@ -425,27 +284,11 @@ class SellerProductsController extends GetxController {
     }
   }
 
-  // Get products by category (helper method)
-  List<ProductModel> getProductsByCategory(String categoryId) {
-    if (categoryId == 'All') return products.toList();
-
+  /// Get products by category
+  List<ProductModel> getProductsByCategory(String categoryName) {
+    if (categoryName == 'All') return products.toList();
     return products
-        .where(
-          (product) =>
-              product.categoryId == categoryId ||
-              product.category?.id == categoryId,
-        )
+        .where((product) => product.category?.name == categoryName)
         .toList();
-  }
-
-  /// Reset all filters
-  void resetFilters() {
-    searchQuery.value = '';
-    selectedCategory.value = 'All';
-    selectedStatus.value = 'All';
-    selectedStockFilter.value = 'All';
-    _applyFilters();
-
-    LogService.info('All filters reset');
   }
 }

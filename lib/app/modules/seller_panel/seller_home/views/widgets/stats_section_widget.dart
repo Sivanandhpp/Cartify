@@ -108,9 +108,7 @@ class StatsSectionWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Obx(() {
               // Use proper loading state from controller
-              final isStatsLoading = controller.isLoading.value;
-
-              if (isStatsLoading) {
+              if (controller.isRevenueLoading.value) {
                 return _buildStatsShimmer();
               }
 
@@ -125,14 +123,14 @@ class StatsSectionWidget extends StatelessWidget {
                   Container(height: 40, width: 1, color: Colors.grey[300]),
                   _buildQuickStat(
                     'Active Orders',
-                    controller.pendingOrders.value.toString(),
+                    controller.pendingOrders.toString(),
                     Icons.pending,
                     Colors.orange,
                   ),
                   Container(height: 40, width: 1, color: Colors.grey[300]),
                   _buildQuickStat(
                     'Low Stock',
-                    controller.lowStockProducts.value.toString(),
+                    controller.lowStockProducts.toString(),
                     Icons.warning,
                     Colors.red,
                   ),

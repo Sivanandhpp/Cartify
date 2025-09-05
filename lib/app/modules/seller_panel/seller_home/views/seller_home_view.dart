@@ -13,36 +13,31 @@ class SellerHomeView extends GetView<SellerHomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Stats Cards Section
-            StatsSectionWidget(controller: controller),
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  // Revenue Chart Section
-                  SliverToBoxAdapter(
-                    child: ChartSectionWidget(controller: controller),
-                  ),
-
-                  // Quick Actions Section
-                  SliverToBoxAdapter(
-                    child: ActionsSectionWidget(controller: controller),
-                  ),
-
-                  // Recent Activity Section
-                  SliverToBoxAdapter(
-                    child: ActivitySectionWidget(controller: controller),
-                  ),
-
-                  // Bottom padding
-                  const SliverToBoxAdapter(child: SizedBox(height: 100)),
-                ],
-              ),
+        child: RefreshIndicator(
+          onRefresh: controller.refreshDashboard,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                // Stats Cards Section
+                StatsSectionWidget(controller: controller),
+                
+                // Chart Section
+                ChartSectionWidget(controller: controller),
+                
+                // Quick Actions Section
+                ActionsSectionWidget(controller: controller),
+                
+                // Recent Activity Section
+                ActivitySectionWidget(controller: controller),
+                
+                // Bottom padding
+                const SizedBox(height: 20),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

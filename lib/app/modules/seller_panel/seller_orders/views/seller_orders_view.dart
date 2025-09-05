@@ -39,33 +39,11 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
       title: const Text(
         'My Orders',
         style: TextStyle(
-          fontSize: 20,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
           color: Colors.black,
         ),
       ),
-      actions: [
-        IconButton(
-          onPressed: controller.refreshOrders,
-          icon: Obx(
-            () => controller.isRefreshing.value
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh),
-          ),
-          tooltip: 'Refresh Orders',
-        ),
-        IconButton(
-          onPressed: () {
-            // Show filter/sort options
-          },
-          icon: const Icon(Icons.filter_list),
-          tooltip: 'Filter & Sort',
-        ),
-      ],
     );
   }
 
@@ -109,7 +87,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
                 child: Obx(
                   () => _buildStatCard(
                     'Total Orders',
-                    controller.totalOrdersCount.value.toString(),
+                    controller.totalOrdersCount.toString(),
                     Icons.shopping_cart_outlined,
                     Colors.blue,
                   ),
@@ -120,7 +98,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
                 child: Obx(
                   () => _buildStatCard(
                     'Pending',
-                    controller.pendingOrdersCount.value.toString(),
+                    controller.pendingOrdersCount.toString(),
                     Icons.pending_outlined,
                     Colors.orange,
                   ),
@@ -137,7 +115,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
                 child: Obx(
                   () => _buildStatCard(
                     'Today\'s Orders',
-                    controller.todaysOrdersCount.value.toString(),
+                    controller.todaysOrdersCount.toString(),
                     Icons.today_outlined,
                     Colors.green,
                   ),
@@ -148,7 +126,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
                 child: Obx(
                   () => _buildStatCard(
                     'Revenue',
-                    '₹${controller.totalRevenue.value.toStringAsFixed(0)}',
+                    '₹${controller.totalRevenue.toStringAsFixed(0)}',
                     Icons.currency_rupee,
                     Colors.purple,
                   ),
@@ -303,7 +281,7 @@ class SellerOrdersView extends GetView<SellerOrdersController> {
             () => Text(
               controller.selectedFilter.value == 'All'
                   ? 'You don\'t have any orders yet'
-                  : 'No ${controller.selectedFilter.value.toLowerCase()} orders found',
+                  : 'No ${controller.selectedFilter.toLowerCase()} orders found',
               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ),

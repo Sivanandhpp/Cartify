@@ -90,14 +90,43 @@ class ChartSectionWidget extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           Obx(() {
-            if (controller.isRevenueLoading.value) {
+            // Show loading shimmer while data is being fetched or chart is being generated
+            if (controller.isLoading ||
+                controller.isRevenueLoading.value ||
+                !controller.isDataFresh) {
               return _buildChartShimmer();
             }
 
-            if (controller.revenueData.isEmpty) {
-              return const SizedBox(
+            // Show no data message only when data is loaded but chart data is empty
+            if (controller.revenueData.isEmpty && controller.isDataFresh) {
+              return SizedBox(
                 height: 200,
-                child: Center(child: Text('No revenue data available')),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.bar_chart_outlined,
+                        size: 48,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No revenue data available',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Start selling to see your revenue chart',
+                        style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
               );
             }
 
@@ -273,27 +302,13 @@ class ChartSectionWidget extends StatelessWidget {
               child: Stack(
                 children: [
                   // Horizontal grid lines
-                  for (int i = 0; i < 5; i++)
+                  for (int i = 0; i < 4; i++)
                     Positioned(
                       top: i * 40.0,
                       left: 0,
                       right: 0,
                       child: Container(height: 1, color: Colors.grey[300]),
                     ),
-
-                  // Vertical grid lines
-                  for (int i = 0; i < 10; i++)
-                    Positioned(
-                      left: i * 35.0,
-                      top: 0,
-                      bottom: 0,
-                      child: Container(width: 1, color: Colors.grey[300]),
-                    ),
-
-                  // Chart area shimmer with wavy pattern
-                  Positioned.fill(
-                    child: CustomPaint(painter: _ChartShimmerPainter()),
-                  ),
                 ],
               ),
             ),
@@ -316,32 +331,4 @@ class ChartSectionWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class _ChartShimmerPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey[300]!
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(0, size.height * 0.7);
-
-    // Create a wavy pattern similar to chart data
-    for (int i = 0; i <= 10; i++) {
-      final x = (i / 10) * size.width;
-      final y = size.height * (0.3 + 0.4 * (i % 3) / 2); // Create variation
-      path.lineTo(x, y);
-    }
-
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

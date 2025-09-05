@@ -36,7 +36,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
           // Products List
           Expanded(
             child: Obx(() {
-              if (controller.isLoading.value) {
+              if (controller.isLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
 
@@ -83,7 +83,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
             Expanded(
               child: _buildStatCard(
                 'Total',
-                controller.totalProducts.value.toString(),
+                controller.totalProducts.toString(),
                 Icons.inventory,
                 Colors.blue,
               ),
@@ -92,7 +92,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
             Expanded(
               child: _buildStatCard(
                 'Active',
-                controller.activeProducts.value.toString(),
+                controller.activeProducts.toString(),
                 Icons.visibility,
                 Colors.green,
               ),
@@ -101,7 +101,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
             Expanded(
               child: _buildStatCard(
                 'Inactive',
-                controller.inactiveProducts.value.toString(),
+                controller.inactiveProducts.toString(),
                 Icons.visibility_off,
                 Colors.orange,
               ),
@@ -110,7 +110,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
             Expanded(
               child: _buildStatCard(
                 'Low Stock',
-                controller.lowStockProducts.value.toString(),
+                controller.lowStockProducts.toString(),
                 Icons.warning,
                 Colors.red,
               ),
@@ -154,7 +154,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
 
   Widget _buildSearchAndFilterSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       color: Colors.white,
       child: Column(
         children: [
@@ -162,7 +162,7 @@ class SellerProductsView extends GetView<SellerProductsController> {
           TextField(
             onChanged: controller.searchProducts,
             decoration: InputDecoration(
-              hintText: 'Search products...',
+              hintText: 'Search Products',
               prefixIcon: const Icon(Icons.search),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
