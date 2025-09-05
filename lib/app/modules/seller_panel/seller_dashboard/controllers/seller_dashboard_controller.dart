@@ -23,11 +23,15 @@ class SellerDashboardController extends GetxController {
     }
   }
 
+  /// Reset state (call this on logout)
+  void resetDashboard() {
+    selectedNavIndex.value = 0;
+    pageController.jumpToPage(0);
+  }
+
   @override
   void onClose() {
     pageController.dispose();
     super.onClose();
   }
-
- 
 }

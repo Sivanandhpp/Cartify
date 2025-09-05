@@ -1,5 +1,6 @@
 // Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/buyer_dashboard_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_edit_profile_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/widgets/profile_menu_section.dart';
 import 'package:cartify/app/routes/app_pages.dart';
@@ -131,7 +132,7 @@ class BuyerProfileController extends GetxController {
   // Navigation methods
   void navigateToOrders() {
     LogService.info('Navigating to orders');
-Get.toNamed(Routes.BUYER_ORDERS_VIEW);    
+    Get.toNamed(Routes.BUYER_ORDERS_VIEW);
     // Get.toNamed(Routes.ORDERS);
   }
 
@@ -208,8 +209,9 @@ Get.toNamed(Routes.BUYER_ORDERS_VIEW);
 
   /// Handles profile editing
   void editProfile() {
-LogService.info('Opening edit profile page');
-  Get.to(() => const BuyerEditProfileView());  }
+    LogService.info('Opening edit profile page');
+    Get.to(() => const BuyerEditProfileView());
+  }
 
   /// Shows logout confirmation dialog
   void showLogoutDialog(BuildContext context) {
@@ -246,6 +248,8 @@ LogService.info('Opening edit profile page');
         title: 'Error',
         message: 'Failed to logout',
       );
+    } finally {
+      Get.find<BuyerDashboardController>().resetDashboard();
     }
   }
 }

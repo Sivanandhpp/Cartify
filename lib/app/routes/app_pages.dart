@@ -15,14 +15,12 @@ import '../modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
 import '../modules/buyer_panel/buyer_profile/views/buyer_orders_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
-import '../modules/seller_panel/seller_analytics/bindings/seller_analytics_binding.dart';
 import '../modules/seller_panel/seller_analytics/views/seller_analytics_view.dart';
 import '../modules/seller_panel/seller_create_product/views/seller_create_product_view.dart';
 import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
 import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
 import '../modules/seller_panel/seller_orders/views/seller_orders_view.dart';
 import '../modules/seller_panel/seller_products/views/seller_products_view.dart';
-import '../modules/seller_panel/seller_profile/bindings/seller_profile_binding.dart';
 import '../modules/seller_panel/seller_profile/views/seller_profile_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
@@ -118,12 +116,12 @@ class AppPages {
     GetPage(
       name: _Paths.SELLER_ANALYTICS,
       page: () => const SellerAnalyticsView(),
-      binding: SellerAnalyticsBinding(),
+      binding: SellerDashboardBinding(),
     ),
     GetPage(
       name: _Paths.SELLER_PROFILE,
       page: () => const SellerProfileView(),
-      binding: SellerProfileBinding(),
+      binding: SellerDashboardBinding(),
     ),
   ];
 }

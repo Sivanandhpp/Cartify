@@ -35,34 +35,37 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
 
         if (controller.orders.isEmpty) {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.shopping_bag_outlined,
-                  size: 80,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No Orders Yet',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[600],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_bag_outlined,
+                    size: 80,
+                    color: Colors.grey[400],
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Your order history will appear here',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                ),
-                const SizedBox(height: 24),
-                AppButton(
-                  text: 'Start Shopping',
-                  onPressed: () => Get.offAllNamed(Routes.BUYER_DASHBOARD),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  Text(
+                    'No Orders Yet',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Your order history will appear here',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                  ),
+                  const SizedBox(height: 24),
+                  AppButton(
+                    text: 'Start Shopping',
+                    onPressed: () => Get.offAllNamed(Routes.BUYER_DASHBOARD),
+                  ),
+                ],
+              ),
             ),
           );
         }

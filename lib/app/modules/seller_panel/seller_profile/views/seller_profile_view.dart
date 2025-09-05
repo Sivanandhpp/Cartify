@@ -1,3 +1,4 @@
+import 'package:cartify/app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -19,6 +20,12 @@ class SellerProfileView extends GetView<SellerProfileController> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: AppColors.black),
+            onPressed: () => controller.showLogoutDialog(context),
+          ),
+        ],
       ),
       body: const Center(
         child: Text(

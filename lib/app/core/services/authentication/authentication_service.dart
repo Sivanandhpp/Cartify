@@ -91,7 +91,6 @@ class AuthenticationService {
         message: 'Logged out locally. Could not reach server.',
       );
     }
-    Get.find<BuyerDashboardController>().resetDashboard();
     Get.offAllNamed(Routes.SPLASH);
   }
 

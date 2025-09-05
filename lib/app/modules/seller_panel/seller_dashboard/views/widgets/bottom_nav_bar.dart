@@ -31,8 +31,8 @@ Widget buildBottomNavBar() {
           label: 'Products',
         ),
         const BottomNavigationBarItem(
-          icon: Icon(Icons.local_offer),
-          label: 'Offers',
+          icon: Icon(Icons.analytics_outlined),
+          label: 'Analytics',
         ),
         const BottomNavigationBarItem(
           icon: Icon(Icons.person),

@@ -6,15 +6,11 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize GetStorage
-  await GetStorage.init();
-
   // Initialize services
+  await GetStorage.init();
   await initServices();
-
-  LogService.info('Application starting...');
 
   runApp(
     GetMaterialApp(
