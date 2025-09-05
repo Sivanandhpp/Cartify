@@ -94,9 +94,6 @@ class _SellerProductCardState extends State<SellerProductCard>
                     // Product Details
                     Expanded(child: _buildProductDetails()),
 
-                    // Status and Actions
-                    // _buildActionsColumn(isActive),
-
                     // Expand/Collapse Icon
                     const SizedBox(width: 8),
                     AnimatedRotation(
@@ -168,71 +165,80 @@ class _SellerProductCardState extends State<SellerProductCard>
   }
 
   Widget _buildProductDetails() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Product Name
-        Text(
-          widget.product.name,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-
-        // Category
-        if (widget.product.category != null)
-          Text(
-            widget.product.category!.name,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-        // Price
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Product Name
             Text(
-              '₹${widget.product.price.toStringAsFixed(2)}',
+              widget.product.name,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+                color: Colors.black87,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+
+            // Category
+            if (widget.product.category != null)
+              Text(
+                widget.product.category!.name,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+            // Price
+            Row(
+              children: [
+                Text(
+                  widget.product.displayEffectivePrice,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '₹${widget.product.price.toStringAsFixed(0)}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.black,
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+              ],
+            ),
+
+            // Product ID (for reference)
+            Text(
+              'ID: ${widget.product.id.substring(0, 8)}...',
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.grey[500],
+                fontFamily: 'monospace',
               ),
             ),
-            // if (widget.product.discounts?.isNotEmpty == true)
-            //   Container(
-            //     margin: const EdgeInsets.only(left: 8),
-            //     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            //     decoration: BoxDecoration(
-            //       color: Colors.red,
-            //       borderRadius: BorderRadius.circular(4),
-            //     ),
-            //     child: Text(
-            //       '${_getDiscountPercentage()}% OFF',
-            //       style: const TextStyle(
-            //         fontSize: 10,
-            //         color: Colors.white,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //     ),
-            //   ),
           ],
         ),
-
-        // Product ID (for reference)
-        Text(
-          'ID: ${widget.product.id.substring(0, 8)}...',
-          style: TextStyle(
-            fontSize: 10,
-            color: Colors.grey[500],
-            fontFamily: 'monospace',
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: widget.product.isActive == true
+                ? Colors.green.withAlpha(40)
+                : Colors.red.withAlpha(40),
+            borderRadius: BorderRadius.circular(20),
           ),
+          child: widget.product.isActive == true
+              ? const Text('Active', style: TextStyle(color: Colors.green))
+              : const Text('Inactive', style: TextStyle(color: Colors.red)),
         ),
       ],
     );
@@ -255,9 +261,6 @@ class _SellerProductCardState extends State<SellerProductCard>
             decoration: BoxDecoration(
               color: isActive ? Colors.green[50] : Colors.grey[100],
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: isActive ? Colors.green[300]! : Colors.grey[300]!,
-              ),
             ),
             child: Switch(
               value: isActive,
@@ -272,9 +275,10 @@ class _SellerProductCardState extends State<SellerProductCard>
           // Edit Button
           if (widget.onEdit != null)
             Container(
+              height: 40,
               decoration: BoxDecoration(
                 color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
                 onPressed: widget.onEdit,
@@ -292,9 +296,10 @@ class _SellerProductCardState extends State<SellerProductCard>
           // Delete Button
           if (widget.onDelete != null)
             Container(
+              height: 40,
               decoration: BoxDecoration(
                 color: Colors.red[50],
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
                 onPressed: widget.onDelete,

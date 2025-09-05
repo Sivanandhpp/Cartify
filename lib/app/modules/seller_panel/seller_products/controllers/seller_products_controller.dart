@@ -39,24 +39,13 @@ class SellerProductsController extends GetxController {
   void onInit() {
     super.onInit();
     loadProducts();
-    _extractCategories(); // Extract categories from products
 
     // Listen to search changes
     debounce(
       searchQuery,
-      (_) => filterProducts(),
+      (_) => _applyFilters(),
       time: const Duration(milliseconds: 500),
     );
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 
   // Load products from API (replaces mock data)
@@ -71,7 +60,8 @@ class SellerProductsController extends GetxController {
 
       if (fetchedProducts.isNotEmpty) {
         products.assignAll(fetchedProducts);
-        filteredProducts.assignAll(fetchedProducts);
+        _extractCategories(); // Extract categories after loading products
+        _applyFilters(); // Apply filters after loading
 
         LogService.info(
           'Successfully loaded ${fetchedProducts.length} products',
@@ -87,6 +77,7 @@ class SellerProductsController extends GetxController {
         // Handle empty result
         products.clear();
         filteredProducts.clear();
+        _availableCategories.assignAll(['All']); // Reset categories
         updateStatistics();
 
         LogService.info('No products found for seller');
@@ -102,6 +93,7 @@ class SellerProductsController extends GetxController {
       // Clear products on error
       products.clear();
       filteredProducts.clear();
+      _availableCategories.assignAll(['All']); // Reset categories
       updateStatistics();
     } finally {
       isLoading.value = false;
@@ -175,11 +167,8 @@ class SellerProductsController extends GetxController {
   /// Extract unique categories from products
   void _extractCategories() {
     final categorySet = <String>{'All'};
-    print('yyyyyyyyyyyyyyyyyyyyyyyyyyyy');
     for (final product in products) {
-      print('Product: ${product.name}');
       if (product.category != null && product.category!.name.isNotEmpty) {
-        print('Category: ${product.category!.name}');
         categorySet.add(product.category!.name);
       }
     }
@@ -190,97 +179,6 @@ class SellerProductsController extends GetxController {
       'categories': _availableCategories.length - 1, // Exclude 'All'
       'list': _availableCategories.sublist(1), // Show actual categories
     });
-  }
-
-  // Filter products based on search, category, and status
-  void filterProducts() {
-    List<ProductModel> filtered = List.from(products);
-
-    // Filter by search query
-    if (searchQuery.value.isNotEmpty) {
-      filtered = filtered
-          .where(
-            (product) =>
-                product.name.toLowerCase().contains(
-                  searchQuery.value.toLowerCase(),
-                ) ||
-                (product.description?.toLowerCase().contains(
-                      searchQuery.value.toLowerCase(),
-                    ) ??
-                    false),
-          )
-          .toList();
-    }
-
-    // Filter by category
-    if (selectedCategory.value != 'All') {
-      filtered = filtered
-          .where(
-            (product) =>
-                product.categoryId == selectedCategory.value ||
-                product.category?.id == selectedCategory.value,
-          )
-          .toList();
-    }
-
-    // Filter by status
-    if (selectedStatus.value != 'All') {
-      bool isActive = selectedStatus.value == 'Active';
-      filtered = filtered
-          .where((product) => product.isActive == isActive)
-          .toList();
-    }
-
-    // Apply stock filter
-    if (selectedStockFilter.value != 'All') {
-      switch (selectedStockFilter.value) {
-        case 'In Stock':
-          filtered = filtered
-              .where((product) => product.stockQuantity > 10)
-              .toList();
-          break;
-        case 'Low Stock':
-          filtered = filtered
-              .where(
-                (product) =>
-                    product.stockQuantity > 0 && product.stockQuantity <= 10,
-              )
-              .toList();
-          break;
-        case 'Out of Stock':
-          filtered = filtered
-              .where((product) => product.stockQuantity == 0)
-              .toList();
-          break;
-      }
-    }
-
-    filteredProducts.assignAll(filtered);
-
-    LogService.debug('Filtered products', {
-      'originalCount': products.length,
-      'filteredCount': filtered.length,
-      'searchQuery': searchQuery.value,
-      'selectedCategory': selectedCategory.value,
-      'selectedStatus': selectedStatus.value,
-      'selectedStockFilter': selectedStockFilter.value,
-    });
-  }
-
-  /// Update category filter
-  void updateCategoryFilter(String category) {
-    selectedCategory.value = category;
-    _applyFilters();
-
-    LogService.debug('Category filter updated', {'category': category});
-  }
-
-  /// Update stock filter
-  void updateStockFilter(String stockFilter) {
-    selectedStockFilter.value = stockFilter;
-    _applyFilters();
-
-    LogService.debug('Stock filter updated', {'stockFilter': stockFilter});
   }
 
   /// Apply all filters to products
@@ -354,10 +252,26 @@ class SellerProductsController extends GetxController {
     });
   }
 
+  /// Update category filter
+  void updateCategoryFilter(String category) {
+    selectedCategory.value = category;
+    _applyFilters();
+
+    LogService.debug('Category filter updated', {'category': category});
+  }
+
+  /// Update stock filter
+  void updateStockFilter(String stockFilter) {
+    selectedStockFilter.value = stockFilter;
+    _applyFilters();
+
+    LogService.debug('Stock filter updated', {'stockFilter': stockFilter});
+  }
+
   // Update status filter
   void updateStatusFilter(String status) {
     selectedStatus.value = status;
-    filterProducts();
+    _applyFilters();
   }
 
   // Toggle product status (with API call)
@@ -382,7 +296,7 @@ class SellerProductsController extends GetxController {
         final index = products.indexWhere((p) => p.id == product.id);
         if (index != -1) {
           products[index] = updatedProduct;
-          filterProducts();
+          _applyFilters();
           updateStatistics();
 
           NotificationService.showSuccess(
@@ -433,7 +347,7 @@ class SellerProductsController extends GetxController {
           if (success) {
             // Remove from local lists
             products.removeWhere((p) => p.id == product.id);
-            filterProducts();
+            _applyFilters();
             updateStatistics();
 
             NotificationService.showSuccess(
@@ -530,7 +444,7 @@ class SellerProductsController extends GetxController {
     selectedCategory.value = 'All';
     selectedStatus.value = 'All';
     selectedStockFilter.value = 'All';
-    filterProducts();
+    _applyFilters();
 
     LogService.info('All filters reset');
   }

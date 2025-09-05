@@ -53,8 +53,10 @@ class ProductModel {
   bool get hasOffer {
     final now = DateTime.now();
     return discounts.any((discount) {
-      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
+      bool isValidFrom =
+          discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto =
+          discount.validUpto == null || discount.validUpto!.isAfter(now);
       return discount.isActive && isValidFrom && isValidUpto;
     });
   }
@@ -67,18 +69,28 @@ class ProductModel {
 
     // First, apply percentage discounts
     for (final discount in discounts) {
-      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
-      if (discount.isActive && isValidFrom && isValidUpto && discount.discountPercent != null) {
+      bool isValidFrom =
+          discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto =
+          discount.validUpto == null || discount.validUpto!.isAfter(now);
+      if (discount.isActive &&
+          isValidFrom &&
+          isValidUpto &&
+          discount.discountPercent != null) {
         currentPrice *= (1 - discount.discountPercent! / 100);
       }
     }
 
     // Then, apply amount discounts
     for (final discount in discounts) {
-      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
-      if (discount.isActive && isValidFrom && isValidUpto && discount.discountAmount != null) {
+      bool isValidFrom =
+          discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto =
+          discount.validUpto == null || discount.validUpto!.isAfter(now);
+      if (discount.isActive &&
+          isValidFrom &&
+          isValidUpto &&
+          discount.discountAmount != null) {
         currentPrice -= discount.discountAmount!;
         if (currentPrice < 0) currentPrice = 0; // Prevent negative prices
       }
@@ -91,9 +103,14 @@ class ProductModel {
   double? get offerPercentage {
     final now = DateTime.now();
     final activePercentDiscount = discounts.firstWhereOrNull((discount) {
-      bool isValidFrom = discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto = discount.validUpto == null || discount.validUpto!.isAfter(now);
-      return discount.isActive && isValidFrom && isValidUpto && discount.discountPercent != null;
+      bool isValidFrom =
+          discount.validFrom == null || discount.validFrom!.isBefore(now);
+      bool isValidUpto =
+          discount.validUpto == null || discount.validUpto!.isAfter(now);
+      return discount.isActive &&
+          isValidFrom &&
+          isValidUpto &&
+          discount.discountPercent != null;
     });
     return activePercentDiscount?.discountPercent;
   }
@@ -108,10 +125,11 @@ class ProductModel {
   }
 
   // Get effective price (offer price if available, otherwise regular price)
-  double get effectivePrice => hasOffer && offerPrice != null ? offerPrice! : price;
+  double get effectivePrice =>
+      hasOffer && offerPrice != null ? offerPrice! : price;
 
   // Display effective price
-  String get displayEffectivePrice => '₹${effectivePrice.toStringAsFixed(2)}';
+  String get displayEffectivePrice => '₹${effectivePrice.toStringAsFixed(0)}';
 
   // Display original price (for strikethrough)
   String get displayOriginalPrice => '₹${price.toStringAsFixed(2)}';
