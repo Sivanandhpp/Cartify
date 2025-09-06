@@ -10,6 +10,8 @@ class UpdateProductDto {
   final String? measureUnitCode;
   final double? measureAmount;
   final Map<String, dynamic>? attributes;
+  final List<Map<String, dynamic>>?
+  discounts; // Added: Discounts from ProductModel
 
   UpdateProductDto({
     this.name,
@@ -22,11 +24,12 @@ class UpdateProductDto {
     this.measureUnitCode,
     this.measureAmount,
     this.attributes,
+    this.discounts, // Added: Discounts parameter
   });
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    
+
     if (name != null) data['name'] = name;
     if (description != null) data['description'] = description;
     if (price != null) data['price'] = price;
@@ -37,20 +40,23 @@ class UpdateProductDto {
     if (measureUnitCode != null) data['measure_unit_code'] = measureUnitCode;
     if (measureAmount != null) data['measure_amount'] = measureAmount;
     if (attributes != null) data['attributes'] = attributes;
-    
+    // if (discounts != null)
+    //   data['discounts'] = discounts; 
+
     return data;
   }
 
   /// Check if DTO has any data to update
-  bool get hasUpdates => 
-    name != null || 
-    description != null || 
-    price != null || 
-    stockQuantity != null || 
-    categoryId != null || 
-    tags != null || 
-    isActive != null ||
-    measureUnitCode != null ||
-    measureAmount != null ||
-    attributes != null;
+  bool get hasUpdates =>
+      name != null ||
+      description != null ||
+      price != null ||
+      stockQuantity != null ||
+      categoryId != null ||
+      tags != null ||
+      isActive != null ||
+      measureUnitCode != null ||
+      measureAmount != null ||
+      attributes != null ||
+      discounts != null; // Added: Check
 }

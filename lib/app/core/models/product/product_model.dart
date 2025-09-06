@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/services/api_clean_url.dart';
 import 'package:get/get.dart';
-import 'category_model.dart';
-import 'tag_model.dart';
-import 'discount_model.dart';
 
 /// Product model tailored for the current API response.
 /// Works both for product details and dashboard product list responses.

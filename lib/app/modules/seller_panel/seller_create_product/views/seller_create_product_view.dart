@@ -266,17 +266,12 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       subtitle: 'Add up to 5 high-quality images',
       child: Column(
         children: [
-          Obx(
-            () => controller.selectedImages.isEmpty
-                ? _buildImagePickerPlaceholder()
-                : _buildImageGrid(),
-          ),
+          Obx(() {
+            final hasImages = controller.existingImages.isNotEmpty || controller.selectedImages.isNotEmpty;
+            return hasImages ? _buildCombinedImageGrid() : _buildImagePickerPlaceholder();
+          }),
           const SizedBox(height: 16),
-          Obx(
-            () => controller.selectedImages.length < 5
-                ? _buildAddImageButton()
-                : const SizedBox.shrink(),
-          ),
+          Obx(() => (controller.selectedImages.length + controller.existingImages.length) < 5 ? _buildAddImageButton() : const SizedBox.shrink()),
         ],
       ),
     );
@@ -325,81 +320,205 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
     );
   }
 
-  Widget _buildImageGrid() {
+  Widget _buildCombinedImageGrid() {
     return SizedBox(
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: controller.selectedImages.length,
+        itemCount: controller.existingImages.length + controller.selectedImages.length,
         itemBuilder: (context, index) {
-          return Container(
-            width: 150,
-            margin: EdgeInsets.only(
-              right: index < controller.selectedImages.length - 1 ? 12 : 0,
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    image: DecorationImage(
-                      image: FileImage(controller.selectedImages[index]),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: () => controller.removeImage(index),
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: const BoxDecoration(
-                        color: AppColors.error,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.close,
-                        color: AppColors.white,
-                        size: 16,
+          if (index < controller.existingImages.length) {
+            // Existing image
+            final imageUrl = controller.existingImages[index];
+            return Container(
+              width: 150,
+              margin: EdgeInsets.only(
+                right: index < (controller.existingImages.length + controller.selectedImages.length - 1) ? 12 : 0,
+              ),
+              child: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                ),
-                if (index == 0)
+                  // No remove button for existing images
+                  if (index == 0)
+                    Positioned(
+                      bottom: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'Main',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          } else {
+            // Selected image
+            final selectedIndex = index - controller.existingImages.length;
+            final file = controller.selectedImages[selectedIndex];
+            return Container(
+              width: 150,
+              margin: EdgeInsets.only(
+                right: index < (controller.existingImages.length + controller.selectedImages.length - 1) ? 12 : 0,
+              ),
+              child: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: FileImage(file),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                   Positioned(
-                    bottom: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        'Main',
-                        style: TextStyle(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => controller.removeImage(selectedIndex),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: const BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
                           color: AppColors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                          size: 16,
                         ),
                       ),
                     ),
                   ),
-              ],
-            ),
-          );
+                  if (index == 0)
+                    Positioned(
+                      bottom: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'Main',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          }
         },
       ),
     );
   }
+
+
+  // Widget _buildImageGrid() {
+  //   return SizedBox(
+  //     height: 200,
+  //     child: ListView.builder(
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: controller.selectedImages.length,
+  //       itemBuilder: (context, index) {
+  //         return Container(
+  //           width: 150,
+  //           margin: EdgeInsets.only(
+  //             right: index < controller.selectedImages.length - 1 ? 12 : 0,
+  //           ),
+  //           child: Stack(
+  //             children: [
+  //               Container(
+  //                 width: double.infinity,
+  //                 height: double.infinity,
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.circular(16),
+  //                   image: DecorationImage(
+  //                     image: FileImage(controller.selectedImages[index]),
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //                 ),
+  //               ),
+  //               Positioned(
+  //                 top: 8,
+  //                 right: 8,
+  //                 child: GestureDetector(
+  //                   onTap: () => controller.removeImage(index),
+  //                   child: Container(
+  //                     width: 28,
+  //                     height: 28,
+  //                     decoration: const BoxDecoration(
+  //                       color: AppColors.error,
+  //                       shape: BoxShape.circle,
+  //                     ),
+  //                     child: const Icon(
+  //                       Icons.close,
+  //                       color: AppColors.white,
+  //                       size: 16,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               if (index == 0)
+  //                 Positioned(
+  //                   bottom: 8,
+  //                   left: 8,
+  //                   child: Container(
+  //                     padding: const EdgeInsets.symmetric(
+  //                       horizontal: 8,
+  //                       vertical: 4,
+  //                     ),
+  //                     decoration: BoxDecoration(
+  //                       color: AppColors.primary,
+  //                       borderRadius: BorderRadius.circular(12),
+  //                     ),
+  //                     child: const Text(
+  //                       'Main',
+  //                       style: TextStyle(
+  //                         color: AppColors.white,
+  //                         fontSize: 10,
+  //                         fontWeight: FontWeight.bold,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //             ],
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget _buildAddImageButton() {
     return SizedBox(
@@ -407,9 +526,11 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       child: OutlinedButton.icon(
         onPressed: controller.pickImage,
         icon: const Icon(Icons.add_photo_alternate),
-        label: Text('Add Image (${controller.selectedImages.length}/5)'),
+        label: Text(
+          'Add Image (${controller.selectedImages.length + (controller.editingProduct != null ? controller.existingImages.length : 0)}/5)',
+        ),
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -1023,7 +1144,9 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             Expanded(
               flex: controller.canGoPrevious ? 1 : 2,
               child: AppButton(
-                text: controller.isLastStep ? 'Submit' : 'Next',
+                text: controller.isLastStep
+                    ? controller.submitButtonText
+                    : 'Next',
                 onPressed: controller.isLastStep
                     ? controller.createProduct
                     : controller.nextStep,

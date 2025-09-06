@@ -5,12 +5,11 @@ class CreateProductDto {
   final double price;
   final int stockQuantity;
   final String categoryId;
-  final List<String>? tags; // Array of tag names
+  final List<String>? tags; 
   final String? measureUnitCode;
   final double? measureAmount;
   final Map<String, dynamic>? attributes;
-  final List<Map<String, dynamic>>? discounts; // Array of discount objects
-
+  final List<Map<String, dynamic>>? discounts;
   CreateProductDto({
     required this.name,
     required this.description,

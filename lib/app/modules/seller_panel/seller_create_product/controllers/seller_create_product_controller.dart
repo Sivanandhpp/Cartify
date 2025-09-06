@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'package:cartify/app/core/models/product/create_product_dto.dart';
-import 'package:cartify/app/core/models/product/tag_model.dart';
-import 'package:cartify/app/core/widgets/app_image_picker.dart';
+import 'package:cartify/app/modules/seller_panel/seller_dashboard/controllers/seller_dashboard_controller.dart';
+import 'package:cartify/app/modules/seller_panel/seller_dashboard/controllers/seller_data_controller.dart';
+import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cartify/app/core/index.dart';
 
 class SellerCreateProductController extends GetxController {
   final ProductService _productService = Get.find<ProductService>();
+  final _sellerDataController = Get.find<SellerDataController>();
 
   // Form controllers
   final nameController = TextEditingController();
@@ -39,6 +40,7 @@ class SellerCreateProductController extends GetxController {
   final isLoading = false.obs;
   final isLoadingTags = false.obs;
   final selectedImages = <File>[].obs;
+  final existingImages = <String>[].obs;
   final categories = <CategoryModel>[].obs;
   final availableTags = <TagModel>[].obs;
   final selectedTags = <TagModel>[].obs;
@@ -64,14 +66,24 @@ class SellerCreateProductController extends GetxController {
     'sq_m',
   ].obs;
 
+  // Edit mode
+  ProductModel? editingProduct;
+
   // Progress indicator
   double get progress => (currentStep.value + 1) / 3;
 
   @override
   void onInit() {
     super.onInit();
+    // Check if editing
+    editingProduct = Get.arguments as ProductModel?;
     loadCategories();
     loadAvailableTags();
+
+    // Prefill fields if editing
+    if (editingProduct != null) {
+      _prefillFields();
+    }
 
     // Add discount calculation listeners
     discountAmountController.addListener(_calculateDiscountPercent);
@@ -102,6 +114,11 @@ class SellerCreateProductController extends GetxController {
       final productService = Get.find<ProductService>();
       final loadedCategories = await productService.getAllCategories();
       categories.value = loadedCategories;
+
+      // Prefill category if editing
+      if (editingProduct != null) {
+        _prefillCategory();
+      }
     } catch (e) {
       LogService.error('Error loading categories', e);
       NotificationService.showError(
@@ -119,6 +136,12 @@ class SellerCreateProductController extends GetxController {
       isLoadingTags.value = true;
       final tags = await _productService.getTags();
       availableTags.assignAll(tags.where((tag) => tag.isActive).toList());
+
+      // Prefill tags if editing
+      if (editingProduct != null) {
+        _prefillTags();
+      }
+
       LogService.info('Loaded ${availableTags.length} available tags');
     } catch (e) {
       LogService.error('Error loading tags', e);
@@ -131,9 +154,81 @@ class SellerCreateProductController extends GetxController {
     }
   }
 
+  // Prefill fields for editing
+  void _prefillFields() {
+    if (editingProduct == null) return;
+
+    nameController.text = editingProduct!.name;
+    priceController.text = editingProduct!.price.toString();
+    descriptionController.text = editingProduct!.description ?? '';
+    stockQuantityController.text = editingProduct!.stockQuantity.toString();
+    measureAmountController.text =
+        editingProduct!.measureAmount?.toString() ?? '';
+    selectedMeasureUnit.value = editingProduct!.measureUnitCode;
+    attributes.value = Map<String, String>.from(
+      editingProduct!.attributes ?? {},
+    );
+    existingImages.assignAll(
+      editingProduct!.images,
+    ); // Added: Prefill existing images
+
+    // Prefill discounts
+    if (editingProduct!.discounts != null &&
+        editingProduct!.discounts!.isNotEmpty) {
+      hasDiscount.value = true;
+      final discount = editingProduct!.discounts!.first;
+      discountAmountController.text = discount.discountAmount?.toString() ?? '';
+      discountPercentController.text =
+          discount.discountPercent?.toString() ?? '';
+      discountValidFromController.text =
+          discount.validFrom?.toIso8601String().split('T')[0] ?? '';
+      discountValidUptoController.text =
+          discount.validUpto?.toIso8601String().split('T')[0] ?? '';
+    }
+  }
+
+  void _prefillCategory() {
+    if (editingProduct == null) return;
+
+    // Find category by ID
+    CategoryModel? foundCategory;
+    for (final cat in categories) {
+      if (cat.id == editingProduct!.categoryId) {
+        foundCategory = cat;
+        break;
+      }
+      // Check children
+      foundCategory = cat.findChildById(editingProduct!.categoryId ?? '');
+      if (foundCategory != null) break;
+    }
+
+    if (foundCategory != null) {
+      if (foundCategory.parentId == null) {
+        selectedCategory.value = foundCategory;
+      } else {
+        // It's a subcategory, find parent
+        selectedCategory.value = categories.firstWhereOrNull(
+          (c) => c.id == foundCategory!.parentId,
+        );
+        selectedSubCategory.value = foundCategory;
+      }
+    }
+  }
+
+  void _prefillTags() {
+    if (editingProduct == null) return;
+
+    selectedTags.assignAll(
+      availableTags.where(
+        (tag) => editingProduct!.tags?.any((et) => et.id == tag.id) ?? false,
+      ),
+    );
+  }
+
   // Image management
   Future<void> pickImage() async {
-    if (selectedImages.length >= 5) {
+    if (selectedImages.length + existingImages.length >= 5) {
+      // Updated: Include existing images in limit
       NotificationService.showWarning(
         title: 'Limit Reached',
         message: 'You can only add up to 5 images',
@@ -330,7 +425,7 @@ class SellerCreateProductController extends GetxController {
   }
 
   bool validateStep1() {
-    if (selectedImages.isEmpty) {
+    if (selectedImages.isEmpty && existingImages.isEmpty) {
       NotificationService.showError(
         title: 'Images Required',
         message: 'Please add at least one product image',
@@ -428,7 +523,7 @@ class SellerCreateProductController extends GetxController {
     return true;
   }
 
-  // Create product - Fixed to handle new model fields
+  // Create or update product - Fixed to handle new model fields
   Future<void> createProduct() async {
     if (!formKey.currentState!.validate() || !validateCurrentStep()) {
       return;
@@ -466,57 +561,96 @@ class SellerCreateProductController extends GetxController {
         discounts = [discount];
       }
 
-      // Create product DTO - Fixed: Use correct field names
-      final dto = CreateProductDto(
-        name: nameController.text.trim(),
-        description: descriptionController.text.trim(),
-        price: double.parse(priceController.text),
-        stockQuantity: int.parse(stockQuantityController.text),
-        categoryId: selectedSubCategory.value?.id ?? selectedCategory.value!.id,
-        tags: selectedTags
-            .map((tag) => tag.name)
-            .toList(), // Add selected tag names
-        measureUnitCode: selectedMeasureUnit.value,
-        measureAmount: measureAmountController.text.trim().isNotEmpty
-            ? double.parse(measureAmountController.text)
-            : null,
-        attributes: attributes.isNotEmpty
-            ? Map<String, dynamic>.from(attributes)
-            : null,
-        discounts: discounts, // Add discounts
-      );
+      if (editingProduct != null) {
+        // Update product
+        final dto = UpdateProductDto(
+          // id: editingProduct!.id,
+          name: nameController.text.trim(),
+          description: descriptionController.text.trim(),
+          price: double.parse(priceController.text),
+          stockQuantity: int.parse(stockQuantityController.text),
+          categoryId:
+              selectedSubCategory.value?.id ?? selectedCategory.value!.id,
+          tags: selectedTags
+              .map((tag) => tag.name)
+              .toList(), // Add selected tag names
+          measureUnitCode: selectedMeasureUnit.value,
+          measureAmount: measureAmountController.text.trim().isNotEmpty
+              ? double.parse(measureAmountController.text)
+              : null,
+          attributes: attributes.isNotEmpty
+              ? Map<String, dynamic>.from(attributes)
+              : null,
+          discounts: discounts, // Add discounts
+        );
 
-      // Step 1: Create product
-      final product = await _productService.createProduct(dto);
-      if (product == null) {
-        throw Exception('Failed to create product');
+        final product = await _productService.updateProduct(
+          editingProduct!.id,
+          dto,
+        );
+        if (product == null) {
+          throw Exception('Failed to update product');
+        }
+
+        // Upload new images if any
+        if (selectedImages.isNotEmpty) {
+          await _productService.uploadProductImages(product.id, selectedImages);
+        }
+      } else {
+        // Create product DTO - Fixed: Use correct field names
+        final dto = CreateProductDto(
+          name: nameController.text.trim(),
+          description: descriptionController.text.trim(),
+          price: double.parse(priceController.text),
+          stockQuantity: int.parse(stockQuantityController.text),
+          categoryId:
+              selectedSubCategory.value?.id ?? selectedCategory.value!.id,
+          tags: selectedTags
+              .map((tag) => tag.name)
+              .toList(), // Add selected tag names
+          measureUnitCode: selectedMeasureUnit.value,
+          measureAmount: measureAmountController.text.trim().isNotEmpty
+              ? double.parse(measureAmountController.text)
+              : null,
+          attributes: attributes.isNotEmpty
+              ? Map<String, dynamic>.from(attributes)
+              : null,
+          discounts: discounts, // Add discounts
+        );
+
+        // Step 1: Create product
+        final product = await _productService.createProduct(dto);
+        if (product == null) {
+          throw Exception('Failed to create product');
+        }
+
+        // Step 2: Upload images
+        final updatedProduct = await _productService.uploadProductImages(
+          product.id,
+          selectedImages,
+        );
+
+        if (updatedProduct == null) {
+          throw Exception('Failed to upload product images');
+        }
       }
-
-      // Step 2: Upload images
-      final updatedProduct = await _productService.uploadProductImages(
-        product.id,
-        selectedImages,
-      );
-
-      if (updatedProduct == null) {
-        throw Exception('Failed to upload product images');
-      }
-
-      NotificationService.showSuccess(
-        title: 'Success!',
-        message: 'Product created successfully',
-      );
 
       // Reset form and navigate back
       resetForm();
-      // Get.back();
     } catch (e) {
-      LogService.error('Error creating product', e);
+      LogService.error('Error creating/updating product', e);
       NotificationService.showError(
         title: 'Error',
-        message: 'Failed to create product. Please try again.',
+        message: 'Failed to save product. Please try again.',
       );
     } finally {
+      _sellerDataController.refreshProducts();
+      Get.back();
+
+      NotificationService.showSuccess(
+        title: 'Success!',
+        message: 'Product saved successfully',
+      );
       isLoading.value = false;
     }
   }
@@ -535,12 +669,14 @@ class SellerCreateProductController extends GetxController {
     discountValidFromController.clear();
     discountValidUptoController.clear();
     selectedImages.clear();
+    existingImages.clear(); // Added: Clear existing images
     selectedTags.clear();
     selectedCategory.value = null;
     selectedSubCategory.value = null;
     selectedMeasureUnit.value = null;
     attributes.clear();
     hasDiscount.value = false;
+    editingProduct = null;
   }
 
   // Helper getters
@@ -573,4 +709,6 @@ class SellerCreateProductController extends GetxController {
         return '';
     }
   }
+
+  String get submitButtonText => editingProduct != null ? 'Update' : 'Create';
 }
