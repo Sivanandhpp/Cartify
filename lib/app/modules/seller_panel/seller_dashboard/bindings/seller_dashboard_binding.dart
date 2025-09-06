@@ -13,7 +13,7 @@ class SellerDashboardBinding extends Bindings {
   @override
   void dependencies() {
     Get.put<SellerDataController>(SellerDataController());
-    Get.lazyPut<SellerDashboardController>(() => SellerDashboardController());
+    Get.put<SellerDashboardController>(SellerDashboardController(), permanent: true);
     Get.lazyPut<SellerHomeController>(() => SellerHomeController());
     Get.lazyPut<SellerCreateProductController>(() => SellerCreateProductController(),);
     Get.lazyPut<SellerOrdersController>(() => SellerOrdersController());

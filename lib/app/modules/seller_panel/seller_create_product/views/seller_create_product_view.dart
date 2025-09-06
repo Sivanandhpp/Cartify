@@ -1,5 +1,3 @@
-import 'package:cartify/app/core/widgets/app_dropdown.dart';
-import 'package:cartify/app/core/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cartify/app/core/index.dart';
@@ -695,22 +693,27 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                     );
                   }
 
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: controller.availableTags.map((tag) {
-                      final isSelected = controller.selectedTags.contains(tag);
-                      return FilterChip(
-                        label: Text(tag.name),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          controller.toggleTagSelection(tag);
-                        },
-                        selectedColor: AppColors.primary.withOpacity(0.2),
-                        checkmarkColor: AppColors.primary,
-                        backgroundColor: Colors.grey[100],
-                      );
-                    }).toList(),
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: controller.availableTags.map((tag) {
+                        final isSelected = controller.selectedTags.contains(
+                          tag,
+                        );
+                        return FilterChip(
+                          label: Text(tag.name),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            controller.toggleTagSelection(tag);
+                          },
+                          selectedColor: AppColors.primary.withOpacity(0.2),
+                          checkmarkColor: AppColors.primary,
+                          backgroundColor: Colors.grey[100],
+                        );
+                      }).toList(),
+                    ),
                   );
                 }),
 
@@ -722,35 +725,42 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                     return const SizedBox.shrink();
                   }
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selected Tags (${controller.selectedTags.length})',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: AppColors.grey700,
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Selected Tags (${controller.selectedTags.length})',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: AppColors.grey700,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: controller.selectedTags.map((tag) {
-                          return Chip(
-                            label: Text(
-                              tag.name,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            onDeleted: () => controller.removeSelectedTag(tag),
-                            deleteIcon: const Icon(Icons.close, size: 16),
-                            backgroundColor: AppColors.primary.withOpacity(0.1),
-                            deleteIconColor: AppColors.primary,
-                          );
-                        }).toList(),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: controller.selectedTags.map((tag) {
+                            return Chip(
+                              label: Text(
+                                tag.name,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              onDeleted: () =>
+                                  controller.removeSelectedTag(tag),
+                              deleteIcon: const Icon(Icons.close, size: 16),
+                              backgroundColor: AppColors.primary.withOpacity(
+                                0.1,
+                              ),
+                              deleteIconColor: AppColors.primary,
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   );
                 }),
               ],

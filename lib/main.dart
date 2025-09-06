@@ -1,4 +1,3 @@
-import 'package:cartify/app/core/config/app_initservices.dart';
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';

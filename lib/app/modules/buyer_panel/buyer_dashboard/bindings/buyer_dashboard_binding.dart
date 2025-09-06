@@ -15,7 +15,7 @@ import '../controllers/buyer_dashboard_controller.dart';
 class BuyerDashboardBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(BuyerDashboardController(), permanent: true);
+    Get.put<BuyerDashboardController>(BuyerDashboardController(), permanent: true);
     Get.lazyPut<BuyerHomeController>(() => BuyerHomeController());
     Get.create<ProductSheetController>(() => ProductSheetController());
     Get.lazyPut<BuyerCartController>(() => BuyerCartController());
