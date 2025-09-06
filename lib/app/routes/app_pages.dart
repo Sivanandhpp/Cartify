@@ -1,18 +1,29 @@
 import 'package:get/get.dart';
-import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
-import '../modules/admin_dashboard/views/admin_dashboard_view.dart';
-import '../modules/cart/bindings/cart_binding.dart';
-import '../modules/cart/views/cart_view.dart';
-import '../modules/login/bindings/login_binding.dart';
-import '../modules/login/views/login_view.dart';
+
+import '../modules/admin_panel/admin_dashboard/bindings/admin_dashboard_binding.dart';
+import '../modules/admin_panel/admin_dashboard/views/admin_dashboard_view.dart';
+import '../modules/authentication/login/bindings/login_binding.dart';
+import '../modules/authentication/login/views/login_view.dart';
+import '../modules/authentication/otp_check/bindings/otp_check_binding.dart';
+import '../modules/authentication/otp_check/views/otp_check_view.dart';
+import '../modules/buyer_panel/buyer_cart/views/buyer_cart_view.dart';
+import '../modules/buyer_panel/buyer_cart/views/buyer_order_status_view.dart';
+import '../modules/buyer_panel/buyer_categories/views/buyer_categories_view.dart';
+import '../modules/buyer_panel/buyer_dashboard/bindings/buyer_dashboard_binding.dart';
+import '../modules/buyer_panel/buyer_dashboard/views/buyer_dashboard_view.dart';
+import '../modules/buyer_panel/buyer_profile/views/buyer_address_view.dart';
+import '../modules/buyer_panel/buyer_profile/views/buyer_orders_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
-import '../modules/otp_check/bindings/otp_check_binding.dart';
-import '../modules/otp_check/views/otp_check_view.dart';
+import '../modules/seller_panel/seller_analytics/views/seller_analytics_view.dart';
+import '../modules/seller_panel/seller_create_product/views/seller_create_product_view.dart';
+import '../modules/seller_panel/seller_dashboard/bindings/seller_dashboard_binding.dart';
+import '../modules/seller_panel/seller_dashboard/views/seller_dashboard_view.dart';
+import '../modules/seller_panel/seller_orders/views/seller_orders_view.dart';
+import '../modules/seller_panel/seller_products/views/seller_products_view.dart';
+import '../modules/seller_panel/seller_profile/views/seller_profile_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/user_dashboard/bindings/user_dashboard_binding.dart';
-import '../modules/user_dashboard/views/user_dashboard_view.dart';
 
 // Routes barrel export file
 // Usage: import 'package:cartify/app/routes/app_pages.dart';
@@ -28,24 +39,9 @@ class AppPages {
 
   static final routes = [
     GetPage(
-      name: _Paths.OTP_CHECK,
-      page: () => const OtpCheckView(),
-      binding: OtpCheckBinding(),
-    ),
-    GetPage(
-      name: _Paths.LOGIN,
-      page: () => const LoginView(),
-      binding: LoginBinding(),
-    ),
-    GetPage(
-      name: _Paths.USER_DASHBOARD,
-      page: () => const UserDashboardView(),
-      binding: UserDashboardBinding(),
-    ),
-    GetPage(
-      name: _Paths.ADMIN_DASHBOARD,
-      page: () => const AdminDashboardView(),
-      binding: AdminDashboardBinding(),
+      name: _Paths.ONBOARDING,
+      page: () => const OnboardingView(),
+      binding: OnboardingBinding(),
     ),
     GetPage(
       name: _Paths.SPLASH,
@@ -53,14 +49,79 @@ class AppPages {
       binding: SplashBinding(),
     ),
     GetPage(
-      name: _Paths.ONBOARDING,
-      page: () => const OnboardingView(),
-      binding: OnboardingBinding(),
+      name: _Paths.LOGIN,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
     ),
     GetPage(
-      name: _Paths.CART,
-      page: () => const CartView(),
-      binding: CartBinding(),
+      name: _Paths.OTP_CHECK,
+      page: () => const OtpCheckView(),
+      binding: OtpCheckBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_DASHBOARD,
+      page: () => const SellerDashboardView(),
+      binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_DASHBOARD,
+      page: () => const AdminDashboardView(),
+      binding: AdminDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_DASHBOARD,
+      page: () => const BuyerDashboardView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_CART,
+      page: () => const BuyerCartView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_CATEGORIES,
+      page: () => const BuyerCategoriesView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_ADDRESS_VIEW,
+      page: () => const BuyerAddressView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_ORDER_STATUS,
+      page: () => const BuyerOrderStatusView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.BUYER_ORDERS_VIEW,
+      page: () => const BuyerOrdersView(),
+      binding: BuyerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_CREATE_PRODUCT,
+      page: () => const SellerCreateProductView(),
+      binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_PRODUCTS,
+      page: () => const SellerProductsView(),
+      binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_ORDERS,
+      page: () => const SellerOrdersView(),
+      binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_ANALYTICS,
+      page: () => const SellerAnalyticsView(),
+      binding: SellerDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELLER_PROFILE,
+      page: () => const SellerProfileView(),
+      binding: SellerDashboardBinding(),
     ),
   ];
 }

@@ -4,24 +4,42 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
-
   static const OTP_CHECK = _Paths.OTP_CHECK;
   static const LOGIN = _Paths.LOGIN;
-  static const USER_DASHBOARD = _Paths.USER_DASHBOARD;
-  static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
   static const SPLASH = _Paths.SPLASH;
   static const ONBOARDING = _Paths.ONBOARDING;
-  static const CART = _Paths.CART;
+  static const SELLER_DASHBOARD = _Paths.SELLER_DASHBOARD;
+  static const BUYER_DASHBOARD = _Paths.BUYER_DASHBOARD;
+  static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
+  static const BUYER_CART = _Paths.BUYER_CART;
+  static const BUYER_CATEGORIES = _Paths.BUYER_CATEGORIES;
+  static const BUYER_ADDRESS_VIEW = _Paths.BUYER_ADDRESS_VIEW;
+  static const BUYER_ORDER_STATUS = _Paths.BUYER_ORDER_STATUS;
+  static const BUYER_ORDERS_VIEW = _Paths.BUYER_ORDERS_VIEW;
+  static const SELLER_CREATE_PRODUCT = _Paths.SELLER_CREATE_PRODUCT;
+  static const SELLER_PRODUCTS = _Paths.SELLER_PRODUCTS;
+  static const SELLER_ORDERS = _Paths.SELLER_ORDERS;
+  static const SELLER_ANALYTICS = _Paths.SELLER_ANALYTICS;
+  static const SELLER_PROFILE = _Paths.SELLER_PROFILE;
 }
 
 abstract class _Paths {
   _Paths._();
-
-  static const OTP_CHECK = '/otp-check';
   static const LOGIN = '/login';
-  static const USER_DASHBOARD = '/user-dashboard';
-  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const OTP_CHECK = '/otp-check';
   static const SPLASH = '/splash';
   static const ONBOARDING = '/onboarding';
-  static const CART = '/cart';
+  static const SELLER_DASHBOARD = '/seller-dashboard';
+  static const BUYER_DASHBOARD = '/buyer-dashboard';
+  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const BUYER_CART = '/buyer-cart';
+  static const BUYER_CATEGORIES = '/buyer-categories';
+  static const BUYER_ADDRESS_VIEW = '/buyer-address';
+  static const BUYER_ORDER_STATUS = '/buyer-order-status';
+  static const BUYER_ORDERS_VIEW = '/buyer-orders';
+  static const SELLER_CREATE_PRODUCT = '/seller-create-product';
+  static const SELLER_PRODUCTS = '/seller-products';
+  static const SELLER_ORDERS = '/seller-orders';
+  static const SELLER_ANALYTICS = '/seller-analytics';
+  static const SELLER_PROFILE = '/seller-profile';
 }

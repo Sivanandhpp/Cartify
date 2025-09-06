@@ -247,8 +247,44 @@ class AppFormatters {
       return '**** **** **** $lastFour';
     }
   }
+
+  /// Format date as "DD Month YYYY at HH:MM AM/PM" (e.g., "15 January 2024 at 02:30 PM")
+  static String formatDate(DateTime dateTime) {
+    final months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    final day = dateTime.day.toString().padLeft(2, '0');
+    final month = months[dateTime.month - 1];
+    final year = dateTime.year.toString();
+
+    // Convert to 12-hour format
+    int hour = dateTime.hour;
+    String period = 'AM';
+
+    if (hour == 0) {
+      hour = 12; // Midnight
+    } else if (hour == 12) {
+      period = 'PM'; // Noon
+    } else if (hour > 12) {
+      hour = hour - 12;
+      period = 'PM';
+    }
+
+    final hourStr = hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+
+    return '$day $month $year at $hourStr:$minute $period';
+  }
 }
-
-
-
-
