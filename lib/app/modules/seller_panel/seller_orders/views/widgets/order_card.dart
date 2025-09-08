@@ -1,6 +1,7 @@
 import 'package:cartify/app/core/models/order/order_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cartify/app/core/index.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderCard extends StatefulWidget {
   final OrderModel order;
@@ -431,8 +432,20 @@ class _OrderCardState extends State<OrderCard>
                 ),
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   // Call customer functionality
+                  final phoneNumber = widget.order.shippingAddress.phone;
+                  final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+                  try {
+                    await launchUrl(launchUri);
+                  } catch (e) {
+                    if (context.mounted) {
+                      NotificationService.showError(
+                        title: 'Error',
+                        message: 'Could not launch phone dialer $e.',
+                      );
+                    }
+                  }
                 },
                 icon: Icon(Icons.phone, color: Colors.green[700]),
                 tooltip: 'Call Customer',
