@@ -1,3 +1,5 @@
+import 'package:cartify/app/core/index.dart';
+
 /// DTO for updating an existing product (seller functionality)
 class UpdateProductDto {
   final String? name;
@@ -10,8 +12,8 @@ class UpdateProductDto {
   final String? measureUnitCode;
   final double? measureAmount;
   final Map<String, dynamic>? attributes;
-  final List<Map<String, dynamic>>?
-  discounts; // Added: Discounts from ProductModel
+  final List<Map<String, dynamic>>? discounts;
+  final List<String>? images;
 
   UpdateProductDto({
     this.name,
@@ -24,7 +26,8 @@ class UpdateProductDto {
     this.measureUnitCode,
     this.measureAmount,
     this.attributes,
-    this.discounts, // Added: Discounts parameter
+    this.discounts,
+    this.images,
   });
 
   Map<String, dynamic> toJson() {
@@ -40,9 +43,10 @@ class UpdateProductDto {
     if (measureUnitCode != null) data['measure_unit_code'] = measureUnitCode;
     if (measureAmount != null) data['measure_amount'] = measureAmount;
     if (attributes != null) data['attributes'] = attributes;
-    // if (discounts != null)
-    //   data['discounts'] = discounts; 
-
+    // if (discounts != null) data['discounts'] = discounts;
+    if (images != null) {data['images'] = images!
+          .map((url) => url.replaceFirst(AppConfig.baseUrl, ''))
+          .toList();}
     return data;
   }
 
@@ -58,5 +62,6 @@ class UpdateProductDto {
       measureUnitCode != null ||
       measureAmount != null ||
       attributes != null ||
-      discounts != null; // Added: Check
+      discounts != null ||
+      images != null;
 }

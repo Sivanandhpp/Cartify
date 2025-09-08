@@ -267,11 +267,22 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       child: Column(
         children: [
           Obx(() {
-            final hasImages = controller.existingImages.isNotEmpty || controller.selectedImages.isNotEmpty;
-            return hasImages ? _buildCombinedImageGrid() : _buildImagePickerPlaceholder();
+            final hasImages =
+                controller.existingImages.isNotEmpty ||
+                controller.selectedImages.isNotEmpty;
+            return hasImages
+                ? _buildCombinedImageGrid()
+                : _buildImagePickerPlaceholder();
           }),
           const SizedBox(height: 16),
-          Obx(() => (controller.selectedImages.length + controller.existingImages.length) < 5 ? _buildAddImageButton() : const SizedBox.shrink()),
+          Obx(
+            () =>
+                (controller.selectedImages.length +
+                        controller.existingImages.length) <
+                    5
+                ? _buildAddImageButton()
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
@@ -325,7 +336,8 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: controller.existingImages.length + controller.selectedImages.length,
+        itemCount:
+            controller.existingImages.length + controller.selectedImages.length,
         itemBuilder: (context, index) {
           if (index < controller.existingImages.length) {
             // Existing image
@@ -333,7 +345,13 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             return Container(
               width: 150,
               margin: EdgeInsets.only(
-                right: index < (controller.existingImages.length + controller.selectedImages.length - 1) ? 12 : 0,
+                right:
+                    index <
+                        (controller.existingImages.length +
+                            controller.selectedImages.length -
+                            1)
+                    ? 12
+                    : 0,
               ),
               child: Stack(
                 children: [
@@ -348,13 +366,36 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                       ),
                     ),
                   ),
-                  // No remove button for existing images
+                  // Remove button for existing images
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => controller.removeExistingImage(index),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: const BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: AppColors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
                   if (index == 0)
                     Positioned(
                       bottom: 8,
                       left: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
@@ -379,7 +420,13 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
             return Container(
               width: 150,
               margin: EdgeInsets.only(
-                right: index < (controller.existingImages.length + controller.selectedImages.length - 1) ? 12 : 0,
+                right:
+                    index <
+                        (controller.existingImages.length +
+                            controller.selectedImages.length -
+                            1)
+                    ? 12
+                    : 0,
               ),
               child: Stack(
                 children: [
@@ -419,7 +466,10 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
                       bottom: 8,
                       left: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
@@ -442,7 +492,6 @@ class SellerCreateProductView extends GetView<SellerCreateProductController> {
       ),
     );
   }
-
 
   // Widget _buildImageGrid() {
   //   return SizedBox(

@@ -228,7 +228,7 @@ class SellerCreateProductController extends GetxController {
   // Image management
   Future<void> pickImage() async {
     if (selectedImages.length + existingImages.length >= 5) {
-      // Updated: Include existing images in limit
+      // Include existing images in limit
       NotificationService.showWarning(
         title: 'Limit Reached',
         message: 'You can only add up to 5 images',
@@ -248,6 +248,12 @@ class SellerCreateProductController extends GetxController {
 
   void removeImage(int index) {
     selectedImages.removeAt(index);
+  }
+
+  void removeExistingImage(int index) {
+    if (index >= 0 && index < existingImages.length) {
+      existingImages.removeAt(index);
+    }
   }
 
   // Category management
@@ -566,6 +572,7 @@ class SellerCreateProductController extends GetxController {
         final dto = UpdateProductDto(
           // id: editingProduct!.id,
           name: nameController.text.trim(),
+          images: existingImages,
           description: descriptionController.text.trim(),
           price: double.parse(priceController.text),
           stockQuantity: int.parse(stockQuantityController.text),
