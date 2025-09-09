@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/constants/app_strings.dart';
 
 /// Production-level reusable bill details widget
 ///
@@ -50,18 +51,27 @@ class BillDetailsWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildBillRow('Item Total', '₹${subtotal.toStringAsFixed(2)}'),
-          _buildBillRow('Handling Fee', '₹${handlingFee.toStringAsFixed(2)}'),
           _buildBillRow(
-            'Delivery Partner Fee',
+            AppStrings.itemTotal,
+            '₹${subtotal.toStringAsFixed(2)}',
+          ),
+          _buildBillRow(
+            AppStrings.handlingFee,
+            '₹${handlingFee.toStringAsFixed(2)}',
+          ),
+          _buildBillRow(
+            AppStrings.deliveryPartnerFee,
             '₹${deliveryPartnerFee.toStringAsFixed(2)}',
           ),
-          _buildBillRow('GST', '₹${gstAmount.toStringAsFixed(2)}'),
+          _buildBillRow(AppStrings.gst, '₹${gstAmount.toStringAsFixed(2)}'),
           if (deliveryTip > 0)
-            _buildBillRow('Delivery Tip', '₹${deliveryTip.toStringAsFixed(2)}'),
+            _buildBillRow(
+              AppStrings.deliveryTip,
+              '₹${deliveryTip.toStringAsFixed(2)}',
+            ),
           const Divider(),
           _buildBillRow(
-            'To Pay',
+            AppStrings.toPay,
             '₹${finalTotal.toStringAsFixed(2)}',
             isTotal: true,
           ),

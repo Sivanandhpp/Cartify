@@ -90,8 +90,8 @@ class AddressSelectionSheet extends StatelessWidget {
         children: [
           const SizedBox(width: 16),
           const Text(
-            'Select Delivery Address',
-            style: TextStyle(
+            AppStrings.selectDeliveryAddress,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppColors.black,
@@ -153,7 +153,7 @@ class AddressSelectionSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'No Addresses Found',
+            AppStrings.noAddressesFound,
             style: AppTextStyles.headlineSmall(AppColors.primary),
           ),
           const SizedBox(height: 12),

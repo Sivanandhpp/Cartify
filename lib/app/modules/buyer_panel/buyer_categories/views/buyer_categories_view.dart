@@ -18,7 +18,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
         }
 
         if (!controller.hasCategories) {
-          return _buildEmptyState('No categories available');
+          return _buildEmptyState(AppStrings.noCategoriesAvailable);
         }
 
         return controller.isAnyCategorySelected
@@ -45,7 +45,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
           title: Text(
             controller.isAnyCategorySelected
                 ? controller.selectedCategoryName
-                : 'Categories',
+                : AppStrings.buyerCategoriesTitle,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -93,11 +93,11 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Pull to refresh or try again',
+            AppStrings.pullToRefreshOrTryAgain,
             style: TextStyle(fontSize: 14, color: Colors.grey[500]),
           ),
           const SizedBox(height: 24),
-          AppButton(text: 'Retry', onPressed: controller.refresh),
+          AppButton(text: AppStrings.retry, onPressed: controller.refresh),
         ],
       ),
     );
@@ -200,7 +200,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
                       const SizedBox(height: 4),
                       // Sub-categories count with shadow
                       Text(
-                        '${category.children.length} subcategories',
+                        '${category.children.length} ${AppStrings.subcategories}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -258,7 +258,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
         children: [
           // "All" chip with category icon
           _buildSubCategoryChip(
-            'All',
+            AppStrings.allSubCategory,
             null,
             controller.selectedSubCategory.value == null,
             () => controller.selectSubCategory(null),
@@ -333,7 +333,10 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
                       height: 48,
                       fit: BoxFit.cover,
                       borderRadius: BorderRadius.circular(12),
-                      errorWidget: _buildSubCategoryIcon(isSelected, label == 'All'),
+                      errorWidget: _buildSubCategoryIcon(
+                        isSelected,
+                        label == 'All',
+                      ),
                     )
                   : _buildSubCategoryIcon(isSelected, label == 'All'),
             ),
@@ -373,14 +376,14 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('Loading products...'),
+              Text(AppStrings.loadingProducts),
             ],
           ),
         );
       }
 
       if (!controller.hasProducts) {
-        return _buildEmptyState('No products found in this category');
+        return _buildEmptyState(AppStrings.noProductsFoundInCategory);
       }
 
       return RefreshIndicator(

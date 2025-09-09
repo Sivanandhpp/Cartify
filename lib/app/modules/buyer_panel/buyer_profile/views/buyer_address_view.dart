@@ -12,9 +12,9 @@ class BuyerAddressView extends GetView<BuyerAddressController> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          'My Addresses',
-          style: TextStyle(
+        title: Text(
+          AppStrings.myAddressesTitle,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -46,7 +46,7 @@ class BuyerAddressView extends GetView<BuyerAddressController> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: AppButton(
-          text: 'Add New Address',
+          text: AppStrings.addNewAddress,
           onPressed: controller.showAddAddressForm,
         ),
       ),
@@ -68,18 +68,18 @@ class BuyerAddressView extends GetView<BuyerAddressController> {
             ),
             const SizedBox(height: 24),
             Text(
-              'No Addresses Found',
+              AppStrings.noAddressesFound,
               style: AppTextStyles.headlineSmall(AppColors.primary),
             ),
             const SizedBox(height: 8),
             Text(
-              'Add your first address to get started with deliveries',
+              AppStrings.addFirstAddressToGetStarted,
               style: AppTextStyles.bodyMedium(AppColors.secondaryBrand),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
             AppButton(
-              text: 'Add Address',
+              text: AppStrings.addFirstAddressAction,
               onPressed: controller.showAddAddressForm,
               width: 200,
             ),

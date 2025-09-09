@@ -120,8 +120,8 @@ class BuyerCartController extends GetxController {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred,
+        message: AppStrings.failedToUpdateCart,
       );
     }
   }
@@ -130,8 +130,8 @@ class BuyerCartController extends GetxController {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred,
+        message: AppStrings.failedToUpdateCart,
       );
     } else {
       // Clean up order list after successful operation (schedule for next frame)
@@ -145,8 +145,8 @@ class BuyerCartController extends GetxController {
     final cart = await _cartService.removeItemFromCart(cartItemId);
     if (cart == null) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to remove item from cart',
+        title: AppStrings.errorOccurred,
+        message: AppStrings.failedToRemoveItemFromCart,
       );
     } else {
       // Clean up order list after successful operation
@@ -160,8 +160,8 @@ class BuyerCartController extends GetxController {
     final success = await _cartService.clearCart();
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to clear cart',
+        title: AppStrings.errorOccurred,
+        message: AppStrings.failedToClearCart,
       );
     } else {
       // Clear order list after successful operation
@@ -218,8 +218,8 @@ class BuyerCartController extends GetxController {
     // Check if cart is empty
     if (isEmpty) {
       NotificationService.showError(
-        title: 'Empty Cart',
-        message: 'Please add items to your cart before proceeding',
+        title: AppStrings.emptyCartTitle,
+        message: AppStrings.addItemsToCartMessage,
       );
       return false;
     }
@@ -227,8 +227,8 @@ class BuyerCartController extends GetxController {
     // Check if address is selected
     if (selectedAddress == null) {
       NotificationService.showError(
-        title: 'No Address Selected',
-        message: 'Please select a delivery address',
+        title: AppStrings.noAddressSelectedTitle,
+        message: AppStrings.selectDeliveryAddressMessage,
       );
       return false;
     }
@@ -236,8 +236,8 @@ class BuyerCartController extends GetxController {
     // Validate address completeness
     if (!selectedAddress!.isValid) {
       NotificationService.showError(
-        title: 'Invalid Address',
-        message: 'The selected address is incomplete. Please update it.',
+        title: AppStrings.invalidAddressTitle,
+        message: AppStrings.addressIncompleteMessage,
       );
       return false;
     }
@@ -246,8 +246,8 @@ class BuyerCartController extends GetxController {
     for (final item in cartItems) {
       if (item.product.stockQuantity <= 0) {
         NotificationService.showError(
-          title: 'Item Out of Stock',
-          message: '${item.product.name} is currently out of stock',
+          title: AppStrings.itemOutOfStockTitle,
+          message: '${item.product.name} ${AppStrings.itemOutOfStockMessage}',
         );
         return false;
       }
@@ -275,7 +275,10 @@ class BuyerCartController extends GetxController {
         // Show success message with order details
         LogService.info('Order placed successfully: ${order.id}');
         // Navigate to success status screen
-        Get.offNamed(Routes.BUYER_ORDER_STATUS, arguments: {'success': true, 'order': order});
+        Get.offNamed(
+          Routes.BUYER_ORDER_STATUS,
+          arguments: {'success': true, 'order': order},
+        );
         // Clear the cart after successful order
         await clearCart();
       } else {
@@ -290,8 +293,8 @@ class BuyerCartController extends GetxController {
 
       // Show error message
       NotificationService.showError(
-        title: 'Order Failed',
-        message: 'An error occurred while placing your order. Please try again.',
+        title: AppStrings.orderFailedTitle,
+        message: AppStrings.orderFailedMessage,
       );
 
       LogService.error('Error placing order', e);

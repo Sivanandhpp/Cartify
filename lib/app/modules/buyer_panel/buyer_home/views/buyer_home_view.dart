@@ -28,7 +28,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                 const SizedBox(height: 16),
                 Text(
-                  'Error Loading Dashboard',
+                  AppStrings.errorLoadingDashboard,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -44,7 +44,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: controller.refreshDashboard,
-                  child: const Text('Retry'),
+                  child: Text(AppStrings.retry),
                 ),
               ],
             ),
@@ -63,14 +63,12 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 selectedCategory: controller.selectedCategory.value,
                 onLocationTap: () {
                   // Handle location tap
-                  print('Location tapped');
                 },
                 onCartTap: () {
                   Get.toNamed(Routes.BUYER_CART);
                 },
                 onSearchChanged: (value) {
                   // Handle search
-                  print('Search: $value');
                 },
                 onCategoryTap: controller.onCategoryTap,
               ),
@@ -129,13 +127,11 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                     }
                                   },
                                   onIncrement: () {
-                                    print('Add to cart: ${product.name}');
                                     controller.incrementProductQuantity(
                                       product.id,
                                     );
                                   },
                                   onDecrement: () {
-                                    print('Remove from cart: ${product.name}');
                                     controller.decrementProductQuantity(
                                       product.id,
                                     );
@@ -165,16 +161,13 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                   currentQuantity: controller
                                       .getProductQuantityInCart(product.id),
                                   onTap: () {
-                                    print('Product tapped: ${product.name}');
                                   },
                                   onIncrement: () {
-                                    print('Add to cart: ${product.name}');
                                     controller.incrementProductQuantity(
                                       product.id,
                                     );
                                   },
                                   onDecrement: () {
-                                    print('Remove from cart: ${product.name}');
                                     controller.decrementProductQuantity(
                                       product.id,
                                     );

@@ -2,6 +2,7 @@
 
 import 'package:cartify/app/core/models/dashboard/dashboard_model.dart';
 import 'package:cartify/app/core/services/api_client.dart';
+import 'package:cartify/app/core/services/log_service.dart'; // Added: Import for LogService
 import 'package:dio/dio.dart';
 
 /// Service for fetching the dynamic dashboard data.
@@ -16,7 +17,7 @@ class DashboardService {
       final response = await _apiClient.dio.get('/dashboard');
       return DashboardModel.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error fetching dashboard: ${e.response?.data}');
+      LogService.error('Error fetching dashboard', e.response?.data);
       return null;
     }
   }

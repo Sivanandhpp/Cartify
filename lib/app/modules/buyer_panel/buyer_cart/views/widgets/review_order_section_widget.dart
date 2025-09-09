@@ -54,7 +54,7 @@ class ReviewOrderSectionWidget extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '$itemCount items',
+                '$itemCount ${AppStrings.items}',
                 style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
@@ -91,7 +91,7 @@ class ReviewOrderSectionWidget extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
-                  'No items in cart',
+                  AppStrings.noItemsInCart,
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ),
@@ -103,9 +103,9 @@ class ReviewOrderSectionWidget extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: onClearCart,
-                  child: const Text(
-                    'Clear Cart',
-                    style: TextStyle(
+                  child: Text(
+                    AppStrings.clearCart,
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: Colors.red,
