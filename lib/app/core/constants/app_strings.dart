@@ -4,15 +4,36 @@ import '../config/app_identity.dart';
 ///
 /// This class contains all the static text strings to ensure consistency
 /// and make localization easier in the future.
+///
+/// Organization:
+/// - App Related: General app strings
+/// - Authentication: Login, OTP, signup
+/// - Common Actions: Generic buttons/actions
+/// - Navigation: Bottom nav, menus
+/// - Shopping: Cart, checkout, payments
+/// - Products: Product details, stock
+/// - User Interface: Themes, settings
+/// - Error Messages: All error notifications
+/// - Success Messages: All success notifications
+/// - Empty States: No data scenarios
+/// - Placeholders: Input field hints
+/// - Buyer Panel Specific: Buyer-side features
+/// - Seller Panel Specific: Seller-side features
 class AppStrings {
   AppStrings._();
 
-  // App Related (Auto-sourced from AppIdentity)
+  // =================================================================================================
+  //                                        APP RELATED
+  // =================================================================================================
+  // General app information and branding
   static String get appName => AppIdentity.displayName;
-  static String get welcomeMessage => 'Welcome to ${AppIdentity.displayName}';
+  static String get welcomeMessage => 'Welcome to $appName';
   static const String tagline = 'Your ultimate shopping companion';
 
-  // Authentication
+  // =================================================================================================
+  //                                        AUTHENTICATION
+  // =================================================================================================
+  // Login, signup, OTP verification
   static const String login = 'Login';
   static const String logout = 'Logout';
   static const String signUp = 'Sign Up';
@@ -22,7 +43,7 @@ class AppStrings {
   static const String verify = 'Verify';
   static const String sendOtp = 'Send OTP';
 
-  // Login specific strings
+  // Login specific
   static const String loginWelcome = 'Welcome Back!';
   static const String loginHelperTitle = 'Enter your Phone Number to continue';
   static const String loginCountryCode = '+91';
@@ -32,7 +53,7 @@ class AppStrings {
   static const String loginTermsPolicy =
       'By continuing, you agree to our Terms & Privacy Policy';
 
-  // OTP Check strings
+  // OTP Check
   static const String otpCheckViewTitle = 'OTP Verification';
   static const String otpCheckEnterOtp = 'Enter verification code';
   static const String otpCheckHelperTitle =
@@ -43,27 +64,15 @@ class AppStrings {
   static const String otpCheckResendButton = 'Resend';
   static const String otpsendError = 'Failed to send OTP. Please try again.';
 
-  // Onboarding strings
+  // Onboarding
   static const String onBoardingSkip = 'Skip';
   static const String onBoardingButtonInitial = 'Next';
   static const String onBoardingButtonFinal = 'Get Started';
 
-  // Success messages
-  static const String otpSentMessage =
-      'OTP sent successfully to your mobile number';
-
-  // Navigation
-  static const String home = 'Home';
-  static const String categories = 'Categories';
-  static const String cart = 'Cart';
-  static const String profile = 'Profile';
-  static const String search = 'Search';
-  static const String wishlist = 'Wishlist';
-  static const String orders = 'Orders';
-  static const String settings = 'Settings';
-  static const String notifications = 'Notifications';
-
-  // Common Actions
+  // =================================================================================================
+  //                                        COMMON ACTIONS
+  // =================================================================================================
+  // Generic buttons and actions used across the app
   static const String add = 'Add';
   static const String remove = 'Remove';
   static const String delete = 'Delete';
@@ -83,7 +92,24 @@ class AppStrings {
   static const String loading = 'Loading...';
   static const String pleaseWait = 'Please wait...';
 
-  // Shopping
+  // =================================================================================================
+  //                                        NAVIGATION
+  // =================================================================================================
+  // Bottom navigation and menu items
+  static const String home = 'Home';
+  static const String categories = 'Categories';
+  static const String cart = 'Cart';
+  static const String profile = 'Profile';
+  static const String search = 'Search';
+  static const String wishlist = 'Wishlist';
+  static const String orders = 'Orders';
+  static const String settings = 'Settings';
+  static const String notifications = 'Notifications';
+
+  // =================================================================================================
+  //                                        SHOPPING
+  // =================================================================================================
+  // Cart, checkout, payments
   static const String addToCart = 'Add to Cart';
   static const String removeFromCart = 'Remove from Cart';
   static const String buyNow = 'Buy Now';
@@ -102,7 +128,10 @@ class AppStrings {
   static const String coupon = 'Coupon';
   static const String applyCoupon = 'Apply Coupon';
 
-  // Products
+  // =================================================================================================
+  //                                        PRODUCTS
+  // =================================================================================================
+  // Product details, stock, reviews
   static const String products = 'Products';
   static const String product = 'Product';
   static const String productDetails = 'Product Details';
@@ -114,7 +143,10 @@ class AppStrings {
   static const String inStock = 'In Stock';
   static const String limitedStock = 'Limited Stock';
 
-  // User Interface
+  // =================================================================================================
+  //                                        USER INTERFACE
+  // =================================================================================================
+  // Themes, settings, about
   static const String darkMode = 'Dark Mode';
   static const String lightMode = 'Light Mode';
   static const String language = 'Language';
@@ -125,7 +157,10 @@ class AppStrings {
   static const String privacyPolicy = 'Privacy Policy';
   static const String termsConditions = 'Terms & Conditions';
 
-  // Error Messages
+  // =================================================================================================
+  //                                        ERROR MESSAGES
+  // =================================================================================================
+  // All error notifications and validation messages
   static const String errorOccurred = 'An error occurred';
   static const String networkError =
       'Network error. Please check your connection.';
@@ -139,7 +174,39 @@ class AppStrings {
   static const String passwordsDoNotMatch = 'Passwords do not match';
   static const String somethingWentWrong = 'Something went wrong';
 
-  // Success Messages
+  // Buyer-specific errors (moved here for organization)
+  static const String emptyCartTitle = 'Empty Cart';
+  static const String addItemsToCartMessage =
+      'Please add items to your cart before proceeding';
+  static const String noAddressSelectedTitle = 'No Address Selected';
+  static const String selectDeliveryAddressMessage =
+      'Please select a delivery address';
+  static const String invalidAddressTitle = 'Invalid Address';
+  static const String addressIncompleteMessage =
+      'The selected address is incomplete. Please update it.';
+  static const String itemOutOfStockTitle = 'Item Out of Stock';
+  static const String itemOutOfStockMessage =
+      'is currently out of stock'; // Placeholder for dynamic name
+  static const String failedToUpdateCart = 'Failed to update cart';
+  static const String failedToLoadTags = 'Failed to load tags';
+  static const String failedToUpdateProfile =
+      'Failed to update profile. Please try again.';
+
+  // Seller-specific errors (new additions)
+  static const String invalidInputTitle = 'Invalid Input';
+  static const String attributeKeyValueRequired =
+      'Both key and value are required';
+  static const String duplicateAttributeKey = 'Duplicate Key';
+  static const String attributeKeyExists = 'This attribute key already exists';
+  static const String imageLimitReached = 'Limit Reached';
+  static const String maxImagesExceeded = 'You can only add up to 5 images';
+  static const String failedToSaveProduct =
+      'Failed to save product. Please try again.';
+
+  // =================================================================================================
+  //                                        SUCCESS MESSAGES
+  // =================================================================================================
+  // All success notifications
   static const String success = 'Success';
   static const String savedSuccessfully = 'Saved successfully';
   static const String updatedSuccessfully = 'Updated successfully';
@@ -149,8 +216,25 @@ class AppStrings {
   static const String passwordChanged = 'Password changed successfully';
   static const String otpSent = 'OTP sent successfully';
   static const String otpVerified = 'OTP verified successfully';
+  static const String otpSentMessage =
+      'OTP sent successfully to your mobile number';
 
-  // Empty States
+  // Buyer-specific success (moved here)
+  static const String profileUpdatedSuccess = 'Profile updated successfully';
+
+  // Seller-specific success (new additions)
+  static const String attributeAddedSuccess = 'Attribute Added';
+  static const String attributeAddedMessage =
+      'Product attribute added successfully';
+  static const String imageAddedSuccess = 'Image Added';
+  static const String imageAddedMessage = 'Product image added successfully';
+  static const String productSavedSuccess = 'Success!';
+  static const String productSavedMessage = 'Product saved successfully';
+
+  // =================================================================================================
+  //                                        EMPTY STATES
+  // =================================================================================================
+  // No data scenarios
   static const String noItemsFound = 'No items found';
   static const String cartEmpty = 'Your cart is empty';
   static const String wishlistEmpty = 'Your wishlist is empty';
@@ -158,8 +242,88 @@ class AppStrings {
   static const String noNotifications = 'No notifications';
   static const String noSearchResults = 'No search results found';
 
-  // Placeholders
+  // =================================================================================================
+  //                                        PLACEHOLDERS
+  // =================================================================================================
+  // Input field hints
   static const String searchPlaceholder = 'Search products...';
   static const String enterYourName = 'Enter your name';
   static const String enterYourMessage = 'Enter your message';
+  static const String enterYourNamePlaceholder =
+      'Enter your name'; // Duplicate removed in cleanup
+  static const String enterYourMessagePlaceholder =
+      'Enter your message'; // Duplicate removed in cleanup
+
+  // =================================================================================================
+  //                                        BUYER PANEL SPECIFIC
+  // =================================================================================================
+  // Strings unique to buyer-side features
+
+  // Cart and Checkout
+  static const String missedSomethingPrompt = 'Missed Something?';
+  static const String addMoreItemsAction = 'Add more items';
+  static const String billDetailsTitle = 'Bill Details';
+  static const String lastTenDaysPerformance = 'Last 10 days performance';
+  static const String featuredProductsTitle = 'Featured Products';
+  static const String addFirstAddressPrompt =
+      'Add your first address to continue with delivery';
+  static const String addFirstAddressAction = 'Add Address';
+  static const String addFirstAddressToGetStarted =
+      'Add your first address to get started with deliveries';
+
+  // Address Management
+  static const String nearLandmarkPrefix = 'Near';
+  static const String addressFormTitle = 'Add New Address';
+  static const String addressFormSaveButton = 'Save Address';
+  static const String addressFormCancelButton = 'Cancel';
+
+  // Profile and Orders
+  static const String buyerOrdersTitle = 'My Orders';
+  static const String buyerProfileTitle = 'My Profile';
+  static const String editProfileTitle = 'Edit Profile';
+  static const String buyerWishlistTitle = 'My Wishlist';
+
+  // Categories and Offers
+  static const String buyerCategoriesTitle = 'Categories';
+  static const String buyerOffersTitle = 'Offers';
+  static const String allSubCategory = 'All';
+
+  // Dashboard and Home
+  static const String buyerDashboardTitle = 'Dashboard';
+  static const String buyerHomeTitle = 'Home';
+  static const String searchProductsPlaceholder =
+      'Search products...'; // Duplicate with searchPlaceholder, kept for specificity
+
+  // =================================================================================================
+  //                                        SELLER PANEL SPECIFIC
+  // =================================================================================================
+  // Strings unique to seller-side features
+
+  // Product Creation and Management
+  static const String selectedTagsLabel = 'Selected Tags';
+  static const String attributeLabel = 'Attribute';
+  static const String valueLabel = 'Value';
+  static const String productBasicsStep = 'Product Basics';
+  static const String categorizationDetailsStep = 'Categorization & Details';
+  static const String discountsAvailabilityStep = 'Discounts & Availability';
+  static const String productBasicsDescription =
+      'Give your product a name, price, and first look';
+  static const String categorizationDescription =
+      'Organize your product and define key details';
+  static const String discountsDescription =
+      'Set special offers and time period';
+  static const String addNewProductNavigation = 'Navigating to add new product';
+
+  // Filters and Status
+  static const String activeStatus = 'active';
+  static const String inactiveStatus = 'inactive';
+  static const String lowStockStatus = 'low_stock';
+  static const String allFilter = 'All';
+
+  // Analytics and Dashboard
+  static const String sellerAnalyticsTitle = 'Analytics';
+  static const String sellerOrdersTitle = 'Orders';
+  static const String sellerProductsTitle = 'Products';
+  static const String sellerProfileTitle = 'Profile';
+  static const String sellerDashboardTitle = 'Dashboard';
 }
