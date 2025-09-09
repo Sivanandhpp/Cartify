@@ -16,6 +16,7 @@ class BuyerProfileController extends GetxController {
   // Reactive state
   final Rx<UserModel?> user = Rx<UserModel?>(null);
   final RxBool isLoading = false.obs;
+  RxBool isLogoutLoading = false.obs;
 
   // Computed getters for UI display
   String get displayName => user.value?.name ?? 'User';
@@ -241,15 +242,13 @@ class BuyerProfileController extends GetxController {
   Future<void> logout() async {
     try {
       LogService.info('User logging out');
+      isLogoutLoading.value = true;
       await _authService.logout();
     } catch (e) {
       LogService.error('Logout failed: $e');
-      NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to logout',
-      );
     } finally {
       Get.find<BuyerDashboardController>().resetDashboard();
+      isLogoutLoading.value = false;
     }
   }
 }

@@ -31,15 +31,17 @@ class SellerHomeController extends GetxController {
   final RxList<ActivityItem> recentActivities = <ActivityItem>[].obs;
 
   // ===================== COMPUTED PROPERTIES =====================
-  
+
   List<ProductModel> get products => _dataController.products;
   List<OrderModel> get orders => _dataController.orders;
   bool get isLoading => _dataController.isLoading.value;
   int get totalProducts => products.length;
   int get totalOrders => orders.length;
-  int get pendingOrders => orders.where((o) => o.status == OrderStatus.PENDING).length;
+  int get pendingOrders =>
+      orders.where((o) => o.status == OrderStatus.PENDING).length;
   int get activeProducts => products.where((p) => p.isActive == true).length;
-  int get lowStockProducts => products.where((p) => p.stockQuantity < 10).length;
+  int get lowStockProducts =>
+      products.where((p) => p.stockQuantity < 10).length;
   bool get isDataFresh => _dataController.isDataLoaded.value;
 
   // ===================== LIFECYCLE METHODS =====================
@@ -53,11 +55,11 @@ class SellerHomeController extends GetxController {
   void _initializeController() {
     loadUserProfile();
     _ensureDataLoaded();
-    
+
     // Listen to data changes from centralized controller
     ever(_dataController.products, (_) => _calculateStats());
     ever(_dataController.orders, (_) => _calculateStats());
-    
+
     // Calculate initial stats if data is already available
     if (_dataController.isDataLoaded.value) {
       _calculateStats();
@@ -106,12 +108,12 @@ class SellerHomeController extends GetxController {
 
   void _calculateRevenueStats() {
     final now = DateTime.now();
-    
+
     // Filter orders for this month
     final thisMonthOrders = orders.where(
       (o) => o.createdAt.month == now.month && o.createdAt.year == now.year,
     );
-    
+
     // Filter orders for today
     final todayOrders = orders.where(
       (o) =>
@@ -125,10 +127,10 @@ class SellerHomeController extends GetxController {
       0.0,
       (sum, order) => sum + order.sellerAmount,
     );
-    
+
     // Calculate today's revenue
     todayRevenue.value = todayOrders.fold(
-      0.0, 
+      0.0,
       (sum, order) => sum + order.sellerAmount,
     );
 
@@ -136,15 +138,15 @@ class SellerHomeController extends GetxController {
     final lastMonthOrders = orders.where(
       (o) => o.createdAt.month == now.month - 1 && o.createdAt.year == now.year,
     );
-    
+
     final lastMonthRevenue = lastMonthOrders.fold(
       0.0,
       (sum, order) => sum + order.sellerAmount,
     );
-    
+
     monthlyGrowth.value = lastMonthRevenue > 0
         ? ((monthlyRevenue.value - lastMonthRevenue) / lastMonthRevenue) * 100
-        : 0.0;
+        : 100;
   }
 
   void _generateChartData() {
@@ -172,9 +174,10 @@ class SellerHomeController extends GetxController {
           order.createdAt.month,
           order.createdAt.day,
         );
-        
+
         if (dailyRevenue.containsKey(orderDate)) {
-          dailyRevenue[orderDate] = dailyRevenue[orderDate]! + order.sellerAmount;
+          dailyRevenue[orderDate] =
+              dailyRevenue[orderDate]! + order.sellerAmount;
           dailyOrders[orderDate] = dailyOrders[orderDate]! + 1;
         }
       }
@@ -209,14 +212,15 @@ class SellerHomeController extends GetxController {
     recentActivities.clear();
 
     // Recent orders (last 7 days)
-    final recentOrders = orders
-        .where(
-          (order) => order.createdAt.isAfter(
-            DateTime.now().subtract(const Duration(days: 7)),
-          ),
-        )
-        .toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final recentOrders =
+        orders
+            .where(
+              (order) => order.createdAt.isAfter(
+                DateTime.now().subtract(const Duration(days: 7)),
+              ),
+            )
+            .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     // Add recent order activities
     for (final order in recentOrders.take(3)) {
@@ -233,10 +237,9 @@ class SellerHomeController extends GetxController {
     }
 
     // Low stock alerts
-    final lowStockItems = products
-        .where((product) => product.stockQuantity < 10)
-        .toList()
-      ..sort((a, b) => a.stockQuantity.compareTo(b.stockQuantity));
+    final lowStockItems =
+        products.where((product) => product.stockQuantity < 10).toList()
+          ..sort((a, b) => a.stockQuantity.compareTo(b.stockQuantity));
 
     // Add low stock activities
     for (final product in lowStockItems.take(2)) {
@@ -255,13 +258,13 @@ class SellerHomeController extends GetxController {
   // ===================== NAVIGATION METHODS =====================
 
   void navigateToAddProduct() => Get.toNamed(Routes.SELLER_CREATE_PRODUCT);
-  
+
   void navigateToViewProducts() =>
       Get.find<SellerDashboardController>().onNavItemTapped(2);
-  
+
   void navigateToViewOrders() =>
       Get.find<SellerDashboardController>().onNavItemTapped(1);
-  
+
   void navigateToProfile() => Get.toNamed('/seller/profile');
 
   // ===================== UTILITY METHODS =====================
@@ -305,7 +308,7 @@ class RevenueDataPoint {
   final int day;
   final double amount;
   final DateTime date;
-  
+
   RevenueDataPoint({
     required this.day,
     required this.amount,
@@ -317,12 +320,8 @@ class OrderDataPoint {
   final int day;
   final int orders;
   final DateTime date;
-  
-  OrderDataPoint({
-    required this.day,
-    required this.orders,
-    required this.date,
-  });
+
+  OrderDataPoint({required this.day, required this.orders, required this.date});
 }
 
 class ActivityItem {
@@ -331,7 +330,7 @@ class ActivityItem {
   final String time;
   final IconData icon;
   final Color color;
-  
+
   ActivityItem({
     required this.title,
     required this.subtitle,

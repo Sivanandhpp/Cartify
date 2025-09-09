@@ -72,25 +72,38 @@ class AuthenticationService {
   }
 
   /// Logs the user out by calling the logout endpoint and always clearing local tokens/user data.
-  Future<void> logout() async {
-    bool networkFailed = false;
+  /// Returns true if the API logout was successful (200 OK), false otherwise.
+  Future<bool> logout() async {
+    bool apiLogoutSuccess = false;
     try {
       // Try to inform the backend to invalidate the refresh token.
-      await _apiClient.dio.post('/auth/logout');
+      final response = await _apiClient.dio.post('/auth/logout');
+      if (response.statusCode == 200) {
+        apiLogoutSuccess = true;
+        LogService.info('API logout successful');
+      } else {
+        LogService.warning('API logout failed with status: ${response.statusCode}');
+      }
     } on DioException catch (e) {
-      LogService.error('Error logging out: ${e.response?.data}');
-      networkFailed = true;
+      LogService.error('Error logging out: ${e.response?.data ?? e.message}');
     }
-    // Always clear local tokens and user data, regardless of network status.
+    
+    // Always clear local tokens and user data, regardless of API status.
     await _secureStorage.deleteAll();
     userController.clearUser();
-    if (networkFailed) {
+    
+    // Show notification if API failed
+    if (!apiLogoutSuccess) {
       NotificationService.showError(
         title: 'Logged out',
         message: 'Logged out locally. Could not reach server.',
       );
     }
+    
+    // Navigate to splash screen
     Get.offAllNamed(Routes.SPLASH);
+    
+    return apiLogoutSuccess;
   }
 
   /// Checks if a user is currently logged in by verifying the presence of an access token.

@@ -73,7 +73,6 @@ class BuyerDashboardController extends GetxController {
   /// Reset state (call this on logout)
   void resetDashboard() {
     selectedNavIndex.value = 0;
-    _pageController.jumpToPage(0);
   }
 
   @override
