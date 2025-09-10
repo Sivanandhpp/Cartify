@@ -52,13 +52,7 @@ class BuyerCategoriesView extends GetView<BuyerCategoriesController> {
               color: Colors.black,
             ),
           ),
-          centerTitle: false,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.black),
-              onPressed: controller.refresh,
-            ),
-          ],
+          centerTitle: true,
         ),
       ),
     );

@@ -1,4 +1,3 @@
-import 'package:cartify/app/core/models/user/update_address_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cartify/app/core/index.dart';
@@ -277,19 +276,17 @@ class _AddressFormViewState extends State<AddressFormView> {
         title: Text(
           widget.address == null ? 'Add Address' : 'Edit Address',
           style: const TextStyle(
-            color: AppColors.white,
-            fontSize: 20,
+            color: AppColors.black,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () => Get.back(),
         ),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
       ),
       body: Form(
         key: _formKey,
