@@ -1,7 +1,5 @@
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_home/views/buyer_home_appbar.dart';
-import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/buyer_home_controller.dart';
@@ -44,7 +42,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: controller.refreshDashboard,
-                  child: Text(AppStrings.retry),
+                  child: const Text(AppStrings.retry),
                 ),
               ],
             ),
@@ -59,14 +57,12 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
             slivers: [
               BuyerHomeSliverAppBar(
                 categories: controller.getCategories(),
-                selectedLocation: 'Kozhikode Work',
+                selectedLocation: AppStrings.welcomeMessage,
                 selectedCategory: controller.selectedCategory.value,
                 onLocationTap: () {
                   // Handle location tap
                 },
-                onCartTap: () {
-                  Get.toNamed(Routes.BUYER_CART);
-                },
+                onCartTap: () => controller.navigateToProfile(),
                 onSearchChanged: (value) {
                   // Handle search
                 },
@@ -110,7 +106,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                           itemBuilder: (context, index) {
                             final product = controller
                                 .getFeaturedProducts()[index];
-                            return Container(
+                            return SizedBox(
                               width: 180,
                               // margin: const EdgeInsets.only(right: 4),
                               child: Obx(
@@ -152,7 +148,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                           itemBuilder: (context, index) {
                             final product = controller
                                 .getFeaturedProducts()[index];
-                            return Container(
+                            return SizedBox(
                               width: 180,
                               // margin: const EdgeInsets.only(right: 4),
                               child: Obx(
@@ -160,8 +156,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                   product: product,
                                   currentQuantity: controller
                                       .getProductQuantityInCart(product.id),
-                                  onTap: () {
-                                  },
+                                  onTap: () {},
                                   onIncrement: () {
                                     controller.incrementProductQuantity(
                                       product.id,

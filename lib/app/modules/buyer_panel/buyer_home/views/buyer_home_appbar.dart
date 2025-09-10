@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cartify/app/core/index.dart';
-import 'package:get/get.dart';
 
 class BuyerHomeSliverAppBar extends StatelessWidget {
   final List<CategoryModel> categories;
@@ -114,7 +113,7 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const Text(
-                          'UL Technology Solutions, UL Cyberpark, UL Cy...',
+                          AppStrings.tagline,
                           style: TextStyle(color: Colors.white70, fontSize: 12),
                           overflow: TextOverflow.ellipsis,
                         ),

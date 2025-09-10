@@ -23,9 +23,9 @@ class BuyerCartView extends GetView<BuyerCartController> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title: Text(
+        title: const Text(
           AppStrings.shoppingCartTitle,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.black,

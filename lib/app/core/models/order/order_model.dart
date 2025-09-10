@@ -47,10 +47,12 @@ class OrderModel {
           orElse: () => OrderStatus.PENDING,
         ),
         createdAt:
-            DateTime.tryParse(json['created_at']?.toString() ?? '') ??
-            DateTime.now(),
+            DateTime.tryParse(
+              json['created_at']?.toString() ?? '',
+            )?.toLocal() ??
+            DateTime.now().toLocal(),
         updatedAt: json['updated_at'] != null
-            ? DateTime.tryParse(json['updated_at'].toString())
+            ? DateTime.tryParse(json['updated_at'].toString())?.toLocal()
             : null,
       );
     } catch (e, stackTrace) {
@@ -150,7 +152,8 @@ class ShippingAddress {
       'address_type': addressType,
     };
   }
-    /// Gets formatted address string for display
+
+  /// Gets formatted address string for display
   String get formattedAddress {
     final parts = [street, city, state, pincode];
     return parts.join(', ');

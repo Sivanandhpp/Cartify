@@ -5,144 +5,81 @@ import 'package:get/get.dart';
 /// Product model tailored for the current API response.
 /// Works both for product details and dashboard product list responses.
 class ProductModel {
+  // -----------------------
+  // Core Properties
+  // -----------------------
   final String id;
   final String name;
   final String? description;
-
-  /// Price as double (parsed from string or number)
   final double price;
-
-  /// Quantity available (server key: stock_quantity)
   final int stockQuantity;
-
-  /// Example: 'g', 'kg', 'ml', 'L', 'pcs'
   final String? measureUnitCode;
-
-  /// Example: "250.00" (parsed to double)
   final double? measureAmount;
-
-  /// API field `images` may be null, a list, or a single URL
   final List<String> images;
-
-  /// Arbitrary attributes (size, color, origin, etc.)
   final Map<String, dynamic>? attributes;
-
-  /// Average rating parsed to double (string in API)
   final double averageRating;
-
-  /// Product active status (optional, not in every response)
   final bool? isActive;
-
   final String? categoryId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-
-  /// Nested category object if response includes it
   final CategoryModel? category;
-
   final List<TagModel> tags;
   final List<DiscountModel> discounts;
 
+  // -----------------------
+  // Computed Properties
+  // -----------------------
+
+  /// Get brand from attributes
   String? get brand => attributes?['brand']?.toString();
 
-  // Check if product has an offer (based on active discounts)
-  bool get hasOffer {
-    final now = DateTime.now();
-    return discounts.any((discount) {
-      bool isValidFrom =
-          discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto =
-          discount.validUpto == null || discount.validUpto!.isAfter(now);
-      return discount.isActive && isValidFrom && isValidUpto;
-    });
+  /// Check if product has an active offer (based on valid discounts)
+  bool get hasOffer => discounts.any(_isDiscountValid);
+
+  /// Get offer price (discount amount from the first valid discount)
+  double get offerPrice {
+    final validDiscount = discounts.firstWhereOrNull(_isDiscountValid);
+    return validDiscount?.discountAmount ?? 0.0;
   }
 
-  // Get offer price (calculated from active discounts)
-  double? get offerPrice {
-    if (!hasOffer) return null;
-    double currentPrice = price;
-    final now = DateTime.now();
+  /// Get offer percentage (from the first valid discount)
+  double get offerPercentage {
+    final validDiscount = discounts.firstWhereOrNull(_isDiscountValid);
+    return validDiscount?.discountPercent ?? 0.0;
+  }
 
-    // First, apply percentage discounts
-    for (final discount in discounts) {
-      bool isValidFrom =
-          discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto =
-          discount.validUpto == null || discount.validUpto!.isAfter(now);
-      if (discount.isActive &&
-          isValidFrom &&
-          isValidUpto &&
-          discount.discountPercent != null) {
-        currentPrice *= (1 - discount.discountPercent! / 100);
-      }
+  /// Get effective price (price minus offer price if applicable)
+  double get effectivePrice {
+    if (hasOffer && offerPrice > 0) {
+      return price - offerPrice;
     }
-
-    // Then, apply amount discounts
-    for (final discount in discounts) {
-      bool isValidFrom =
-          discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto =
-          discount.validUpto == null || discount.validUpto!.isAfter(now);
-      if (discount.isActive &&
-          isValidFrom &&
-          isValidUpto &&
-          discount.discountAmount != null) {
-        currentPrice -= discount.discountAmount!;
-        if (currentPrice < 0) currentPrice = 0; // Prevent negative prices
-      }
-    }
-
-    return currentPrice < price ? currentPrice : null;
+    return price;
   }
 
-  // Get offer percentage (from the first active percentage discount)
-  double? get offerPercentage {
-    final now = DateTime.now();
-    final activePercentDiscount = discounts.firstWhereOrNull((discount) {
-      bool isValidFrom =
-          discount.validFrom == null || discount.validFrom!.isBefore(now);
-      bool isValidUpto =
-          discount.validUpto == null || discount.validUpto!.isAfter(now);
-      return discount.isActive &&
-          isValidFrom &&
-          isValidUpto &&
-          discount.discountPercent != null;
-    });
-    return activePercentDiscount?.discountPercent;
-  }
+  /// Price formatted for UI
+  String get displayPrice => '₹${price.toStringAsFixed(2)}';
 
-  // Get discount percentage (from offerPercentage or calculated from offerPrice)
-  double get discountPercentage {
-    if (offerPercentage != null) return offerPercentage!;
-    if (hasOffer && offerPrice != null) {
-      return ((price - offerPrice!) / price) * 100;
-    }
-    return 0.0;
-  }
+  /// Display offer price (formatted for UI)
+  String get displayOfferPrice => '₹${offerPrice.toStringAsFixed(0)}';
 
-  // Get effective price (offer price if available, otherwise regular price)
-  double get effectivePrice =>
-      hasOffer && offerPrice != null ? offerPrice! : price;
+  /// Display offer percentage (formatted for UI)
+  String get displayOfferPercentage => '${offerPercentage.toStringAsFixed(0)}%';
 
-  // Display effective price
+  /// Display effective price (formatted for UI)
   String get displayEffectivePrice => '₹${effectivePrice.toStringAsFixed(0)}';
 
-  // Display original price (for strikethrough)
-  String get displayOriginalPrice => '₹${price.toStringAsFixed(2)}';
-
-  // Get specific attribute value with type safety
-  T? getAttribute<T>(String key) {
-    final value = attributes?[key];
-    if (value == null) return null;
-
-    if (T == String) return value.toString() as T?;
-    if (T == double) return _parseDouble(value) as T?;
-    if (T == int) return _parseInt(value) as T?;
-    if (T == bool) return (value == true || value == 'true') as T?;
-
-    return value as T?;
+  /// Human-friendly measure like "250 g" or "0.25 kg"
+  String get displayMeasure {
+    if (measureAmount == null || measureUnitCode == null) return '';
+    final amountStr = measureAmount == (measureAmount?.roundToDouble())
+        ? measureAmount!.toInt().toString()
+        : measureAmount!.toString();
+    return '$amountStr ${measureUnitCode!}';
   }
 
+  // -----------------------
+  // Constructor
+  // -----------------------
   ProductModel({
     required this.id,
     required this.name,
@@ -163,6 +100,11 @@ class ProductModel {
     this.discounts = const [],
   }) : images = images ?? [];
 
+  // -----------------------
+  // Factory and Serialization
+  // -----------------------
+
+  /// Create ProductModel from JSON
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id']?.toString() ?? '',
@@ -175,7 +117,7 @@ class ProductModel {
       images: ApiCleanUrl.cleanImageUrls(json['images'] ?? json['image_urls']),
       attributes: _parseAttributes(json['attributes']),
       averageRating: _parseDouble(json['average_rating']),
-      isActive: json['is_active'] as bool?, // Added: Parse isActive safely
+      isActive: json['is_active'] as bool?,
       categoryId: json['category_id']?.toString(),
       createdAt: _parseDateTime(json['created_at']),
       updatedAt: _parseDateTime(json['updated_at']),
@@ -195,6 +137,7 @@ class ProductModel {
     );
   }
 
+  /// Convert ProductModel to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -207,7 +150,7 @@ class ProductModel {
       'images': images,
       'attributes': attributes,
       'average_rating': averageRating.toStringAsFixed(2),
-      'is_active': isActive, // Added: Include isActive in JSON
+      'is_active': isActive,
       'category_id': categoryId,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
@@ -217,18 +160,22 @@ class ProductModel {
     };
   }
 
-  /// Human-friendly measure like "250 g" or "0.25 kg"
-  String get displayMeasure {
-    if (measureAmount == null || measureUnitCode == null) return '';
-    // Remove trailing zeros for nicer display
-    final amountStr = measureAmount == (measureAmount?.roundToDouble())
-        ? measureAmount!.toInt().toString()
-        : measureAmount!.toString();
-    return '$amountStr ${measureUnitCode!}';
-  }
+  // -----------------------
+  // Utility Methods
+  // -----------------------
 
-  /// Price formatted for UI (example, returns string; adapt to currency formatter)
-  String get displayPrice => price.toStringAsFixed(2);
+  /// Get specific attribute value with type safety
+  T? getAttribute<T>(String key) {
+    final value = attributes?[key];
+    if (value == null) return null;
+
+    if (T == String) return value.toString() as T?;
+    if (T == double) return _parseDouble(value) as T?;
+    if (T == int) return _parseInt(value) as T?;
+    if (T == bool) return (value == true || value == 'true') as T?;
+
+    return value as T?;
+  }
 
   /// Create a copy with updated fields
   ProductModel copyWith({
@@ -272,8 +219,24 @@ class ProductModel {
   }
 
   // -----------------------
-  // Parsing helpers
+  // Private Helper Methods
   // -----------------------
+
+  /// Check if a discount is valid (active and within date range)
+  bool _isDiscountValid(DiscountModel discount) {
+    final now = DateTime.now();
+    final isValidFrom =
+        discount.validFrom == null || discount.validFrom!.isBefore(now);
+    final isValidUpto =
+        discount.validUpto == null || discount.validUpto!.isAfter(now);
+    return discount.isActive && isValidFrom && isValidUpto;
+  }
+
+  // -----------------------
+  // Private Parsing Helpers
+  // -----------------------
+
+  /// Parse dynamic value to double
   static double _parseDouble(dynamic value) {
     if (value == null) return 0.0;
     if (value is num) return value.toDouble();
@@ -281,15 +244,18 @@ class ProductModel {
     return 0.0;
   }
 
+  /// Parse dynamic value to int
   static int _parseInt(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
     if (value is num) return value.toInt();
-    if (value is String)
+    if (value is String) {
       return int.tryParse(value) ?? (double.tryParse(value)?.toInt() ?? 0);
+    }
     return 0;
   }
 
+  /// Parse dynamic value to DateTime
   static DateTime? _parseDateTime(dynamic value) {
     if (value == null) return null;
     try {
@@ -299,16 +265,15 @@ class ProductModel {
     }
   }
 
+  /// Parse dynamic value to attributes map
   static Map<String, dynamic>? _parseAttributes(dynamic value) {
     if (value == null) return null;
     if (value is Map) return Map<String, dynamic>.from(value);
-    // try parsing if it's a JSON string
     if (value is String) {
       try {
-        final parsed = value.isNotEmpty
+        return value.isNotEmpty
             ? Map<String, dynamic>.from(jsonDecode(value))
             : null;
-        return parsed;
       } catch (_) {
         return null;
       }

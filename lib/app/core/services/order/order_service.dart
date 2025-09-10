@@ -1,7 +1,5 @@
 // lib/app/core/services/order/order_service.dart
 
-import 'package:cartify/app/core/models/order/order_item_model.dart';
-import 'package:cartify/app/core/models/order/update_order_item_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:cartify/app/core/index.dart';
 

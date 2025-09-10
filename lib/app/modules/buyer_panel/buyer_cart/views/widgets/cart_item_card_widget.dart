@@ -113,7 +113,7 @@ class CartItemCardWidget extends StatelessWidget {
         ),
         if (item.product.hasOffer)
           Text(
-            item.product.displayOriginalPrice,
+            item.product.displayPrice,
             style: TextStyle(
               fontSize: 10,
               color: Colors.grey[600],
