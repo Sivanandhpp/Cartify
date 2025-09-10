@@ -58,11 +58,12 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
               BuyerHomeSliverAppBar(
                 categories: controller.getCategories(),
                 selectedLocation: AppStrings.welcomeMessage,
+                profilePhotoUrl: controller.userProfilePhotoUrl,
                 selectedCategory: controller.selectedCategory.value,
                 onLocationTap: () {
                   // Handle location tap
                 },
-                onCartTap: () => controller.navigateToProfile(),
+                onProfileTap: () => controller.navigateToProfile(),
                 onSearchChanged: (value) {
                   // Handle search
                 },
@@ -91,7 +92,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                         child: Text(
                           controller.getFeaturedProductsTitle(),
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -138,79 +139,11 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: 270,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: controller.getFeaturedProducts().length,
-                          itemBuilder: (context, index) {
-                            final product = controller
-                                .getFeaturedProducts()[index];
-                            return SizedBox(
-                              width: 180,
-                              // margin: const EdgeInsets.only(right: 4),
-                              child: Obx(
-                                () => ProductCard(
-                                  product: product,
-                                  currentQuantity: controller
-                                      .getProductQuantityInCart(product.id),
-                                  onTap: () {},
-                                  onIncrement: () {
-                                    controller.incrementProductQuantity(
-                                      product.id,
-                                    );
-                                  },
-                                  onDecrement: () {
-                                    controller.decrementProductQuantity(
-                                      product.id,
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                     ],
                   ),
                 ),
 
-              // Debug info
-              if (Get.isLogEnable)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Debug Info',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Available sections: ${controller.getAvailableSectionTypes().join(', ')}',
-                            ),
-                            Text(
-                              'Banners count: ${controller.getSectionItemCount('PROMOTIONAL_BANNERS')}',
-                            ),
-                            Text(
-                              'Categories count: ${controller.getSectionItemCount('CATEGORIES_GRID')}',
-                            ),
-                            Text(
-                              'Featured products count: ${controller.getSectionItemCount('FEATURED_PRODUCTS')}',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              
             ],
           ),
         );

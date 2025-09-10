@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:cartify/app/core/index.dart';
+import 'package:get/get.dart';
 
 class BuyerHomeSliverAppBar extends StatelessWidget {
   final List<CategoryModel> categories;
   final String selectedLocation;
   final VoidCallback? onLocationTap;
-  final VoidCallback? onCartTap;
+  final VoidCallback? onProfileTap;
   final Function(String)? onSearchChanged;
-  final Function(CategoryModel?)?
-  onCategoryTap; // Changed to accept null for "All"
+  final Function(CategoryModel?)? onCategoryTap;
   final CategoryModel? selectedCategory;
+  final String? profilePhotoUrl;
 
   const BuyerHomeSliverAppBar({
     super.key,
     required this.categories,
     this.selectedLocation = 'Kozhikode Work',
     this.onLocationTap,
-    this.onCartTap,
+    this.onProfileTap,
     this.onSearchChanged,
     this.onCategoryTap,
     this.selectedCategory,
+    this.profilePhotoUrl,
   });
 
   @override
@@ -31,7 +33,7 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
       floating: true,
       snap: false,
       elevation: 0,
-      expandedHeight: 210.0,
+      expandedHeight: 194.0,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
           final appBarHeight = constraints.biggest.height;
@@ -130,12 +132,22 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: onCartTap,
-            icon: const CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.white24,
-              child: Icon(Icons.person, color: Colors.white, size: 20),
-            ),
+            onPressed: onProfileTap,
+            icon: profilePhotoUrl != null && profilePhotoUrl!.isNotEmpty
+                ? ClipOval(
+                    child: AppImage.network(
+                      url: profilePhotoUrl!,
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                      errorWidget: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  )
+                : const Icon(Icons.person, color: Colors.white, size: 20),
           ),
         ],
       ),
@@ -178,11 +190,10 @@ class BuyerHomeSliverAppBar extends StatelessWidget {
     return Opacity(
       opacity: (1.0 - collapseRatio * 3).clamp(0.0, 1.0),
       child: Container(
-        height: 80,
-        margin: const EdgeInsets.only(top: 8),
+        height: 70,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           itemCount: categories.length + 1, // +1 for "All" option
           itemBuilder: (context, index) {
             // First item is "All"

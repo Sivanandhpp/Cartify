@@ -15,6 +15,7 @@ class BuyerHomeController extends GetxController {
       Get.find<ProductSheetController>();
   final BuyerDashboardController buyerDashboardController =
       Get.find<BuyerDashboardController>();
+  UserController userController = Get.find<UserController>();
 
   // -----------------------
   // Reactive Variables
@@ -38,7 +39,8 @@ class BuyerHomeController extends GetxController {
   bool get isCartLoading => _isCartLoading.value;
   int get cartItemsCount => _cartData.value?.items.length ?? 0;
   double get cartTotalPrice => _cartData.value?.totalPrice ?? 0.0;
-
+  String? get userProfilePhotoUrl => userController.user?.profilePhotoUrl;
+  
   // -----------------------
   // Lifecycle
   // -----------------------
@@ -62,11 +64,16 @@ class BuyerHomeController extends GetxController {
       if (dashboard != null) {
         _dashboardData.value = dashboard;
       } else {
-        _errorMessage.value = 'Failed to load dashboard data';
+        _errorMessage.value =
+            AppStrings.errorLoadingDashboard; // Replaced hardcoded string
       }
     } catch (e) {
-      _errorMessage.value = 'Error loading dashboard: $e';
-      LogService.error('Dashboard loading error: $e');
+      _errorMessage.value =
+          AppStrings.errorLoadingDashboard; // Replaced hardcoded string
+      LogService.error(AppStrings.errorLoadingDashboard, {
+        // Replaced in log
+        AppStrings.error: e.toString(),
+      });
     } finally {
       _isLoading.value = false;
     }
@@ -96,8 +103,9 @@ class BuyerHomeController extends GetxController {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
     }
   }
@@ -107,8 +115,9 @@ class BuyerHomeController extends GetxController {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
     }
   }
@@ -137,11 +146,6 @@ class BuyerHomeController extends GetxController {
       }
     } catch (e) {
       LogService.error('Dashboard navigation error', e);
-      // Fallback: show error message
-      NotificationService.showError(
-        title: 'Navigation Error',
-        message: 'Unable to navigate to categories',
-      );
     }
   }
 
@@ -211,16 +215,5 @@ class BuyerHomeController extends GetxController {
     return section != null && section.data.isNotEmpty;
   }
 
-  /// Gets all available section types.
-  List<String> getAvailableSectionTypes() {
-    final dashboard = _dashboardData.value;
-    if (dashboard == null) return [];
-    return dashboard.sections.map((section) => section.type).toList();
-  }
-
-  /// Gets the number of items in a specific section.
-  int getSectionItemCount(String type) {
-    final section = getSection(type);
-    return section?.data.length ?? 0;
-  }
+  
 }

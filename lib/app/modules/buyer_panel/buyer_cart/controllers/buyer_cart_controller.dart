@@ -115,60 +115,56 @@ class BuyerCartController extends GetxController {
     }
   }
 
-  // Cart operations using existing CartService methods
-  Future<void> incrementQuantity(String productId) async {
+  /// Increments quantity for a product.
+  Future<bool> incrementQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: AppStrings.errorOccurred,
-        message: AppStrings.failedToUpdateCart,
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
     }
+    return success;
   }
 
-  Future<void> decrementQuantity(String productId) async {
+  /// Decrements quantity for a product.
+  Future<bool> decrementQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: AppStrings.errorOccurred,
-        message: AppStrings.failedToUpdateCart,
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
-    } else {
-      // Clean up order list after successful operation (schedule for next frame)
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _cleanupOrderList();
-      });
     }
+    return success;
   }
 
-  Future<void> removeItem(String cartItemId) async {
-    final cart = await _cartService.removeItemFromCart(cartItemId);
-    if (cart == null) {
+  /// Removes an item from the cart.
+  Future<bool> removeItem(String productId) async {
+    final success = await _cartService.removeProductFromCart(productId);
+    if (!success) {
       NotificationService.showError(
-        title: AppStrings.errorOccurred,
-        message: AppStrings.failedToRemoveItemFromCart,
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message: AppStrings
+            .failedToRemoveItemFromCart, // Replaced 'Failed to remove item from cart'
       );
-    } else {
-      // Clean up order list after successful operation
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _itemOrder.remove(cartItemId);
-      });
     }
+    return success;
   }
 
-  Future<void> clearCart() async {
+  /// Clears the entire cart.
+  Future<bool> clearCart() async {
     final success = await _cartService.clearCart();
     if (!success) {
       NotificationService.showError(
-        title: AppStrings.errorOccurred,
-        message: AppStrings.failedToClearCart,
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToClearCart, // Replaced 'Failed to clear cart'
       );
-    } else {
-      // Clear order list after successful operation
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _itemOrder.clear();
-      });
     }
+    return success;
   }
 
   /// Clean up order list to remove items that no longer exist

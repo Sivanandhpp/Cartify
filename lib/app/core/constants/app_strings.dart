@@ -161,6 +161,7 @@ class AppStrings {
   //                                        ERROR MESSAGES
   // =================================================================================================
   // All error notifications and validation messages
+  static const String error = 'Error';
   static const String errorOccurred = 'An error occurred';
   static const String networkError =
       'Network error. Please check your connection.';
