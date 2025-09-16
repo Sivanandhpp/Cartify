@@ -20,7 +20,7 @@ Cartify is a comprehensive e-commerce mobile application built with Flutter and 
 - **User Profile Management** - Complete user data handling
 
 ### 🛍️ Shopping Experience
-- **Product Catalog** - Browse products with categories and advanced search
+- **Product Catalog** - Browse products with categories
 - **Hot Deals Section** - Featured products and promotional banners
 - **Real-time Cart** - Add/remove items with live count updates
 - **Cart Badge** - Visual cart item count in navigation
@@ -40,14 +40,6 @@ Cartify is a comprehensive e-commerce mobile application built with Flutter and 
 - **Order Tracking** - Real-time order status updates
 - **Order Items Management** - Detailed order item tracking and updates
 - **Order History** - Complete order management with status tracking
-
-### 🎨 User Interface
-- **Material Design 3** - Latest design system implementation
-- **Dark/Light Theme** - Complete theming system with user preference
-- **Responsive Layout** - Works perfectly on all screen sizes
-- **Smooth Animations** - Polished user experience with fluid transitions
-- **Bottom Navigation** - Intuitive app navigation structure
-- **Clean Image Handling** - Optimized image loading with caching
 
 ### 🏗️ Architecture & Services
 - **GetX Architecture** - Controllers, Views, and Bindings pattern
@@ -107,8 +99,7 @@ lib/
 │   ├── core/                          # 🔧 Core functionality
 │   │   ├── config/                    # App configuration
 │   │   │   ├── app_identity.dart      # Centralized app branding
-│   │   │   ├── app_initservices.dart  # Service initialization
-│   │   │   └── app_environment.dart   # Environment settings
+│   │   │   └── app_initservices.dart  # Service initialization
 │   │   ├── constants/                 # App constants & spacing
 │   │   ├── models/                    # Data models
 │   │   │   ├── user/                  # User-related models
@@ -174,13 +165,6 @@ assets/
 - **Order History** - Complete order history with filtering options
 - **Status Management** - Order lifecycle management from placed to delivered
 
-### 🎨 Theming System
-- **Material Design 3** - Modern, consistent design language
-- **Dark/Light Modes** - User-configurable theme preference with persistence
-- **Custom Colors** - Brand-specific color scheme throughout the app
-- **Typography** - Consistent text styling with Material 3 typography
-- **Component Theming** - Consistent styling for all UI components
-
 ### 🔌 API Integration
 - **RESTful API Client** - Complete HTTP client with Dio integration
 - **Error Handling** - Comprehensive API error management
@@ -194,45 +178,6 @@ assets/
 - **Data Validation** - Input validation and sanitization
 - **Cache Management** - Efficient data caching with GetStorage
 - **Secure Storage** - Sensitive data protection with Flutter Secure Storage
-
-## 🔧 Configuration
-
-### App Identity (Easy Rebranding)
-Update app name, package, and branding in one place:
-
-```dart
-// lib/app/core/config/app_identity.dart
-class AppIdentity {
-  static const String appName = 'Cartify';
-  static const String packageName = 'cartify';
-  static const String displayName = 'Cartify - Smart Shopping';
-  static const String companyName = 'Cartify Development Team';
-  static const String developerEmail = 'dev@cartify.com';
-  static const String supportEmail = 'support@cartify.com';
-  static const String supportPhone = '+91 98765 43210';
-}
-```
-
-### Environment Settings
-```dart
-// lib/app/core/config/app_environment.dart
-class AppEnvironment {
-  static const bool isProduction = false;
-  static const bool enableLogging = true;
-  static const String apiBaseUrl = 'https://api.example.com';
-}
-```
-
-### Quick Project Renaming
-Use the provided PowerShell scripts for easy project renaming:
-
-```bash
-# Test rename functionality (dry run)
-.\scripts\test_rename.ps1
-
-# Perform actual rename
-.\scripts\quick_rename.ps1 -NewPackageName "myapp" -NewDisplayName "My App"
-```
 
 ## 📦 Dependencies
 
@@ -260,22 +205,6 @@ Utilities:
   mime: ^2.0.0                  # MIME type detection
 ```
 
-## 🧪 Testing
-
-```bash
-# Run all tests
-flutter test
-
-# Run tests with coverage
-flutter test --coverage
-
-# Widget tests
-flutter test test/widget_test.dart
-
-# Test rename functionality
-.\scripts\test_rename.ps1
-```
-
 ## 📦 Build for Production
 
 ```bash
@@ -288,8 +217,6 @@ flutter build appbundle --release
 # iOS
 flutter build ios --release
 
-# Web
-flutter build web --release
 ```
 
 ## 🚀 Development Workflow
@@ -330,23 +257,6 @@ await initServices(); // in main.dart
 - Maintain consistent file organization
 - Write tests for new features
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/sivanandhpp/cartify/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/sivanandhpp/cartify/discussions)
-- **Email**: dev@cartify.com
-
-## 🙏 Acknowledgments
-
-- **Flutter Team** - For the amazing framework
-- **GetX Community** - For the powerful state management solution
-- **Material Design** - For the comprehensive design system
-- **Open Source Community** - For inspiration and contributions
-
 ## 🏆 Project Highlights
 
 ### Production Ready Features
@@ -373,8 +283,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Built with ❤️ using Flutter and GetX**
-
-**⭐ If you found this project helpful, please give it a star!**
 
 <!--
 GitHub Repository Setup:
