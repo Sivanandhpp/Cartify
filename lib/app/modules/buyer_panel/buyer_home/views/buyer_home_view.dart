@@ -1,7 +1,5 @@
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_home/views/buyer_home_appbar.dart';
-import 'package:cartify/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/buyer_home_controller.dart';
@@ -28,7 +26,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                 const SizedBox(height: 16),
                 Text(
-                  'Error Loading Dashboard',
+                  AppStrings.errorLoadingDashboard,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -44,7 +42,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: controller.refreshDashboard,
-                  child: const Text('Retry'),
+                  child: const Text(AppStrings.retry),
                 ),
               ],
             ),
@@ -59,18 +57,15 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
             slivers: [
               BuyerHomeSliverAppBar(
                 categories: controller.getCategories(),
-                selectedLocation: 'Kozhikode Work',
+                selectedLocation: AppStrings.welcomeMessage,
+                profilePhotoUrl: controller.userProfilePhotoUrl,
                 selectedCategory: controller.selectedCategory.value,
                 onLocationTap: () {
                   // Handle location tap
-                  print('Location tapped');
                 },
-                onCartTap: () {
-                  Get.toNamed(Routes.BUYER_CART);
-                },
+                onProfileTap: () => controller.navigateToProfile(),
                 onSearchChanged: (value) {
                   // Handle search
-                  print('Search: $value');
                 },
                 onCategoryTap: controller.onCategoryTap,
               ),
@@ -97,7 +92,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                         child: Text(
                           controller.getFeaturedProductsTitle(),
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -112,7 +107,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                           itemBuilder: (context, index) {
                             final product = controller
                                 .getFeaturedProducts()[index];
-                            return Container(
+                            return SizedBox(
                               width: 180,
                               // margin: const EdgeInsets.only(right: 4),
                               child: Obx(
@@ -129,52 +124,11 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                                     }
                                   },
                                   onIncrement: () {
-                                    print('Add to cart: ${product.name}');
                                     controller.incrementProductQuantity(
                                       product.id,
                                     );
                                   },
                                   onDecrement: () {
-                                    print('Remove from cart: ${product.name}');
-                                    controller.decrementProductQuantity(
-                                      product.id,
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: 270,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: controller.getFeaturedProducts().length,
-                          itemBuilder: (context, index) {
-                            final product = controller
-                                .getFeaturedProducts()[index];
-                            return Container(
-                              width: 180,
-                              // margin: const EdgeInsets.only(right: 4),
-                              child: Obx(
-                                () => ProductCard(
-                                  product: product,
-                                  currentQuantity: controller
-                                      .getProductQuantityInCart(product.id),
-                                  onTap: () {
-                                    print('Product tapped: ${product.name}');
-                                  },
-                                  onIncrement: () {
-                                    print('Add to cart: ${product.name}');
-                                    controller.incrementProductQuantity(
-                                      product.id,
-                                    );
-                                  },
-                                  onDecrement: () {
-                                    print('Remove from cart: ${product.name}');
                                     controller.decrementProductQuantity(
                                       product.id,
                                     );
@@ -189,40 +143,7 @@ class BuyerHomeView extends GetView<BuyerHomeController> {
                   ),
                 ),
 
-              // Debug info
-              if (Get.isLogEnable)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Debug Info',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Available sections: ${controller.getAvailableSectionTypes().join(', ')}',
-                            ),
-                            Text(
-                              'Banners count: ${controller.getSectionItemCount('PROMOTIONAL_BANNERS')}',
-                            ),
-                            Text(
-                              'Categories count: ${controller.getSectionItemCount('CATEGORIES_GRID')}',
-                            ),
-                            Text(
-                              'Featured products count: ${controller.getSectionItemCount('FEATURED_PRODUCTS')}',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              
             ],
           ),
         );

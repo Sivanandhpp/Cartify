@@ -3,6 +3,7 @@
 import 'package:cartify/app/core/models/review/create_review_dto.dart';
 import 'package:cartify/app/core/models/review/review_model.dart';
 import 'package:cartify/app/core/services/api_client.dart';
+import 'package:cartify/app/core/services/log_service.dart'; // Added: Import for LogService
 import 'package:dio/dio.dart';
 
 /// Service for reading and submitting product reviews.
@@ -19,7 +20,7 @@ class ReviewService {
           .map((review) => ReviewModel.fromJson(review))
           .toList();
     } on DioException catch (e) {
-      print('Error getting reviews: ${e.response?.data}');
+      LogService.error('Error getting reviews', e.response?.data);
       return [];
     }
   }
@@ -33,7 +34,7 @@ class ReviewService {
       );
       return ReviewModel.fromJson(response.data);
     } on DioException catch (e) {
-      print('Error creating review: ${e.response?.data}');
+      LogService.error('Error creating review', e.response?.data);
       return null;
     }
   }

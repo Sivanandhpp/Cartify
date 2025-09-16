@@ -3,18 +3,43 @@ import 'package:cartify/app/modules/buyer_panel/buyer_categories/controllers/buy
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// Controller for managing buyer dashboard navigation and state.
 class BuyerDashboardController extends GetxController {
-  final selectedNavIndex = 0.obs;
-  late PageController _pageController;
+  // -----------------------
+  // Reactive Variables
+  // -----------------------
+  final RxInt selectedNavIndex = 0.obs;
 
+  // -----------------------
+  // Private Variables
+  // -----------------------
+  late final PageController _pageController;
+
+  // -----------------------
+  // Getters
+  // -----------------------
   PageController get pageController => _pageController;
 
+  // -----------------------
+  // Lifecycle
+  // -----------------------
   @override
   void onInit() {
     super.onInit();
     _pageController = PageController(initialPage: selectedNavIndex.value);
   }
 
+  @override
+  void onClose() {
+    _pageController.dispose();
+    super.onClose();
+  }
+
+  // -----------------------
+  // Navigation Methods
+  // -----------------------
+
+  /// Handles bottom navigation item taps.
   void onNavItemTapped(int index) {
     if (selectedNavIndex.value != index) {
       selectedNavIndex.value = index;
@@ -26,9 +51,8 @@ class BuyerDashboardController extends GetxController {
     }
   }
 
-  /// Method to navigate to categories with optional category pre-selection
+  /// Navigates to categories page with optional category pre-selection.
   void navigateToCategories({CategoryModel? selectedCategory}) {
-    // Navigate to categories page (index 1)
     selectedNavIndex.value = 1;
     _pageController.animateToPage(
       1,
@@ -36,9 +60,7 @@ class BuyerDashboardController extends GetxController {
       curve: Curves.easeInOut,
     );
 
-    // If a specific category is provided, pass it to the categories controller
     if (selectedCategory != null) {
-      // Wait a bit for the page to load, then select the category
       Future.delayed(const Duration(milliseconds: 100), () {
         try {
           final categoriesController = Get.find<BuyerCategoriesController>();
@@ -50,7 +72,7 @@ class BuyerDashboardController extends GetxController {
     }
   }
 
-  /// Navigate to categories and clear any selection (show all categories)
+  /// Navigates to categories page and clears any selection (show all).
   void navigateToCategoriesShowAll() {
     selectedNavIndex.value = 1;
     _pageController.animateToPage(
@@ -59,7 +81,6 @@ class BuyerDashboardController extends GetxController {
       curve: Curves.easeInOut,
     );
 
-    // Clear any category selection
     Future.delayed(const Duration(milliseconds: 100), () {
       try {
         final categoriesController = Get.find<BuyerCategoriesController>();
@@ -70,14 +91,22 @@ class BuyerDashboardController extends GetxController {
     });
   }
 
-  /// Reset state (call this on logout)
-  void resetDashboard() {
-    selectedNavIndex.value = 0;
+  /// Navigates to profile page.
+  void navigateToProfile() {
+    selectedNavIndex.value = 4;
+    _pageController.animateToPage(
+      4,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
-  @override
-  void onClose() {
-    _pageController.dispose();
-    super.onClose();
+  // -----------------------
+  // Helper Methods
+  // -----------------------
+
+  /// Resets dashboard state (e.g., on logout).
+  void resetDashboard() {
+    selectedNavIndex.value = 0;
   }
 }

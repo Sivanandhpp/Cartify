@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/product_sheet_controller.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:get/get.dart';
 class ProductBottomSheet extends StatelessWidget {
   final ProductModel product;
   final ProductSheetController controller = Get.put(ProductSheetController());
-
   ProductBottomSheet({super.key, required this.product});
 
   @override
@@ -106,31 +104,21 @@ class ProductBottomSheet extends StatelessWidget {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
+      child: Container( 
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8), 
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
             ),
-            child: Icon(icon, color: iconColor, size: 24),
-          ),
+          ],
         ),
+        child: Icon(icon, color: iconColor, size: 24),
       ),
     );
   }
@@ -259,7 +247,7 @@ class ProductBottomSheet extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            product.displayOriginalPrice,
+            product.displayPrice,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[500],
@@ -274,7 +262,7 @@ class ProductBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              '${product.discountPercentage.toStringAsFixed(0)}% OFF',
+              '${product.displayOfferPercentage} OFF',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.green[700],
@@ -344,20 +332,88 @@ class ProductBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecifications() {
-    return const Column(
+ Widget _buildSpecifications() {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Specifications',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
-        SizedBox(height: 8),
-        Text(
-          'add content',
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 24),
+        const SizedBox(height: 8),
+        if (controller.hasAttributes(product))
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1),
+                1: FlexColumnWidth(2),
+              },
+              children: [
+                // Header Row
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(8),
+                    ),
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        'Attribute',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        'Value',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Data Rows
+                ...product.attributes!.entries.map(
+                  (entry) => TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          entry.key,
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          entry.value.toString(),
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          const Text(
+            'No specifications available.',
+            style: TextStyle(color: Colors.grey),
+          ),
+        const SizedBox(height: 24),
       ],
     );
   }
@@ -472,7 +528,6 @@ class ProductBottomSheet extends StatelessWidget {
 
   Widget _buildActionButtons() {
     final isInStock = controller.isInStock(product);
-
     if (!isInStock) {
       return Container(
         width: double.infinity,
@@ -503,7 +558,7 @@ class ProductBottomSheet extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: 90,
+      height: 100,
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24, top: 16),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -519,38 +574,105 @@ class ProductBottomSheet extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: OutlinedButton(
-              onPressed: () => controller.onAddToCart(product),
-
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
-              child: const Text(
-                'Add to cart',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-            ),
+            child: Obx(() {
+              final quantity = controller.getProductQuantityInCart(product);
+              return quantity == 0
+                  ? AppButton.outlined(
+                      text: 'Add to cart',
+                      onPressed: () => controller.onIncrementQuantity(product),
+                      height: 56,
+                    )
+                  : _buildQuantityControls();
+            }),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: AppButton(
-              height: 50,
+              height: 56,
               text: 'Buy Now',
               onPressed: () => controller.onBuyNow(product),
             ),
           ),
-          // Expanded(
-          //   child: ElevatedButton(
-          //     onPressed: () => controller.onBuyNow(product),
-          //     style: ElevatedButton.styleFrom(
-          //       padding: const EdgeInsets.symmetric(vertical: 16),
-          //     ),
-          //     child: const Text('Buy Now'),
-          //   ),
-          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuantityControls() {
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[400]!, width: 1.5),
+        borderRadius: AppSpacing.radiusLarge,
+      ),
+      child: Row(
+        children: [
+          // Decrement Button
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () => controller.onDecrementQuantity(product),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    right: BorderSide(color: Colors.grey[400]!, width: 1),
+                  ),
+                ),
+                child: const Center(
+                  child: Text(
+                    '-',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Quantity Display
+          Expanded(
+            flex: 1,
+            child: Obx(() {
+              final quantity = controller.getProductQuantityInCart(product);
+              return Container(
+                alignment: Alignment.center,
+                child: Text(
+                  quantity.toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              );
+            }),
+          ),
+          // Increment Button
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () => controller.onIncrementQuantity(product),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: Colors.grey[400]!, width: 1),
+                  ),
+                ),
+                child: const Center(
+                  child: Text(
+                    '+',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

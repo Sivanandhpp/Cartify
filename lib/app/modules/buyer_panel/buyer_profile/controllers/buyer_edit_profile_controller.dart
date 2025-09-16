@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cartify/app/core/index.dart';
-import 'package:cartify/app/core/widgets/app_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -19,9 +19,9 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          'My Orders',
-          style: TextStyle(
+        title: Text(
+          AppStrings.buyerOrdersTitle,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -47,7 +47,7 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No Orders Yet',
+                    AppStrings.noOrdersYet,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -56,12 +56,12 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Your order history will appear here',
+                    AppStrings.orderHistoryMessage,
                     style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   ),
                   const SizedBox(height: 24),
                   AppButton(
-                    text: 'Start Shopping',
+                    text: AppStrings.startShopping,
                     onPressed: () => Get.offAllNamed(Routes.BUYER_DASHBOARD),
                   ),
                 ],
@@ -107,7 +107,7 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Order #${order.id.substring(0, 8)}',
+                '${AppStrings.orderPrefix}${order.id.substring(0, 8)}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -120,7 +120,7 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  '${order.items.length} items',
+                  '${order.items.length} ${AppStrings.items}',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -175,12 +175,12 @@ class BuyerOrdersView extends GetView<BuyerOrdersController> {
           const SizedBox(height: 8),
 
           Text(
-            'Bill Total ₹${order.totalAmount.toStringAsFixed(2)}',
+            '${AppStrings.billTotalPrefix}${order.totalAmount.toStringAsFixed(2)}',
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),
           Text(
-            'Ordered on ${AppFormatters.formatDate(order.createdAt)}',
+            '${AppStrings.orderedOnPrefix}${AppFormatters.formatDate(order.createdAt)}',
             style: TextStyle(fontSize: 12, color: Colors.grey[500]),
           ),
           // const SizedBox(height: 12),

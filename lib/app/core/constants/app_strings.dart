@@ -161,6 +161,7 @@ class AppStrings {
   //                                        ERROR MESSAGES
   // =================================================================================================
   // All error notifications and validation messages
+  static const String error = 'Error';
   static const String errorOccurred = 'An error occurred';
   static const String networkError =
       'Network error. Please check your connection.';
@@ -188,9 +189,13 @@ class AppStrings {
   static const String itemOutOfStockMessage =
       'is currently out of stock'; // Placeholder for dynamic name
   static const String failedToUpdateCart = 'Failed to update cart';
-  static const String failedToLoadTags = 'Failed to load tags';
-  static const String failedToUpdateProfile =
-      'Failed to update profile. Please try again.';
+  static const String failedToRemoveItemFromCart =
+      'Failed to remove item from cart';
+  static const String failedToClearCart = 'Failed to clear cart';
+  static const String orderFailedTitle = 'Order Failed';
+  static const String orderFailedMessage =
+      'An error occurred while placing your order. Please try again.';
+  static const String errorLoadingDashboard = 'Error Loading Dashboard';
 
   // Seller-specific errors (new additions)
   static const String invalidInputTitle = 'Invalid Input';
@@ -270,6 +275,28 @@ class AppStrings {
   static const String addFirstAddressAction = 'Add Address';
   static const String addFirstAddressToGetStarted =
       'Add your first address to get started with deliveries';
+  static const String shoppingCartTitle = 'Shopping Cart';
+  static const String addItemsToGetStarted = 'Add some items to get started';
+  static const String startShopping = 'Start Shopping';
+  static const String reviewYourOrder = 'Review your Order';
+  static const String payUsing = 'Pay using';
+  static const String wallet = 'Wallet';
+  static const String pay = 'Pay';
+  static const String items = 'items';
+  static const String noItemsInCart = 'No items in cart';
+  static const String clearCart = 'Clear Cart';
+  static const String itemTotal = 'Item Total';
+  static const String handlingFee = 'Handling Fee';
+  static const String deliveryPartnerFee = 'Delivery Partner Fee';
+  static const String gst = 'GST';
+  static const String deliveryTip = 'Delivery Tip';
+  static const String toPay = 'To Pay';
+  static const String selectDeliveryAddress = 'Select Delivery Address';
+  static const String noAddressesFound = 'No Addresses Found';
+  static const String trackOrder = 'Track Order';
+  static const String continueShopping = 'Continue Shopping';
+  static const String orderId = 'Order ID';
+  static const String deliveryAddress = 'Delivery Address';
 
   // Address Management
   static const String nearLandmarkPrefix = 'Near';
@@ -277,16 +304,52 @@ class AppStrings {
   static const String addressFormSaveButton = 'Save Address';
   static const String addressFormCancelButton = 'Cancel';
 
+  // Additional
+  static const String myAddressesTitle = 'My Addresses';
+  static const String addNewAddress = 'Add New Address';
+
   // Profile and Orders
   static const String buyerOrdersTitle = 'My Orders';
   static const String buyerProfileTitle = 'My Profile';
   static const String editProfileTitle = 'Edit Profile';
   static const String buyerWishlistTitle = 'My Wishlist';
 
+  // Profile sections
+  static const String accountSection = 'Account';
+  static const String preferencesSection = 'Preferences';
+  static const String supportSection = 'Support';
+
+  // Orders
+  static const String noOrdersYet = 'No Orders Yet';
+  static const String orderHistoryMessage =
+      'Your order history will appear here';
+  static const String orderPrefix = 'Order #';
+  static const String billTotalPrefix = 'Bill Total ₹';
+  static const String orderedOnPrefix = 'Ordered on ';
+
+  // Edit Profile
+  static const String updateProfile = 'Update Profile';
+  static const String tapToChangeProfilePicture =
+      'Tap to change profile picture';
+  static const String fullNameLabel = 'Full Name';
+  static const String enterYourFullName = 'Enter your full name';
+  static const String emailAddressLabel = 'Email Address';
+  static const String enterYourEmailAddress = 'Enter your email address';
+  static const String phoneNumberLabel = 'Phone Number';
+  static const String yourPhoneNumber = 'Your phone number';
+
   // Categories and Offers
   static const String buyerCategoriesTitle = 'Categories';
   static const String buyerOffersTitle = 'Offers';
   static const String allSubCategory = 'All';
+
+  // Categories and Offers
+  static const String noCategoriesAvailable = 'No categories available';
+  static const String pullToRefreshOrTryAgain = 'Pull to refresh or try again';
+  static const String subcategories = 'subcategories';
+  static const String loadingProducts = 'Loading products...';
+  static const String noProductsFoundInCategory =
+      'No products found in this category';
 
   // Dashboard and Home
   static const String buyerDashboardTitle = 'Dashboard';

@@ -90,8 +90,8 @@ class AddressSelectionSheet extends StatelessWidget {
         children: [
           const SizedBox(width: 16),
           const Text(
-            'Select Delivery Address',
-            style: TextStyle(
+            AppStrings.selectDeliveryAddress,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppColors.black,
@@ -107,34 +107,24 @@ class AddressSelectionSheet extends StatelessWidget {
   Widget _buildCloseButton() {
     return GestureDetector(
       onTap: () => Get.back(),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
             ),
-            child: const Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.black,
-              size: 24,
-            ),
-          ),
+          ],
+        ),
+        child: const Icon(
+          Icons.keyboard_arrow_down,
+          color: AppColors.primary,
+          size: 24,
         ),
       ),
     );
@@ -153,7 +143,7 @@ class AddressSelectionSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'No Addresses Found',
+            AppStrings.noAddressesFound,
             style: AppTextStyles.headlineSmall(AppColors.primary),
           ),
           const SizedBox(height: 12),

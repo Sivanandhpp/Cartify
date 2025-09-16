@@ -26,6 +26,5 @@ class BuyerDashboardBinding extends Bindings {
     Get.lazyPut<BuyerProfileController>(() => BuyerProfileController());
     Get.lazyPut<BuyerAddressController>(() => BuyerAddressController());
     Get.lazyPut<BuyerOrdersController>(() => BuyerOrdersController());
-    Get.lazyPut<BuyerEditProfileController>(() => BuyerEditProfileController());
   }
 }

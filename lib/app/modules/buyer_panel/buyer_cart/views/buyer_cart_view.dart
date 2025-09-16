@@ -24,7 +24,7 @@ class BuyerCartView extends GetView<BuyerCartController> {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          'Shopping Cart',
+          AppStrings.shoppingCartTitle,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -41,9 +41,9 @@ class BuyerCartView extends GetView<BuyerCartController> {
       body: Obx(() {
         if (controller.isEmpty) {
           return EmptyCartWidget(
-            title: 'Your cart is empty',
-            subtitle: 'Add some items to get started',
-            buttonText: 'Start Shopping',
+            title: AppStrings.cartEmpty,
+            subtitle: AppStrings.addItemsToGetStarted,
+            buttonText: AppStrings.startShopping,
             onButtonPressed: controller.addMoreItems,
           );
         }
@@ -61,7 +61,7 @@ class BuyerCartView extends GetView<BuyerCartController> {
 
                     Obx(
                       () => ReviewOrderSectionWidget(
-                        title: 'Review your Order',
+                        title: AppStrings.reviewYourOrder,
                         cartItems: controller.cartItems,
                         itemCount: controller.itemCount,
                         onIncrementQuantity: controller.incrementQuantity,
@@ -99,13 +99,13 @@ class BuyerCartView extends GetView<BuyerCartController> {
         () => controller.isEmpty
             ? const SizedBox.shrink()
             : PaymentSectionWidget(
-                paymentMethodTitle: 'Pay using',
-                paymentMethodSubtitle: 'Wallet',
+                paymentMethodTitle: AppStrings.payUsing,
+                paymentMethodSubtitle: AppStrings.wallet,
                 paymentIcon: Icons.account_balance_wallet_outlined,
                 paymentIconColor: Colors.blue[700],
                 paymentIconBackground: Colors.blue[50],
                 totalAmount: controller.finalTotal,
-                buttonText: 'Pay',
+                buttonText: AppStrings.pay,
                 isProcessing: controller.isProcessingPayment.value,
                 onPaymentMethodPressed: () {
                   LogService.info('Payment method selection pressed');

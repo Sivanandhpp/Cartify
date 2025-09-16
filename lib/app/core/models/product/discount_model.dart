@@ -2,8 +2,8 @@
 class DiscountModel {
   final String id;
   final String productId;
-  final double? discountAmount; // Amount to subtract from price
-  final double? discountPercent; // Percentage to apply
+  final double? discountAmount; 
+  final double? discountPercent; 
   final bool isActive;
   final DateTime? validFrom;
   final DateTime? validUpto;
@@ -27,8 +27,8 @@ class DiscountModel {
       discountAmount: _parseDouble(json['discount_amount']), // Safe parsing
       discountPercent: _parseDouble(json['discount_percent']), // Safe parsing
       isActive: json['is_active'] as bool? ?? false,
-      validFrom: DateTime.tryParse(json['valid_from']?.toString() ?? ''),
-      validUpto: DateTime.tryParse(json['valid_upto']?.toString() ?? ''),
+      validFrom: DateTime.tryParse(json['valid_from']?.toString() ?? '')?.toLocal(),
+      validUpto: DateTime.tryParse(json['valid_upto']?.toString() ?? '')?.toLocal(),
       createdBy: json['created_by']?.toString() ?? '',
     );
   }

@@ -46,7 +46,7 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildImageSection(bool isOutOfStock, ThemeData theme) {
     return SizedBox(
-      height: 120,
+      height: 140,
       width: double.infinity,
       child: Stack(
         children: [
@@ -121,7 +121,7 @@ class ProductCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
 
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
 
           // Brand - Using attributes
           Row(
@@ -155,33 +155,6 @@ class ProductCard extends StatelessWidget {
             ],
           ),
 
-          // Measure Display
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (product.displayMeasure.isNotEmpty) ...[
-                Text(
-                  product.displayMeasure,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-              // Alcohol Content - Using attributes
-              // if (product.alcoholContent != null) ...[
-              //   Text(
-              //     'ABV: ${product.alcoholContent!.toStringAsFixed(1)}%',
-              //     style: TextStyle(
-              //       fontSize: 11,
-              //       color: Colors.orange[700],
-              //       fontWeight: FontWeight.w500,
-              //     ),
-              //   ),
-              // ],
-            ],
-          ),
           // Price Section - Using attributes
           _buildPriceSection(isOutOfStock, theme),
         ],
@@ -208,27 +181,45 @@ class ProductCard extends StatelessWidget {
                     : theme.primaryColor,
               ),
             ),
-
-            const SizedBox(width: 8),
-
-            // Original Price (strikethrough if offer exists)
-            if (product.hasOffer && !isOutOfStock)
+            if (product.displayMeasure.isNotEmpty)
               Text(
-                product.displayOriginalPrice,
+                " / ${product.displayMeasure}",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+          ],
+        ),
+        // Original Price (strikethrough if offer exists)
+        if (product.hasOffer && !isOutOfStock)
+          Row(
+            children: [
+              Text(
+                product.displayPrice,
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey[500],
                   decoration: TextDecoration.lineThrough,
                 ),
               ),
-          ],
-        ),
-        
+              const SizedBox(width: 6),
+              Text(
+                'Save ${product.displayOfferPrice}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.green,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         // Discount Percentage
         if (product.hasOffer && !isOutOfStock) ...[
           const SizedBox(height: 2),
           Text(
-            '${product.discountPercentage.toInt()}% OFF',
+            '${product.displayOfferPercentage} OFF',
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
@@ -248,7 +239,7 @@ class ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        '${product.discountPercentage.toInt()}%',
+        product.displayOfferPercentage,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 10,

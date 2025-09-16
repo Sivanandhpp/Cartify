@@ -174,22 +174,23 @@ class BuyerOrderStatusView extends GetView<BuyerOrderStatusController> {
                       children: [
                         if (controller.isSuccess)
                           AppButton(
-                            text: 'Track Order',
+                            text: AppStrings.trackOrder,
                             onPressed: controller.goToOrderHistory,
                             width: double.infinity,
                           )
                         else
                           AppButton(
-                            text: 'Try Again',
+                            text: AppStrings.retry,
                             onPressed: () => Get.back(),
                             width: double.infinity,
                           ),
                         const SizedBox(height: 12),
-                        if(controller.isSuccess)AppButton(
-                          text: 'Continue Shopping',
-                          onPressed: controller.backToShopping,
-                          width: double.infinity,
-                        ),
+                        if (controller.isSuccess)
+                          AppButton(
+                            text: AppStrings.continueShopping,
+                            onPressed: controller.backToShopping,
+                            width: double.infinity,
+                          ),
                       ],
                     ),
                   );
@@ -225,7 +226,10 @@ class BuyerOrderStatusView extends GetView<BuyerOrderStatusController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Order ID', style: TextStyle(color: Colors.grey[600])),
+              Text(
+                AppStrings.orderId,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
               Text(
                 '#${order.id.substring(0, 8)}',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -236,7 +240,7 @@ class BuyerOrderStatusView extends GetView<BuyerOrderStatusController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total Amount', style: TextStyle(color: Colors.grey[600])),
+              Text(AppStrings.total, style: TextStyle(color: Colors.grey[600])),
               Text(
                 '₹${order.totalAmount.toStringAsFixed(2)}',
                 style: TextStyle(
@@ -250,7 +254,7 @@ class BuyerOrderStatusView extends GetView<BuyerOrderStatusController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Items', style: TextStyle(color: Colors.grey[600])),
+              Text(AppStrings.items, style: TextStyle(color: Colors.grey[600])),
               Text(
                 '${order.items.length} items',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -263,7 +267,7 @@ class BuyerOrderStatusView extends GetView<BuyerOrderStatusController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Delivery Address',
+                AppStrings.deliveryAddress,
                 style: TextStyle(color: Colors.grey[600]),
               ),
               Expanded(

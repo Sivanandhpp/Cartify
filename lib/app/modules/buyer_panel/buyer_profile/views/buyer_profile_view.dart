@@ -25,8 +25,8 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
             pinned: true, // Keeps app bar visible at all times
             snap: false, // Ensures smooth behavior
             backgroundColor: AppColors.white,
-            title: const Text(
-              'Profile',
+            title:const Text(
+              AppStrings.buyerProfileTitle,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
           children: [
             // Account section
             ProfileMenuSectionWidget(
-              title: 'Account',
+              title: AppStrings.accountSection,
               items: controller.getAccountMenuItems(),
             ),
 
@@ -69,7 +69,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
 
             // Preferences section
             ProfileMenuSectionWidget(
-              title: 'Preferences',
+              title: AppStrings.preferencesSection,
               items: controller.getPreferencesMenuItems(),
             ),
 
@@ -77,7 +77,7 @@ class BuyerProfileView extends GetView<BuyerProfileController> {
 
             // Support section
             ProfileMenuSectionWidget(
-              title: 'Support',
+              title: AppStrings.supportSection,
               items: controller.getSupportMenuItems(),
             ),
           ],

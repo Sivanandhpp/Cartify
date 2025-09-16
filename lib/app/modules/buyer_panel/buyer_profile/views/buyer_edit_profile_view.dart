@@ -40,9 +40,9 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
         icon: const Icon(Icons.arrow_back, color: AppColors.black),
         onPressed: () => Get.back(),
       ),
-      title: const Text(
-        'Edit Profile',
-        style: TextStyle(
+      title: Text(
+        AppStrings.editProfileTitle,
+        style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: AppColors.black,
@@ -64,55 +64,52 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
                   backgroundColor: AppColors.grey200,
                   backgroundImage: _getProfileImage(),
                   child: _getProfileImage() == null
-                      ? Icon(
-                          Icons.person,
-                          size: 60,
-                          color: AppColors.grey400,
-                        )
+                      ? Icon(Icons.person, size: 60, color: AppColors.grey400)
                       : null,
                 );
               }),
               Positioned(
                 bottom: 0,
                 right: 0,
-                child: Obx(() => GestureDetector(
-                  onTap: controller.isUploadingPhoto.value
-                      ? null
-                      : controller.showImagePickerOptions,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.white, width: 2),
-                    ),
-                    child: controller.isUploadingPhoto.value
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+                child: Obx(
+                  () => GestureDetector(
+                    onTap: controller.isUploadingPhoto.value
+                        ? null
+                        : controller.showImagePickerOptions,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.white, width: 2),
+                      ),
+                      child: controller.isUploadingPhoto.value
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.white,
+                                ),
+                              ),
+                            )
+                          : const Icon(
+                              Icons.camera_alt,
+                              color: AppColors.white,
+                              size: 20,
                             ),
-                          )
-                        : const Icon(
-                            Icons.camera_alt,
-                            color: AppColors.white,
-                            size: 20,
-                          ),
+                    ),
                   ),
-                )),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
           Text(
-            'Tap to change profile picture',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            AppStrings.tapToChangeProfilePicture,
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
       ),
@@ -124,12 +121,12 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
     if (controller.selectedImage.value != null) {
       return FileImage(controller.selectedImage.value!);
     }
-    
+
     // Show current profile photo
     if (controller.profilePhotoUrl.value.isNotEmpty) {
       return NetworkImage(controller.profilePhotoUrl.value);
     }
-    
+
     return null;
   }
 
@@ -138,16 +135,16 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
       children: [
         _buildTextField(
           controller: controller.nameController,
-          label: 'Full Name',
-          hint: 'Enter your full name',
+          label: AppStrings.fullNameLabel,
+          hint: AppStrings.enterYourFullName,
           icon: Icons.person_outline,
           validator: controller.validateName,
         ),
         const SizedBox(height: 20),
         _buildTextField(
           controller: controller.emailController,
-          label: 'Email Address',
-          hint: 'Enter your email address',
+          label: AppStrings.emailAddressLabel,
+          hint: AppStrings.enterYourEmailAddress,
           icon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
           validator: controller.validateEmail,
@@ -155,8 +152,8 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
         const SizedBox(height: 20),
         _buildTextField(
           controller: controller.phoneController,
-          label: 'Phone Number',
-          hint: 'Your phone number',
+          label: AppStrings.phoneNumberLabel,
+          hint: AppStrings.yourPhoneNumber,
           icon: Icons.phone_outlined,
           enabled: false, // Phone number cannot be changed
           keyboardType: TextInputType.phone,
@@ -194,7 +191,10 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey[400]),
-            prefixIcon: Icon(icon, color: enabled ? AppColors.primary : Colors.grey),
+            prefixIcon: Icon(
+              icon,
+              color: enabled ? AppColors.primary : Colors.grey,
+            ),
             filled: true,
             fillColor: enabled ? Colors.white : Colors.grey[100],
             border: OutlineInputBorder(
@@ -211,13 +211,19 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.lightError, width: 2),
+              borderSide: const BorderSide(
+                color: AppColors.lightError,
+                width: 2,
+              ),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey[300]!),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
           ),
         ),
       ],
@@ -225,11 +231,13 @@ class BuyerEditProfileView extends GetView<BuyerEditProfileController> {
   }
 
   Widget _buildUpdateButton() {
-    return Obx(() => AppButton(
-      text: 'Update Profile',
-      onPressed: controller.updateProfile,
-      isLoading: controller.isLoading.value,
-      icon: Icons.save_outlined,
-    ));
+    return Obx(
+      () => AppButton(
+        text: AppStrings.updateProfile,
+        onPressed: controller.updateProfile,
+        isLoading: controller.isLoading.value,
+        icon: Icons.save_outlined,
+      ),
+    );
   }
 }

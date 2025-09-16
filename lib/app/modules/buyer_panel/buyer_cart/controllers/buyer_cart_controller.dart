@@ -115,60 +115,56 @@ class BuyerCartController extends GetxController {
     }
   }
 
-  // Cart operations using existing CartService methods
-  Future<void> incrementQuantity(String productId) async {
+  /// Increments quantity for a product.
+  Future<bool> incrementQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
     }
+    return success;
   }
 
-  Future<void> decrementQuantity(String productId) async {
+  /// Decrements quantity for a product.
+  Future<bool> decrementQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
-    } else {
-      // Clean up order list after successful operation (schedule for next frame)
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _cleanupOrderList();
-      });
     }
+    return success;
   }
 
-  Future<void> removeItem(String cartItemId) async {
-    final cart = await _cartService.removeItemFromCart(cartItemId);
-    if (cart == null) {
+  /// Removes an item from the cart.
+  Future<bool> removeItem(String productId) async {
+    final success = await _cartService.removeProductFromCart(productId);
+    if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to remove item from cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message: AppStrings
+            .failedToRemoveItemFromCart, // Replaced 'Failed to remove item from cart'
       );
-    } else {
-      // Clean up order list after successful operation
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _itemOrder.remove(cartItemId);
-      });
     }
+    return success;
   }
 
-  Future<void> clearCart() async {
+  /// Clears the entire cart.
+  Future<bool> clearCart() async {
     final success = await _cartService.clearCart();
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to clear cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToClearCart, // Replaced 'Failed to clear cart'
       );
-    } else {
-      // Clear order list after successful operation
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _itemOrder.clear();
-      });
     }
+    return success;
   }
 
   /// Clean up order list to remove items that no longer exist
@@ -218,8 +214,8 @@ class BuyerCartController extends GetxController {
     // Check if cart is empty
     if (isEmpty) {
       NotificationService.showError(
-        title: 'Empty Cart',
-        message: 'Please add items to your cart before proceeding',
+        title: AppStrings.emptyCartTitle,
+        message: AppStrings.addItemsToCartMessage,
       );
       return false;
     }
@@ -227,8 +223,8 @@ class BuyerCartController extends GetxController {
     // Check if address is selected
     if (selectedAddress == null) {
       NotificationService.showError(
-        title: 'No Address Selected',
-        message: 'Please select a delivery address',
+        title: AppStrings.noAddressSelectedTitle,
+        message: AppStrings.selectDeliveryAddressMessage,
       );
       return false;
     }
@@ -236,8 +232,8 @@ class BuyerCartController extends GetxController {
     // Validate address completeness
     if (!selectedAddress!.isValid) {
       NotificationService.showError(
-        title: 'Invalid Address',
-        message: 'The selected address is incomplete. Please update it.',
+        title: AppStrings.invalidAddressTitle,
+        message: AppStrings.addressIncompleteMessage,
       );
       return false;
     }
@@ -246,8 +242,8 @@ class BuyerCartController extends GetxController {
     for (final item in cartItems) {
       if (item.product.stockQuantity <= 0) {
         NotificationService.showError(
-          title: 'Item Out of Stock',
-          message: '${item.product.name} is currently out of stock',
+          title: AppStrings.itemOutOfStockTitle,
+          message: '${item.product.name} ${AppStrings.itemOutOfStockMessage}',
         );
         return false;
       }
@@ -275,7 +271,10 @@ class BuyerCartController extends GetxController {
         // Show success message with order details
         LogService.info('Order placed successfully: ${order.id}');
         // Navigate to success status screen
-        Get.offNamed(Routes.BUYER_ORDER_STATUS, arguments: {'success': true, 'order': order});
+        Get.offNamed(
+          Routes.BUYER_ORDER_STATUS,
+          arguments: {'success': true, 'order': order},
+        );
         // Clear the cart after successful order
         await clearCart();
       } else {
@@ -290,8 +289,8 @@ class BuyerCartController extends GetxController {
 
       // Show error message
       NotificationService.showError(
-        title: 'Order Failed',
-        message: 'An error occurred while placing your order. Please try again.',
+        title: AppStrings.orderFailedTitle,
+        message: AppStrings.orderFailedMessage,
       );
 
       LogService.error('Error placing order', e);

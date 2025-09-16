@@ -4,36 +4,46 @@ import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/prod
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// Controller for the Buyer Home screen, managing dashboard data, cart operations, and navigation.
 class BuyerHomeController extends GetxController {
+  // -----------------------
+  // Dependencies
+  // -----------------------
   final DashboardService _dashboardService = Get.find<DashboardService>();
   final CartService _cartService = Get.find<CartService>();
   final ProductSheetController _productSheetController =
       Get.find<ProductSheetController>();
+  final BuyerDashboardController buyerDashboardController =
+      Get.find<BuyerDashboardController>();
+  UserController userController = Get.find<UserController>();
 
-  // Reactive variables for dashboard data
+  // -----------------------
+  // Reactive Variables
+  // -----------------------
   final Rx<DashboardModel?> _dashboardData = Rx<DashboardModel?>(null);
   final RxBool _isLoading = false.obs;
   final RxString _errorMessage = ''.obs;
-
-  // Cart related reactive variables
   final Rx<CartModel?> _cartData = Rx<CartModel?>(null);
   final RxBool _isCartLoading = false.obs;
+  final Rxn<CategoryModel> selectedCategory =
+      Rxn<CategoryModel>(); // null means "All" is selected
 
-  // Getters for reactive variables
+  // -----------------------
+  // Getters
+  // -----------------------
   DashboardModel? get dashboardData => _dashboardData.value;
   bool get isLoading => _isLoading.value;
   String get errorMessage => _errorMessage.value;
   bool get hasError => _errorMessage.value.isNotEmpty;
-
-  // Cart getters
   CartModel? get cartData => _cartData.value;
   bool get isCartLoading => _isCartLoading.value;
   int get cartItemsCount => _cartData.value?.items.length ?? 0;
   double get cartTotalPrice => _cartData.value?.totalPrice ?? 0.0;
-
-  final Rxn<CategoryModel> selectedCategory =
-      Rxn<CategoryModel>(); // null means "All" is selected
-
+  String? get userProfilePhotoUrl => userController.user?.profilePhotoUrl;
+  
+  // -----------------------
+  // Lifecycle
+  // -----------------------
   @override
   void onInit() {
     super.onInit();
@@ -41,33 +51,44 @@ class BuyerHomeController extends GetxController {
     // selectedCategory remains null by default (meaning "All" is selected)
   }
 
-  /// Loads dashboard data from the API
+  // -----------------------
+  // Dashboard Data Management
+  // -----------------------
+
+  /// Loads dashboard data from the API.
   Future<void> loadDashboardData() async {
     try {
       _isLoading.value = true;
       _errorMessage.value = '';
-
       final dashboard = await _dashboardService.getDashboard();
-
       if (dashboard != null) {
         _dashboardData.value = dashboard;
       } else {
-        _errorMessage.value = 'Failed to load dashboard data';
+        _errorMessage.value =
+            AppStrings.errorLoadingDashboard; // Replaced hardcoded string
       }
     } catch (e) {
-      _errorMessage.value = 'Error loading dashboard: $e';
-      LogService.error('Dashboard loading error: $e');
+      _errorMessage.value =
+          AppStrings.errorLoadingDashboard; // Replaced hardcoded string
+      LogService.error(AppStrings.errorLoadingDashboard, {
+        // Replaced in log
+        AppStrings.error: e.toString(),
+      });
     } finally {
       _isLoading.value = false;
     }
   }
 
-  /// Refreshes dashboard data
+  /// Refreshes dashboard data.
   Future<void> refreshDashboard() async {
     await loadDashboardData();
   }
 
-  /// Loads cart data from the API
+  // -----------------------
+  // Cart Management
+  // -----------------------
+
+  /// Loads cart data from the API.
   Future<void> _loadCart() async {
     try {
       final cart = await _cartService.getCart();
@@ -77,100 +98,110 @@ class BuyerHomeController extends GetxController {
     }
   }
 
-  /// Increments product quantity in cart (adds if not exists)
+  /// Increments product quantity in cart (adds if not exists).
   Future<void> incrementProductQuantity(String productId) async {
     final success = await _cartService.incrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
     }
   }
 
-  /// Decrements product quantity in cart (removes if quantity becomes 0)
+  /// Decrements product quantity in cart (removes if quantity becomes 0).
   Future<void> decrementProductQuantity(String productId) async {
     final success = await _cartService.decrementProductQuantity(productId);
     if (!success) {
       NotificationService.showError(
-        title: 'Error',
-        message: 'Failed to update cart',
+        title: AppStrings.errorOccurred, // Replaced 'Error'
+        message:
+            AppStrings.failedToUpdateCart, // Replaced 'Failed to update cart'
       );
     }
   }
 
-  /// Gets quantity of a specific product in cart
+  /// Gets quantity of a specific product in cart.
   int getProductQuantityInCart(String productId) {
     return _cartService.getProductQuantityInCart(productId);
   }
 
-  /// Handle category selection from app bar
+  // -----------------------
+  // Navigation
+  // -----------------------
+
+  /// Handles category selection from app bar.
   void onCategoryTap(CategoryModel? category) {
     selectedCategory.value = category; // Can be null for "All"
-
     try {
-      // Get the dashboard controller to navigate internally
-      final dashboardController = Get.find<BuyerDashboardController>();
-
       if (category == null) {
         // "All" selected - navigate to categories page without pre-selection
-        dashboardController.navigateToCategoriesShowAll();
+        buyerDashboardController.navigateToCategoriesShowAll();
       } else {
         // Specific category selected - navigate with pre-selection
-        dashboardController.navigateToCategories(selectedCategory: category);
+        buyerDashboardController.navigateToCategories(
+          selectedCategory: category,
+        );
       }
     } catch (e) {
       LogService.error('Dashboard navigation error', e);
-      // Fallback: show error message
-      NotificationService.showError(
-        title: 'Navigation Error',
-        message: 'Unable to navigate to categories',
-      );
     }
   }
 
-  // Helper methods for easy access to dashboard sections
+  /// Navigates to profile.
+  void navigateToProfile() {
+    buyerDashboardController.navigateToProfile();
+  }
 
-  /// Gets promotional banners for display
+  /// Shows product sheet.
+  void showProductSheet(BuildContext context, ProductModel product) {
+    _productSheetController.showProductSheet(context, product);
+  }
+
+  // -----------------------
+  // Dashboard Helpers
+  // -----------------------
+
+  /// Gets promotional banners for display.
   List<BannerModel> getPromotionalBanners() {
     return _dashboardData.value?.promotionalBanners ?? [];
   }
 
-  /// Gets categories for the categories grid
+  /// Gets categories for the categories grid.
   List<CategoryModel> getCategories() {
     return _dashboardData.value?.categories ?? [];
   }
 
-  /// Gets featured products
+  /// Gets featured products.
   List<ProductModel> getFeaturedProducts() {
     return _dashboardData.value?.featuredProducts ?? [];
   }
 
-  /// Gets the title for featured products section
+  /// Gets the title for featured products section.
   String getFeaturedProductsTitle() {
     return _dashboardData.value?.featuredProductsTitle ?? 'Featured Products';
   }
 
-  /// Checks if promotional banners are available
+  /// Checks if promotional banners are available.
   bool hasPromotionalBanners() {
     return getPromotionalBanners().isNotEmpty;
   }
 
-  /// Checks if categories are available
+  /// Checks if categories are available.
   bool hasCategories() {
     return getCategories().isNotEmpty;
   }
 
-  /// Checks if featured products are available
+  /// Checks if featured products are available.
   bool hasFeaturedProducts() {
     return getFeaturedProducts().isNotEmpty;
   }
 
-  /// Gets a specific section by type
+  /// Gets a specific section by type.
   DashboardSection? getSection(String type) {
     final dashboard = _dashboardData.value;
     if (dashboard == null) return null;
-
     try {
       return dashboard.sections.firstWhere((section) => section.type == type);
     } catch (e) {
@@ -178,28 +209,11 @@ class BuyerHomeController extends GetxController {
     }
   }
 
-  /// Checks if a specific section exists and has data
+  /// Checks if a specific section exists and has data.
   bool hasSectionData(String type) {
     final section = getSection(type);
     return section != null && section.data.isNotEmpty;
   }
 
-  /// Gets all available section types
-  List<String> getAvailableSectionTypes() {
-    final dashboard = _dashboardData.value;
-    if (dashboard == null) return [];
-
-    return dashboard.sections.map((section) => section.type).toList();
-  }
-
-  /// Gets the number of items in a specific section
-  int getSectionItemCount(String type) {
-    final section = getSection(type);
-    return section?.data.length ?? 0;
-  }
-
-  // Show Product sheet
-  void showProductSheet(BuildContext context, ProductModel product) {
-    _productSheetController.showProductSheet(context, product);
-  }
+  
 }

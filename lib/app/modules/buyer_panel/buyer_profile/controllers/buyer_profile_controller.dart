@@ -1,6 +1,7 @@
 // Core imports (absolute)
 import 'package:cartify/app/core/index.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_dashboard/controllers/buyer_dashboard_controller.dart';
+import 'package:cartify/app/modules/buyer_panel/buyer_profile/controllers/buyer_edit_profile_controller.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/buyer_edit_profile_view.dart';
 import 'package:cartify/app/modules/buyer_panel/buyer_profile/views/widgets/profile_menu_section.dart';
 import 'package:cartify/app/routes/app_pages.dart';
@@ -210,7 +211,7 @@ class BuyerProfileController extends GetxController {
 
   /// Handles profile editing
   void editProfile() {
-    LogService.info('Opening edit profile page');
+    Get.put(BuyerEditProfileController());
     Get.to(() => const BuyerEditProfileView());
   }
 

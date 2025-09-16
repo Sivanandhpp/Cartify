@@ -32,7 +32,7 @@ class CartService {
       _cartData.value = cart;
       return cart;
     } on DioException catch (e) {
-      print('Error getting cart: ${e.response?.data}');
+      LogService.error('Error getting cart', e.response?.data);
       return null;
     }
   }
@@ -48,7 +48,7 @@ class CartService {
       _cartData.value = cart;
       return cart;
     } on DioException catch (e) {
-      print('Error adding item to cart: ${e.response?.data}');
+      LogService.error('Error adding item to cart', e.response?.data);
       return null;
     }
   }
@@ -67,7 +67,7 @@ class CartService {
       _cartData.value = cart;
       return cart;
     } on DioException catch (e) {
-      print('Error updating cart item: ${e.response?.data}');
+      LogService.error('Error updating cart item', e.response?.data);
       return null;
     }
   }
@@ -80,12 +80,25 @@ class CartService {
       _cartData.value = cart;
       return cart;
     } on DioException catch (e) {
-      print('Error removing item from cart: ${e.response?.data}');
+      LogService.error('Error removing item from cart', e.response?.data);
       return null;
     }
   }
 
-    /// Removes all items from the user's cart.
+  /// Removes an item completely from the cart.
+  Future<bool> removeProductFromCart(String itemId) async {
+    try {
+      final response = await _apiClient.dio.delete('/cart/items/$itemId');
+      final cart = CartModel.fromJson(response.data);
+      _cartData.value = cart;
+      return true;  // Return true on success
+    } on DioException catch (e) {
+      LogService.error('Error removing item from cart', e.response?.data);
+      return false;  // Return false on failure
+    }
+  }
+
+  /// Removes all items from the user's cart.
   Future<bool> clearCart() async {
     try {
       await _apiClient.dio.delete('/cart');
@@ -97,7 +110,7 @@ class CartService {
       );
       return true;
     } on DioException catch (e) {
-      print('Error clearing cart: ${e.response?.data}');
+      LogService.error('Error clearing cart', e.response?.data);
       return false;
     }
   }
